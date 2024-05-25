@@ -1,0 +1,499 @@
+@font-face {
+    font-family: main;
+    src: url("../fonts/Main.ttf");
+}
+
+.fs-10 {
+    font-size: 10px;
+}
+.fs-11 {
+    font-size: 11px;
+}
+.fs-12 {
+    font-size: 12px;
+}
+.fs-13 {
+    font-size: 13px;
+}
+.fs-14 {
+    font-size: 14px;
+}
+.fs-15 {
+    font-size: 15px;
+}
+.fs-16 {
+    font-size: 16px;
+}
+.fs-17 {
+    font-size: 17px;
+}
+.fs-18 {
+    font-size: 18px;
+}
+.fs-19 {
+    font-size: 19px;
+}
+.fs-20 {
+    font-size: 20px;
+}
+.fs-21 {
+    font-size: 21px;
+}
+.fs-22 {
+    font-size: 22px;
+}
+.fs-23 {
+    font-size: 23px;
+}
+.fs-24 {
+    font-size: 24px;
+}
+.fs-25 {
+    font-size: 25px;
+}
+.fs-26 {
+    font-size: 26px;
+}
+.fs-27 {
+    font-size: 27px;
+}
+.fs-28 {
+    font-size: 28px;
+}
+.fs-29 {
+    font-size: 29px;
+}
+.fs-30 {
+    font-size: 30px;
+}
+.fs-31 {
+    font-size: 31px;
+}
+.fs-32 {
+    font-size: 32px;
+}
+.fs-33 {
+    font-size: 33px;
+}
+.fs-34 {
+    font-size: 34px;
+}
+.fs-35 {
+    font-size: 35px;
+}
+.fs-36 {
+    font-size: 36px;
+}
+.fs-37 {
+    font-size: 37px;
+}
+.fs-38 {
+    font-size: 38px;
+}
+.fs-39 {
+    font-size: 39px;
+}
+hr {
+    margin: 0 0 10px 0;
+    color: #afafaf;
+}
+/* Loading CSS */
+.loader {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none;
+}
+.loader .loading-box {
+    padding: 20px;
+    background: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%) scale(1.2);
+    border-radius: 10px;
+    opacity: 0;
+    transition: all 0.2s ease-in;
+}
+.loader .loading-box.active {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    transition: all 0.2s ease-in;
+}
+.loader .loading-box i {
+    font-size: 3rem;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: main;
+    background-color: #f2f6fc;
+    /* background-color: #eaf2fd; */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+/* Bootstrap Input FontSize */
+.form-group input,
+.form-group textarea,
+.form-group select {
+    font-size: 12px;
+}
+
+/* Sidebar CSS */
+.sidebar {
+    width: 20%;
+    height: 100vh;
+    background-color: rgb(255, 255, 255);
+    overflow-y: auto;
+    z-index: 999;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+@media screen and (max-width: 1200px) {
+    .sidebar {
+        width: 30%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    .sidebar {
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: -70%;
+        visibility: hidden;
+    }
+}
+.blackdrop {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 99;
+}
+.sidebar-contain {
+    padding: 15px 0;
+}
+.sidebar-logo-contain {
+    padding: 15px 0 30px 20px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+.sidebar-contain .sidebar-logo-contain img.logo-main {
+    width: 35px;
+}
+.sidebar-contain .sidebar-logo-contain .logo-title {
+    margin: 0 0 0 15px;
+}
+.sidebar-contain .sidebar-logo-contain .app-version {
+    background: #a1c8ff;
+    padding: 5px;
+    border-radius: 50%;
+    font-size: 10px;
+    transform: translate(-25px, 20px);
+}
+.sidebar-contain ul.menu {
+    display: block;
+    margin: 20px 0 0 0;
+    padding: 0;
+    font-size: 14px;
+}
+.sidebar-contain ul.menu li {
+    display: block;
+    padding: 10px 30px;
+}
+.sidebar-contain ul.menu li:hover {
+    box-shadow: inset 5px 0px 0px 0px #1e7cff, 5px 0px 0px 0px #1e7cff;
+}
+.sidebar-contain ul.menu li a {
+    width: 100%;
+    display: block;
+    text-decoration: none;
+    color: rgb(37, 37, 37);
+    position: relative;
+}
+.sidebar-contain ul.menu li .indicator-icon {
+    position: absolute;
+    top: 2px;
+    right: 0;
+}
+.sidebar-contain ul.menu li a i {
+    margin-right: 15px;
+}
+.sidebar-contain ul.menu li .submenu {
+    margin: 15px 0 0 0;
+    padding: 0 0 0 15px;
+}
+.sidebar-contain ul.menu li .submenu li {
+    position: relative;
+}
+
+.sidebar-contain ul.menu li .submenu li:hover {
+    box-shadow: none;
+    font-weight: bolder;
+}
+/* Main Container */
+.main-container {
+    width: 80%;
+    margin-left: calc(100vw - 80%);
+}
+@media screen and (max-width: 1200px) {
+    .main-container {
+        width: 70%;
+        margin-left: calc(100vw - 70%);
+    }
+}
+@media screen and (max-width: 800px) {
+    .main-container {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+/* Navbar */
+nav {
+    width: 100%;
+    display: flex;
+    padding: 15px 30px;
+    align-items: center;
+    justify-content: flex-end;
+}
+nav .nav-page-title {
+    font-weight: bolder;
+    display: none;
+}
+@media screen and (max-width: 800px) {
+    nav {
+        justify-content: space-between;
+    }
+    nav .nav-page-title {
+        display: block;
+    }
+}
+nav .navbar-menu {
+    display: block;
+    margin: 0;
+    padding: 0 5px 0 15px;
+    background-color: #fbfbfb;
+    border-radius: 50px;
+}
+nav .navbar-menu .navbar-menu-list {
+    display: inline-block;
+    padding: 5px;
+    color: #afafaf;
+    border-radius: 50px;
+}
+nav .navbar-menu .navbar-menu-list.has-dropdown {
+    position: relative;
+}
+
+nav .navbar-menu .navbar-menu-list span {
+    font-size: 12px;
+}
+nav .navbar-menu .navbar-menu-list img {
+    width: 30px;
+    height: 30px;
+    position: relative;
+}
+nav .navbar-menu .navbar-menu-list:hover {
+    background: #f2f1f1;
+    cursor: pointer;
+}
+.c-contain {
+    padding: 10px 0;
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 2px 2px 5px #eeeeee;
+    position: absolute;
+    bottom: -20%;
+    right: 0;
+    transform: translate(0, 97%);
+    opacity: 0;
+    visibility: hidden;
+    font-size: 12px;
+}
+.c-contain .navbar-submenu {
+    margin: 0;
+    padding: 0;
+}
+.c-contain .navbar-submenu-list {
+    display: block;
+    padding: 5px 10px;
+}
+.c-contain .navbar-submenu-list:hover {
+    background: #e8e8e8;
+}
+.c-contain .navbar-submenu-list a {
+    text-decoration: none;
+    color: rgb(89, 89, 89);
+}
+/* Body Container untuk semua container didalam aplikasi */
+.body-container {
+    width: 100%;
+    min-height: 80vh;
+}
+@media screen and (min-height: 630px) {
+    .body-container {
+        min-height: 85vh;
+    }
+}
+.body-container .row {
+    margin: 15px;
+}
+.body-container .row > #staticBackdrop {
+    padding-left: 0 !important;
+}
+.body-contain-customize {
+    background: #fff;
+    padding: 15px;
+    border-radius: 15px;
+    font-size: 14px;
+}
+.body-contain-customize .body-title {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bolder;
+}
+/* Login Box */
+.login-box {
+    width: 60%;
+    border-radius: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: 50%;
+    transform: translate(-50%, -50%);
+    background: #d2e0fb;
+    padding: 5px;
+    font-size: 14px;
+}
+@media screen and (max-width: 1000px) {
+    .login-box {
+        width: 75%;
+    }
+}
+.login-box .row {
+    margin-right: 0;
+    margin-left: 0;
+}
+.login-box .row .left-login {
+    background: url("../img/login-background.jpg");
+    background-size: 120%;
+    border-radius: 10px;
+}
+@media screen and (max-width: 766px) {
+    .login-box {
+        width: 90%;
+    }
+    .login-box .left-login {
+        height: 200px;
+    }
+}
+.login-box .image-place {
+    width: 100%;
+}
+.login-box input[type="text"],
+.login-box input[type="password"] {
+    padding: 10px 15px;
+    background: #c9dae0;
+    border: 1px solid #c9dae0;
+}
+footer {
+    width: 100%;
+}
+footer .footer-container {
+    padding: 5px 20px;
+    margin-left: 300px;
+    font-weight: bolder;
+    text-align: right;
+    font-size: 14px;
+    color: #b9b9b9;
+}
+@media screen and (max-width: 797px) {
+    footer .footer-container {
+        text-align: center;
+        margin-left: 0;
+    }
+}
+/* Breadcrumbs.configuration */
+nav[aria-label="breadcrumb"] {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 14px;
+    color: #2b2b2b;
+}
+nav[aria-label="breadcrumb"] li a {
+    text-decoration: none;
+    color: #ababab;
+}
+nav[aria-label="breadcrumb"] li a:hover {
+    border-bottom: 5px solid #f2ff02;
+    color: #2b2b2b;
+}
+table.dataTables {
+    font-size: 12px;
+    overflow-x: auto;
+}
+table.dataTables tbody th,
+table.dataTables tbody td {
+    white-space: nowrap;
+}
+.dt-container.dt-bootstrap5.dt-empty-footer {
+    padding: 0;
+    font-size: 14px;
+}
+@media screen and (max-width: 767px) {
+    .dt-search {
+        margin-top: 20px;
+    }
+    .dt-search .form-control.form-control-sm {
+        display: block;
+        width: 100%;
+    }
+}
+.set-kelas-siswa .kotak-set {
+    border-radius: 10px;
+    height: 500px;
+    max-height: 500px;
+    overflow-y: auto;
+    position: relative;
+    padding: 15px;
+}
+.set-kelas-siswa .kotak-set.drag {
+    background: #d4e6ff;
+}
+.set-kelas-siswa .kotak-set.drop {
+    background: #d4ffdb;
+}
+.set-kelas-siswa .kotak-set .item {
+    background: #fff;
+    width: 95px;
+    height: 180px;
+    border-radius: 10px;
+    padding: 15px 5px;
+    cursor: pointer;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.set-kelas-siswa .kotak-set .item img {
+    user-select: none;
+    pointer-events: none;
+}
+.set-kelas-siswa .kotak-set .item.select {
+    background: #fff6de;
+}
