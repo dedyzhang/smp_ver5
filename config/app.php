@@ -52,7 +52,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://fictional-pancake-6v4xppq9q5v2xqgp-8000.app.github.dev'),
 
     /*
     |--------------------------------------------------------------------------
