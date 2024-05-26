@@ -34,6 +34,14 @@
         @endif
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
+        <div class="alert alert-primary" role="alert">
+            <h4 class="alert-heading">Info !</h4>
+            <p>Untuk memudahkan dalam pengisian nilai maka, dapat menggunakan tombol <kbd><i class="fas fa-arrow-left"></i></kbd> <kbd><i class="fas fa-arrow-right"></i></kbd> <kbd><i class="fas fa-arrow-up"></i></kbd> <kbd><i class="fas fa-arrow-down"></i></kbd> <kbd>enter</kbd> dan <kbd>tab</kbd> untuk berpindah column maupun baris</p>
+            <hr>
+            <p class="mb-0">Terima kasih atas perhatiannya</p>
+        </div>
+    </div>
+    <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
         <p><b>Penilaian Formatif</b></p>
         <div class="table-responsive">
             <table class="table table-bordered fs-12 nilai-table">

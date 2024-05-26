@@ -9,7 +9,7 @@
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 left-login">
             </div>
             <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 p-xl-5 p-lg-5 p-md-4 p-sm-4 p-4 form-group">
-                <img src="{{asset('img/Logo-rounded.png')}}" alt="" width="50" height="50" class="mb-3">
+                <img src="{{asset('img/logo-rounded.png')}}" alt="" width="50" height="50" class="mb-3">
                 <h4><b>LOGIN</b></h4>
                 @if(session('LoginError'))
                     <div class="alert alert-warning alert-dismissible fade show d-flex align-content-between align-items-center mt-3" role="alert">
