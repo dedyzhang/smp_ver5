@@ -74,4 +74,5 @@ Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->g
     //formatif
     Route::get('/bukuguru/formatif','formatifIndex')->name('penilaian.formatif.index');
     Route::get('/bukuguru/formatif/{uuid}/show','formatifShow')->name('penilaian.formatif.show');
+    Route::put('/bukuguru/formatif/edit','formatifEdit')->name('penilaian.formatif.edit');
 });

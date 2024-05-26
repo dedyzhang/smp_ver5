@@ -219,8 +219,19 @@ class PenilaianController extends Controller
         $formatif = Formatif::whereIn('id_materi',$uuidMateri)->get();
         $formatif_array = array();
         foreach($formatif as $item) {
-           $formatif_array[$item->id_tupe.".".$item->id_siswa] = $item->nilai;
+           $formatif_array[$item->id_tupe.".".$item->id_siswa] = array(
+            'uuid' => $item->uuid,
+            'nilai' => $item->nilai
+           );
         }
         return view("penilaian.formatif.show",compact('ngajar','materi','count','formatif_array','materiArray','tupeArray'));
+    }
+    /**
+     * Formatif - Simpan Nilai
+     */
+    public function formatifEdit(Request $request) {
+        $nilai = $request->nilai;
+
+        Batch::update(new Formatif,$nilai,'uuid');
     }
 }

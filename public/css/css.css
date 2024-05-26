@@ -497,3 +497,15 @@ table.dataTables tbody td {
 .set-kelas-siswa .kotak-set .item.select {
     background: #fff6de;
 }
+/* Table Nilai css */
+.nilai-table td.sticky {
+    position: sticky;
+    left: 0;
+    z-index: 99;
+}
+.subtab {
+    display: none;
+}
+.open-close-tab {
+    cursor: pointer;
+}
