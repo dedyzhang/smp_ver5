@@ -144,7 +144,7 @@ class KelasController extends Controller
         $kelas = Siswa::whereIn('uuid',$siswa)->update([
             'id_kelas' => $uuid
         ]);
-        $histori = Rombel::upsert($siswa_array,['id_siswa'],['id_kelas']);
+        $histori = Rombel::upsert($siswa_array,['uuid'],['id_kelas','id_siswa']);
         return response()->json(['success' => true]);
     }
     /**

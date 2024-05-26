@@ -199,7 +199,8 @@ class PenilaianController extends Controller
         foreach($materi as $item) {
             array_push($materiArray,array(
                 "uuid" => $item->uuid,
-                "materi" => $item->materi
+                "materi" => $item->materi,
+                "jumlahTupe" => $item->tupe
             ));
             foreach($item->tupe()->get() as $tupe) {
                 array_push($tupeArray,array(

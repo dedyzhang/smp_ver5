@@ -45,11 +45,13 @@
                     </tr>
                     <tr class="text-center">
                         @foreach ($materiArray as $item)
-                            <td colspan="{{count($materiArray) + 1 }}">M{{$loop->iteration}}</td>
+
+                            <td colspan="{{$item['jumlahTupe'] + 1}}">M{{$loop->iteration}}</td>
                         @endforeach
                     </tr>
                     <tr class="text-center">
                         @foreach ($materiArray as $materi)
+
                             @foreach ($tupeArray as $tupe)
                                 @if ($tupe['id_materi'] === $materi['uuid'])
                                     <td width="5%" data-bs-toggle="tooltip" @if($tupe['tupe'] !== null ) data-bs-title="{{$tupe['tupe']}}" @endif data-bs-placement="top">TP{{$loop->iteration}}</td>
