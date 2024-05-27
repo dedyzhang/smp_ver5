@@ -72,3 +72,9 @@ Breadcrumbs::for('penilaian-pts-show',function(BreadcrumbsTrail $trail, Pelajara
     $trail->parent('penilaian-pts');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.pts.show',$ngajar));
 });
+//Penilaian.PAS.Breadcrumbs
+Breadcrumbs::for('penilaian-pas',function(BreadcrumbsTrail $trail){ $trail->push('PAS',route('penilaian.pas.index'));});
+Breadcrumbs::for('penilaian-pas-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian-pas');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.pas.show',$ngajar));
+});

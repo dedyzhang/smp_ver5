@@ -6,6 +6,7 @@ use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\PAS;
 use App\Models\PTS;
 use App\Models\Semester;
 use App\Models\Sumatif;
@@ -48,7 +49,9 @@ class PenilaianController extends Controller
      */
     public function materiShow(String $uuid) : View {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
-        $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         return view("penilaian.materi.show",compact('ngajar','materi'));
     }
     /**
@@ -192,7 +195,9 @@ class PenilaianController extends Controller
      */
     public function formatifShow(String $uuid) : View {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
-        $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $materiArray = array();
         $tupeArray = array();
 
@@ -249,7 +254,9 @@ class PenilaianController extends Controller
      */
     public function sumatifShow(String $uuid) : View {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
-        $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $materiArray = array();
         $tupeArray = array();
 
@@ -298,7 +305,9 @@ class PenilaianController extends Controller
      */
     public function ptsShow(String $uuid) {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
-        $pts = PTS::where('id_ngajar',$uuid)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pts = PTS::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $pts_array = array();
 
         foreach($pts as $nilai) {
@@ -314,7 +323,9 @@ class PenilaianController extends Controller
      */
     public function ptsStore(String $uuid) {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
-        $pts = PTS::where('id_ngajar',$uuid)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pts = PTS::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
 
         if($pts->count() === 0) {
             $smt = Semester::first();
@@ -337,13 +348,89 @@ class PenilaianController extends Controller
      * PTS - PTS Destroy
      */
     public function ptsDestroy(String $uuid) {
-        $pts = PTS::where('id_ngajar',$uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pts = PTS::where([['id_ngajar','=',$uuid],['semester','=',$sem]]);
 
         $pts->delete();
     }
+    /**
+     * PTS - Simpan Nilai PTS
+     */
     public function ptsEdit(Request $request) {
         $nilai = $request->nilai;
 
         Batch::update(new PTS,$nilai,'uuid');
+    }
+    /**
+     * PAS - Show Index PAS
+     */
+    public function pasIndex() : View {
+        $id = auth()->user()->uuid;
+        $guru = Guru::where('id_login',$id)->first();
+        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        return view("penilaian.pas.index",compact('ngajar'));
+    }
+    /**
+     * PAS - Menampilkan isi dari penilaian pas per kelas
+     */
+    public function pasShow(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pas = PAS::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+        $pas_array = array();
+
+        foreach($pas as $nilai) {
+            $pas_array[$nilai->id_ngajar.".".$nilai->id_siswa] = array(
+                "uuid" => $nilai->uuid,
+                "nilai" => $nilai->nilai
+            );
+        }
+        return View("penilaian.pas.show",compact('ngajar','pas_array','pas'));
+    }
+    /**
+     * PAS - PAS Store
+     */
+    public function pasStore(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pas = PAS::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+
+        if($pas->count() === 0) {
+            $smt = Semester::first();
+            $semester = $smt->semester;
+
+            $nilai_array = array();
+            foreach($ngajar->siswa as $siswa) {
+                array_push($nilai_array,array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $siswa->uuid,
+                    'nilai' => 0,
+                    'semester' => $semester
+                ));
+            }
+            PAS::upsert($nilai_array,['uuid'],['id_ngajar','id_siswa','nilai','semester']);
+        }
+
+    }
+    /**
+     * PAS - PAS Destroy
+     */
+    public function pasDestroy(String $uuid) {
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pas = PAS::where([['id_ngajar','=',$uuid],['semester','=',$sem]]);
+
+        $pas->delete();
+    }
+    /**
+     * PAS - Simpan Nilai PAS
+     */
+    public function pasEdit(Request $request) {
+        $nilai = $request->nilai;
+
+        Batch::update(new PAS,$nilai,'uuid');
     }
 }

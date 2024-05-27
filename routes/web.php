@@ -85,4 +85,10 @@ Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->g
     Route::post('/bukuguru/pts/{uuid}/store','ptsStore')->name('penilaian.pts.store');
     Route::put('/bukuguru/pts/edit','ptsEdit')->name('penilaian.pts.edit');
     Route::delete('/bukuguru/pts/{uuid}/destroy','ptsDestroy')->name('penilaian.pts.destroy');
+    //pas
+    Route::get('/bukuguru/pas','pasIndex')->name('penilaian.pas.index');
+    Route::get('/bukuguru/pas/{uuid}/show','pasShow')->name('penilaian.pas.show');
+    Route::post('/bukuguru/pas/{uuid}/store','pasStore')->name('penilaian.pas.store');
+    Route::put('/bukuguru/pas/edit','pasEdit')->name('penilaian.pas.edit');
+    Route::delete('/bukuguru/pas/{uuid}/destroy','pasDestroy')->name('penilaian.pas.destroy');
 });

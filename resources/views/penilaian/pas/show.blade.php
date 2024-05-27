@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('penilaian-pts-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    {{Breadcrumbs::render('penilaian-pas-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
     <div class="body-contain-customize col-12 col-sm-12 col-md-8 col-lg-6 col-xl-5">
         <p><b>Data Ngajar</b></p>
         <table class="table table-striped fs-13">
@@ -42,10 +42,10 @@
         </div>
     </div>
     <div class="body-contain-customize d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto mt-3">
-        @if (count($pts) === 0)
-            <button class="btn btn-success btn-sm tambah-nilai"><i class="fas fa-plus"></i> Tambah Nilai PTS</button>
+        @if (count($pas) === 0)
+            <button class="btn btn-success btn-sm tambah-nilai"><i class="fas fa-plus"></i> Tambah Nilai PAS</button>
         @else
-            <button class="btn btn-danger btn-sm hapus-nilai"><i class="fas fa-plus"></i> Hapus Nilai PTS</button>
+            <button class="btn btn-danger btn-sm hapus-nilai"><i class="fas fa-plus"></i> Hapus Nilai PAS</button>
         @endif
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
@@ -56,7 +56,7 @@
                     <tr class="text-center">
                         <td width="3%">No</td>
                         <td width="85%" class="sticky" style="min-width: 150px">Siswa</td>
-                        @if (count($pts) !== 0)
+                        @if (count($pas) !== 0)
                             <td class="mainNilaiCell">Nilai</td>
                         @endif
                     </tr>
@@ -66,10 +66,10 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
-                            @if (isset($pts_array[$ngajar->uuid.".".$siswa->uuid]))
-                                <td data-pts="{{$pts_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}" class="nilai editable text-center @if ($pts_array[$ngajar->uuid.".".$siswa->uuid]['nilai'] < $ngajar->kkm)
+                            @if (isset($pas_array[$ngajar->uuid.".".$siswa->uuid]))
+                                <td data-pas="{{$pas_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}" class="nilai editable text-center @if ($pas_array[$ngajar->uuid.".".$siswa->uuid]['nilai'] < $ngajar->kkm)
                                     text-danger bg-danger-subtle
-                                @endif" contenteditable="true">{{$pts_array[$ngajar->uuid.".".$siswa->uuid]['nilai']}}</td>
+                                @endif" contenteditable="true">{{$pas_array[$ngajar->uuid.".".$siswa->uuid]['nilai']}}</td>
                             @endif
                         </tr>
                     @endforeach
@@ -84,10 +84,10 @@
         var typingTimer;
         var ini;
         $('.tambah-nilai').click(function() {
-            var tambahpts = () => {
+            var tambahpas = () => {
                 BigLoading('Nilai Sedang Ditambahkan, Mohon untuk tidak menutup halaman sebelum nilai tersimpan dengan lengkap');
                 var uuid = "{{$ngajar->uuid}}";
-                var url = "{{route('penilaian.pts.store',':id')}}";
+                var url = "{{route('penilaian.pas.store',':id')}}";
                 url = url.replace(':id',uuid);
                 $.ajax({
                     type: "post",
@@ -104,13 +104,13 @@
                     }
                 })
             }
-            cConfirm("Perhatian","Tambahkan Nilai PTS untuk semester ini?",tambahpts);
+            cConfirm("Perhatian","Tambahkan Nilai PAS/T untuk semester ini?",tambahpas);
         })
         $('.hapus-nilai').click(function() {
-            var hapuspts = () => {
+            var hapuspas = () => {
                 BigLoading('Nilai Sedang Dihapus, Mohon untuk tidak menutup halaman sebelum nilai dihapus dengan lengkap');
                 var uuid = "{{$ngajar->uuid}}";
-                var url = "{{route('penilaian.pts.destroy',':id')}}";
+                var url = "{{route('penilaian.pas.destroy',':id')}}";
                 url = url.replace(':id',uuid);
                 $.ajax({
                     type: "delete",
@@ -127,7 +127,7 @@
                     }
                 })
             }
-            cConfirm("Perhatian","Hapus Nilai PTS untuk semester ini?",hapuspts);
+            cConfirm("Perhatian","Hapus Nilai PAS/T untuk semester ini?",hapuspas);
         })
         $('.nilai.editable').on('keyup',function(){
             clearTimeout(typingTimer);
@@ -217,14 +217,14 @@
             });
             var arrayNilai = [];
             $('.nilai').each(function() {
-                var uuid = $(this).data('pts');
+                var uuid = $(this).data('pas');
                 var nilai = $(this).text();
                 arrayNilai.push({
                     "uuid": uuid,
                     "nilai": nilai
                 });
             });
-            var url = "{{route('penilaian.pts.edit')}}";
+            var url = "{{route('penilaian.pas.edit')}}";
             $.ajax({
                 type: "put",
                 url: url,
