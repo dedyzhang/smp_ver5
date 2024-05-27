@@ -300,10 +300,14 @@ class PenilaianController extends Controller
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
         $pts = PTS::where('id_ngajar',$uuid)->get();
         $pts_array = array();
+
         foreach($pts as $nilai) {
-            $pts_array[$nilai->id_ngajar.".".$nilai->id_siswa] = $nilai->nilai;
+            $pts_array[$nilai->id_ngajar.".".$nilai->id_siswa] = array(
+                "uuid" => $nilai->uuid,
+                "nilai" => $nilai->nilai
+            );
         }
-        return View("penilaian.pts.show",compact('ngajar','pts_array'));
+        return View("penilaian.pts.show",compact('ngajar','pts_array','pts'));
     }
     /**
      * PTS - PTS Store
@@ -327,6 +331,19 @@ class PenilaianController extends Controller
             }
             PTS::upsert($nilai_array,['uuid'],['id_ngajar','id_siswa','nilai','semester']);
         }
-        
+
+    }
+    /**
+     * PTS - PTS Destroy
+     */
+    public function ptsDestroy(String $uuid) {
+        $pts = PTS::where('id_ngajar',$uuid);
+
+        $pts->delete();
+    }
+    public function ptsEdit(Request $request) {
+        $nilai = $request->nilai;
+
+        Batch::update(new PTS,$nilai,'uuid');
     }
 }

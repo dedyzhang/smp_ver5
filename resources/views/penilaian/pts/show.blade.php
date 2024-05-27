@@ -42,7 +42,11 @@
         </div>
     </div>
     <div class="body-contain-customize d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto mt-3">
-        <button class="btn btn-success btn-sm tambah-nilai"><i class="fas fa-plus"></i>Tambah Nilai PTS</button>
+        @if (count($pts) === 0)
+            <button class="btn btn-success btn-sm tambah-nilai"><i class="fas fa-plus"></i> Tambah Nilai PTS</button>
+        @else
+            <button class="btn btn-danger btn-sm hapus-nilai"><i class="fas fa-plus"></i> Hapus Nilai PTS</button>
+        @endif
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
         <p><b>Penilaian Tengah Semester</b></p>
@@ -51,7 +55,7 @@
                 <thead>
                     <tr class="text-center">
                         <td width="3%">No</td>
-                        <td width="80%" class="sticky" style="min-width: 150px">Siswa</td>
+                        <td width="85%" class="sticky" style="min-width: 150px">Siswa</td>
                         <td class="mainNilaiCell">Nilai</td>
                     </tr>
                 </thead>
@@ -61,7 +65,9 @@
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
                             @if (isset($pts_array[$ngajar->uuid.".".$siswa->uuid]))
-                                <td>{{$pts_array[$ngajar->uuid.".".$siswa->uuid]}}</td>
+                                <td data-pts="{{$pts_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}" class="nilai editable text-center @if ($pts_array[$ngajar->uuid.".".$siswa->uuid]['nilai'] < $ngajar->kkm)
+                                    text-danger bg-danger-subtle
+                                @endif" contenteditable="true">{{$pts_array[$ngajar->uuid.".".$siswa->uuid]['nilai']}}</td>
                             @endif
                         </tr>
                     @endforeach
@@ -90,7 +96,6 @@
                             removeLoadingBig();
                             cAlert('green','Berhasil','Nilai Berhasil Ditambah',true);
                         },500)
-                        console.log(data);
                     },
                     error: function(data) {
                         console.log(data.responseJSON);
@@ -98,6 +103,29 @@
                 })
             }
             cConfirm("Perhatian","Tambahkan Nilai PTS untuk semester ini?",tambahpts);
+        })
+        $('.hapus-nilai').click(function() {
+            var hapuspts = () => {
+                BigLoading('Nilai Sedang Dihapus, Mohon untuk tidak menutup halaman sebelum nilai dihapus dengan lengkap');
+                var uuid = "{{$ngajar->uuid}}";
+                var url = "{{route('penilaian.pts.destroy',':id')}}";
+                url = url.replace(':id',uuid);
+                $.ajax({
+                    type: "delete",
+                    url: url,
+                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    success: function (data) {
+                        setTimeout(() => {
+                            removeLoadingBig();
+                            cAlert('green','Berhasil','Nilai berhasil dihapus',true);
+                        },500);
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON);
+                    }
+                })
+            }
+            cConfirm("Perhatian","Hapus Nilai PTS untuk semester ini?",hapuspts);
         })
         $('.nilai.editable').on('keyup',function(){
             clearTimeout(typingTimer);
@@ -166,9 +194,9 @@
             } else {
                 $(ini).closest('td').addClass('text-danger').addClass('bg-danger-subtle');
             }
-            
+
         };
-        
+
         $('.simpan-nilai').click(function() {
             var alertLoading = $.alert({
                 icon: "fas fa-gear fa-spin",
@@ -187,14 +215,14 @@
             });
             var arrayNilai = [];
             $('.nilai').each(function() {
-                var uuid = $(this).data('sumatif');
+                var uuid = $(this).data('pts');
                 var nilai = $(this).text();
                 arrayNilai.push({
                     "uuid": uuid,
                     "nilai": nilai
                 });
             });
-            var url = "{{route('penilaian.sumatif.edit')}}";
+            var url = "{{route('penilaian.pts.edit')}}";
             $.ajax({
                 type: "put",
                 url: url,

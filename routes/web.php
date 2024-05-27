@@ -83,4 +83,6 @@ Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->g
     Route::get('/bukuguru/pts','ptsIndex')->name('penilaian.pts.index');
     Route::get('/bukuguru/pts/{uuid}/show','ptsShow')->name('penilaian.pts.show');
     Route::post('/bukuguru/pts/{uuid}/store','ptsStore')->name('penilaian.pts.store');
+    Route::put('/bukuguru/pts/edit','ptsEdit')->name('penilaian.pts.edit');
+    Route::delete('/bukuguru/pts/{uuid}/destroy','ptsDestroy')->name('penilaian.pts.destroy');
 });
