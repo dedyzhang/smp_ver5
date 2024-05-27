@@ -35,6 +35,8 @@
                     <li class="submenu-list"><a href="{{route('penilaian.kktp.index')}}"> KKTP</a></li>
                     <li class="submenu-list"><a href="{{route('penilaian.materi.index')}}"> Materi</a></li>
                     <li class="submenu-list"><a href="{{route('penilaian.formatif.index')}}"> Nilai Formatif</a></li>
+                    <li class="submenu-list"><a href="{{route('penilaian.sumatif.index')}}"> Nilai Sumatif</a></li>
+                    <li class="submenu-list"><a href="{{route('penilaian.pts.index')}}"> PTS</a></li>
                 </ul>
             </li>
             @endcan
