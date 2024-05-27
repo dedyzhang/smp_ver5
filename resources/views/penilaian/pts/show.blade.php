@@ -51,7 +51,7 @@
                 <thead>
                     <tr class="text-center">
                         <td width="3%">No</td>
-                        <td width="70%" class="sticky" style="min-width: 150px">Siswa</td>
+                        <td width="80%" class="sticky" style="min-width: 150px">Siswa</td>
                         <td class="mainNilaiCell">Nilai</td>
                     </tr>
                 </thead>
@@ -60,7 +60,7 @@
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
-                            @if ($pts_array[$ngajar->uuid.".".$siswa->uuid])
+                            @if (isset($pts_array[$ngajar->uuid.".".$siswa->uuid]))
                                 <td>{{$pts_array[$ngajar->uuid.".".$siswa->uuid]}}</td>
                             @endif
                         </tr>
