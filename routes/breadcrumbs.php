@@ -60,3 +60,9 @@ Breadcrumbs::for('penilaian-formatif-show',function(BreadcrumbsTrail $trail, Pel
     $trail->parent('penilaian-formatif');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.formatif.show',$ngajar));
 });
+//Penilaian.Sumatif.Breadcrumbs
+Breadcrumbs::for('penilaian-sumatif',function(BreadcrumbsTrail $trail){ $trail->push('Sumatif',route('penilaian.sumatif.index'));});
+Breadcrumbs::for('penilaian-sumatif-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian-sumatif');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.sumatif.show',$ngajar));
+});

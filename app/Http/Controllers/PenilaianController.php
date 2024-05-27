@@ -234,4 +234,53 @@ class PenilaianController extends Controller
 
         Batch::update(new Formatif,$nilai,'uuid');
     }
+    /**
+     * Sumatif = Show Index Sumatif
+     */
+    public function sumatifIndex() : View {
+        $id = auth()->user()->uuid;
+        $guru = Guru::where('id_login',$id)->first();
+        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        return view("penilaian.sumatif.index",compact('ngajar'));
+    }
+    /**
+     * Formatif - Menampilkan isi dari penilaian Sumatif Per Kelas
+     */
+    public function sumatifShow(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
+        $materiArray = array();
+        $tupeArray = array();
+
+        $count = 0;
+        foreach($materi as $item) {
+            array_push($materiArray,array(
+                "uuid" => $item->uuid,
+                "materi" => $item->materi,
+                "jumlahTupe" => $item->tupe
+            ));
+            $count++;
+        }
+        $uuidMateri = array();
+        foreach($materiArray as $item) {
+            array_push($uuidMateri,$item["uuid"]);
+        }
+        $sumatif = Sumatif::whereIn('id_materi',$uuidMateri)->get();
+        $sumatif_array = array();
+        foreach($sumatif as $item) {
+           $sumatif_array[$item->id_materi.".".$item->id_siswa] = array(
+            'uuid' => $item->uuid,
+            'nilai' => $item->nilai
+           );
+        }
+        return view("penilaian.sumatif.show",compact('ngajar','materi','count','sumatif_array','materiArray'));
+    }
+    /**
+     * Sumatif - Simpan Nilai
+     */
+    public function sumatifEdit(Request $request) {
+        $nilai = $request->nilai;
+
+        Batch::update(new Sumatif,$nilai,'uuid');
+    }
 }
