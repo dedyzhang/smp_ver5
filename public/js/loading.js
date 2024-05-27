@@ -25,3 +25,25 @@ function loading() {
             });
     };
 }
+function BigLoading(text) {
+    var alertLoading = $.alert({
+        icon: "fas fa-gear fa-spin",
+        title: "Loading",
+        content: text,
+        backgroundDismiss: false,
+        escapeKey: false,
+        buttons : {
+            buttonA : {
+                text : "Tunggu"
+            }
+        },
+        onOpenBefore: function () {
+            this.buttons.buttonA.hide();
+        }
+    });
+
+    removeLoadingBig = function ()
+    {
+        alertLoading.close();
+    }
+}

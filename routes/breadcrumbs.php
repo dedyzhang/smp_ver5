@@ -66,3 +66,9 @@ Breadcrumbs::for('penilaian-sumatif-show',function(BreadcrumbsTrail $trail, Pela
     $trail->parent('penilaian-sumatif');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.sumatif.show',$ngajar));
 });
+//Penilaian.Pts.Breadcrumbs
+Breadcrumbs::for('penilaian-pts',function(BreadcrumbsTrail $trail){ $trail->push('PTS',route('penilaian.pts.index'));});
+Breadcrumbs::for('penilaian-pts-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian-pts');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.pts.show',$ngajar));
+});

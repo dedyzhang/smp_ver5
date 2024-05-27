@@ -6,6 +6,7 @@ use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\PTS;
 use App\Models\Semester;
 use App\Models\Sumatif;
 use App\Models\Tupe;
@@ -189,7 +190,7 @@ class PenilaianController extends Controller
     /**
      * Formatif - Menampilkan isi dari penilaian formatif Per Kelas
      */
-    public function formatifShow(String $uuid) {
+    public function formatifShow(String $uuid) : View {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
         $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
         $materiArray = array();
@@ -246,7 +247,7 @@ class PenilaianController extends Controller
     /**
      * Formatif - Menampilkan isi dari penilaian Sumatif Per Kelas
      */
-    public function sumatifShow(String $uuid) {
+    public function sumatifShow(String $uuid) : View {
         $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
         $materi = Materi::with('tupe')->where('id_ngajar',$uuid)->get();
         $materiArray = array();
@@ -282,5 +283,50 @@ class PenilaianController extends Controller
         $nilai = $request->nilai;
 
         Batch::update(new Sumatif,$nilai,'uuid');
+    }
+    /**
+     * PTS - Show Index PTS
+     */
+    public function ptsIndex() : View {
+        $id = auth()->user()->uuid;
+        $guru = Guru::where('id_login',$id)->first();
+        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        return view("penilaian.pts.index",compact('ngajar'));
+    }
+    /**
+     * PTS - Menampilkan isi dari penilaian pts per kelas
+     */
+    public function ptsShow(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $pts = PTS::where('id_ngajar',$uuid)->get();
+        $pts_array = array();
+        foreach($pts as $nilai) {
+            $pts_array[$nilai->id_ngajar.".".$nilai->id_siswa] = $nilai->nilai;
+        }
+        return View("penilaian.pts.show",compact('ngajar','pts_array'));
+    }
+    /**
+     * PTS - PTS Store
+     */
+    public function ptsStore(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $pts = PTS::where('id_ngajar',$uuid)->get();
+
+        if($pts->count() === 0) {
+            $smt = Semester::first();
+            $semester = $smt->semester;
+
+            $nilai_array = array();
+            foreach($ngajar->siswa as $siswa) {
+                array_push($nilai_array,array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $siswa->uuid,
+                    'nilai' => 0,
+                    'semester' => $semester
+                ));
+            }
+            PTS::upsert($nilai_array,['uuid'],['id_ngajar','id_siswa','nilai','semester']);
+        }
+        
     }
 }

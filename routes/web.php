@@ -79,4 +79,8 @@ Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->g
     Route::get('/bukuguru/sumatif','sumatifIndex')->name('penilaian.sumatif.index');
     Route::get('/bukuguru/sumatif/{uuid}/show','sumatifShow')->name('penilaian.sumatif.show');
     Route::put('/bukuguru/sumatif/edit','sumatifEdit')->name('penilaian.sumatif.edit');
+    //pts
+    Route::get('/bukuguru/pts','ptsIndex')->name('penilaian.pts.index');
+    Route::get('/bukuguru/pts/{uuid}/show','ptsShow')->name('penilaian.pts.show');
+    Route::post('/bukuguru/pts/{uuid}/store','ptsStore')->name('penilaian.pts.store');
 });
