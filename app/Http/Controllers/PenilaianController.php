@@ -482,7 +482,24 @@ class PenilaianController extends Controller
             'nilai' => $item->nilai
            );
         }
+        $sumatif = Sumatif::whereIn('id_materi',$uuidMateri)->get();
+        $sumatif_array = array();
+        foreach($sumatif as $item) {
+           $sumatif_array[$item->id_materi.".".$item->id_siswa] = array(
+            'uuid' => $item->uuid,
+            'nilai' => $item->nilai
+           );
+        }
+        $pas = PAS::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+        $pas_array = array();
+
+        foreach($pas as $nilai) {
+            $pas_array[$nilai->id_ngajar.".".$nilai->id_siswa] = array(
+                "uuid" => $nilai->uuid,
+                "nilai" => $nilai->nilai
+            );
+        }
         
-        return View("penilaian.rapor.show",compact('ngajar','formatif_array','tupeArray','materiArray'));
+        return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','tupeArray','materiArray'));
     }
 }

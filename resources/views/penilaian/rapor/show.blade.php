@@ -44,37 +44,99 @@
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
         <p><b>Penilain Rapor Semester</b></p>
         <div class="table-responsive">
-            <table class="table table-bordered fs-12 nilai-table">
+            <table class="table table-bordered fs-12 nilai-table align-middle">
                 <thead>
                     <tr class="text-center">
                         <td width="3%">No</td>
-                        <td width="50%" class="sticky" style="min-width: 150px">Siswa</td>
+                        <td width="30%" class="sticky" style="min-width: 150px">Siswa</td>
                         <td width="5%" data-bs-toggle="tooltip" data-bs-title="Rata-rata nilai formatif" data-bs-placement="top">RF</td>
-                        <td data-bs-toggle="tooltip" data-bs-title="Rata-rata nilai Sumatif" data-bs-placement="top">RS</td>
-                        <td data-bs-toggle="tooltip" data-bs-title="Nilai PAS / PAT" data-bs-placement="top">PAS</td>
-                        <td data-bs-toggle="tooltip" data-bs-title="Nilai Rapor" data-bs-placement="top">NR</td>
-                        <td>Deskripsi Rapor</td>
+                        <td width="5%" data-bs-toggle="tooltip" data-bs-title="Rata-rata nilai Sumatif" data-bs-placement="top">RS</td>
+                        <td width="5%" data-bs-toggle="tooltip" data-bs-title="Nilai PAS / PAT" data-bs-placement="top">PAS</td>
+                        <td width="5%" data-bs-toggle="tooltip" data-bs-title="Nilai Rapor" data-bs-placement="top">NR</td>
+                        <td width="30%">Deskripsi Rapor</td>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($ngajar->siswa as $siswa)
                         <tr>
-                            <td>{{$loop->iteration}}</td>
-                            <td>{{$siswa->nama}}</td>
+                            <td rowspan="2">{{$loop->iteration}}</td>
+                            <td rowspan="2">{{$siswa->nama}}</td>
                             @php
                                 $nilaiFormatif = 0;
+                                $nilaiSumatif = 0;
                                 $jumlah = 0;
-                                foreach ($materiArray as $item) {
-                                    foreach ($tupeArray as $tupe) {
-                                        $nilaiFormatif += $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'];
-                                        $jumlah++;
-                                    }
+                                $kkm = $ngajar->kkm;
+                                //Menghitung rentan Nilai
+                                $interval = round((100-$kkm)/3,0);
+                                $Cdown = $kkm;
+                                $Cup = ($kkm + $interval) - 1;
+                                $Bdown = $Cup + 1;
+                                $Bup = ($Bdown + $interval) - 1;
+                                $Adown = $Bup + 1;
+                                $Aup = 100;
+
+                                //Menghitung rata rata formatif
+                                $array_list_nilai = array();
+                                foreach ($tupeArray as $tupe) {
+                                    $nilaiFormatif += $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'];
+                                    array_push($array_list_nilai, array(
+                                        "tupe" => $tupe['tupe'],
+                                        "nilai" => $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai']
+                                    ));
+                                    $jumlah++;
                                 }
-                                $rata2Formatif = round($nilaiFormatif/$jumlah,0)
+                                $rata2Formatif = round($nilaiFormatif/$jumlah,0);
+                                //Mencari Deskripsi Tertinggi dan terendah
+                                array_multisort(array_column($array_list_nilai, 'nilai'), SORT_ASC, ($array_list_nilai));
+                                //mencari rentang deskripsi
+                                $maxNilai = end($array_list_nilai)['nilai'];
+                                $maxDeskripsi = rtrim(lcfirst(end($array_list_nilai)['tupe']),'.');
+                                $minNilai = $array_list_nilai[0]['nilai'];
+                                $minDeskripsi = rtrim(lcfirst($array_list_nilai[0]['tupe']),'.');
+                                if($maxNilai < $Cdown) {
+                                    $max_keterangan = "Perlu bimbingan dalam ".$maxDeskripsi.".";
+                                } else if($maxNilai >= $Cdown && $maxNilai <= $Cup) {
+                                    $max_keterangan = "Menunjukkan penguasaan yang cukup baik dalam ".$maxDeskripsi.".";
+                                } else if($maxNilai >= $Bdown && $maxNilai <= $Bup) {
+                                    $max_keterangan = "Menunjukkan penguasaan yang baik dalam ".$maxDeskripsi.".";
+                                } else if($maxNilai >= $Adown && $maxNilai <= $Aup) {
+                                    $max_keterangan = "Menunjukkan penguasaan yang amat baik dalam ".$maxDeskripsi.".";
+                                }
+                                $min_keterangan = 'Perlu ditingkatkan dalam '.$minDeskripsi.'.';
+
+
+                                $jumlah = 0;
+                                //menghitung rata rata sumatif
+                                foreach ($materiArray as $item) {
+                                    $nilaiSumatif += $sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'];
+                                    $jumlah++; 
+                                }
+                                $rata2Sumatif = round($nilaiSumatif/$jumlah,0);
+                                //Mengambil Nilai PAS
+                                if(isset($pas_array[$ngajar->uuid.".".$siswa->uuid])) {
+                                    $rata2Pas = $pas_array[$ngajar->uuid.".".$siswa->uuid]['nilai'];
+                                } else {
+                                    $rata2Pas = 0;
+                                }
+                                //Menghitung Nilai Rapor
+                                $totalRapor = round(((2*$rata2Formatif)+$rata2Sumatif+$rata2Pas)/4,0);
                             @endphp
-                            <td class="@if ($rata2Formatif < $ngajar->kkm)
-                                bg-danger-subtle text-danger text-center
+                            <td rowspan="2" class="text-center @if ($rata2Formatif < $ngajar->kkm)
+                                bg-danger-subtle text-danger
                             @endif">{{$rata2Formatif}}</td>
+                            <td rowspan="2" class="text-center @if ($rata2Sumatif < $ngajar->kkm)
+                                bg-danger-subtle text-danger
+                            @endif">{{$rata2Sumatif}}</td>
+                            <td rowspan="2" class="text-center @if ($rata2Pas < $ngajar->kkm)
+                                bg-danger-subtle text-danger
+                            @endif">{{$rata2Pas}}</td>
+                            <td rowspan="2" class="text-center @if ($totalRapor < $ngajar->kkm)
+                                bg-danger-subtle text-danger
+                            @endif">{{$totalRapor}}</td>
+                            <td class="fs-12">{{$max_keterangan}}</td>
+                        </tr>
+                        <tr>
+                            <td class="fs-12">{{$min_keterangan}}</td>
                         </tr>
                     @endforeach
                 </tbody>

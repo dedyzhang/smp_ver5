@@ -13,7 +13,7 @@
                     <h6 class="m-0 p-0 mt-2 fs-18"><b>{{$ngajar->pelajaran->pelajaran_singkat}}</b></h6>
                     <p class="m-0 p-0 mt-3 p-2 rounded-3 @if($ngajar->kelas->tingkat == 7) bg-success-subtle @elseif($ngajar->kelas->tingkat == 8) bg-warning-subtle @else bg-info-subtle @endif">{{$ngajar->kelas->tingkat.$ngajar->kelas->kelas}}</p>
                     <div class="button-place mt-3">
-                        <a href="{{route('penilaian.rapor.show',$ngajar->uuid)}}" class="btn btn-sm btn-warning text-warning-emphasis" data-bs-toggle="tooltip" data-bs-title="Lihat PAS" data-bs-placement="top"><i class="fas fa-eye"></i></a>
+                        <a href="{{route('penilaian.rapor.show',$ngajar->uuid)}}" class="btn btn-sm btn-warning text-warning-emphasis" data-bs-toggle="tooltip" data-bs-title="Lihat Rapor" data-bs-placement="top"><i class="fas fa-eye"></i></a>
                     </div>
                 </div>
             </div>
