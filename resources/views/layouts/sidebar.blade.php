@@ -38,6 +38,7 @@
                     <li class="submenu-list"><a href="{{route('penilaian.sumatif.index')}}"> Nilai Sumatif</a></li>
                     <li class="submenu-list"><a href="{{route('penilaian.pts.index')}}"> PTS</a></li>
                     <li class="submenu-list"><a href="{{route('penilaian.pas.index')}}"> PAS/T</a></li>
+                    <li class="submenu-list"><a href="{{route('penilaian.rapor.index')}}"> Rapor</a></li>
                 </ul>
             </li>
             @endcan

@@ -433,4 +433,56 @@ class PenilaianController extends Controller
 
         Batch::update(new PAS,$nilai,'uuid');
     }
+    /**
+     * Rapor - Index Show View
+     */
+    public function raporIndex(Request $request) {
+        $id = auth()->user()->uuid;
+        $guru = Guru::where('id_login',$id)->first();
+        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        return view("penilaian.rapor.index",compact('ngajar'));
+    }
+    /**
+     * Rapor - Menampilkan isi dari penilaian rapor per kelas
+     */
+    public function raporShow(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+        $materiArray = array();
+        $tupeArray = array();
+
+        $count = 0;
+        foreach($materi as $item) {
+            array_push($materiArray,array(
+                "uuid" => $item->uuid,
+                "materi" => $item->materi,
+                "jumlahTupe" => $item->tupe
+            ));
+            foreach($item->tupe()->get() as $tupe) {
+                array_push($tupeArray,array(
+                    "uuid" => $tupe->uuid,
+                    "id_materi" => $tupe->id_materi,
+                    "tupe" => $tupe->tupe
+                ));
+                $count++;
+            }
+            $count++;
+        }
+        $uuidMateri = array();
+        foreach($materiArray as $item) {
+            array_push($uuidMateri,$item["uuid"]);
+        }
+        $formatif = Formatif::whereIn('id_materi',$uuidMateri)->get();
+        $formatif_array = array();
+        foreach($formatif as $item) {
+           $formatif_array[$item->id_tupe.".".$item->id_siswa] = array(
+            'uuid' => $item->uuid,
+            'nilai' => $item->nilai
+           );
+        }
+        
+        return View("penilaian.rapor.show",compact('ngajar','formatif_array','tupeArray','materiArray'));
+    }
 }
