@@ -42,23 +42,23 @@
         </div> --}}
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
-        <p><b>Penilain Rapor Semester</b></p>
+        <p><b>Penilaian Rapor Semester</b></p>
         <div class="table-responsive">
             <table class="table table-bordered fs-12 nilai-table align-middle">
                 <thead>
                     <tr class="text-center">
                         <td width="3%">No</td>
-                        <td width="30%" class="sticky" style="min-width: 150px">Siswa</td>
+                        <td width="15%" style="min-width: 150px">Siswa</td>
                         <td width="5%" data-bs-toggle="tooltip" data-bs-title="Rata-rata nilai formatif" data-bs-placement="top">RF</td>
                         <td width="5%" data-bs-toggle="tooltip" data-bs-title="Rata-rata nilai Sumatif" data-bs-placement="top">RS</td>
                         <td width="5%" data-bs-toggle="tooltip" data-bs-title="Nilai PAS / PAT" data-bs-placement="top">PAS</td>
                         <td width="5%" data-bs-toggle="tooltip" data-bs-title="Nilai Rapor" data-bs-placement="top">NR</td>
-                        <td width="30%">Deskripsi Rapor</td>
+                        <td width="30%" style="min-width: 250px">Deskripsi Rapor</td>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($ngajar->siswa as $siswa)
-                        <tr>
+                        <tr data-siswa="{{$siswa->uuid}}" data-ngajar="{{$ngajar->uuid}}">
                             <td rowspan="2">{{$loop->iteration}}</td>
                             <td rowspan="2">{{$siswa->nama}}</td>
                             @php
@@ -109,7 +109,7 @@
                                 //menghitung rata rata sumatif
                                 foreach ($materiArray as $item) {
                                     $nilaiSumatif += $sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'];
-                                    $jumlah++; 
+                                    $jumlah++;
                                 }
                                 $rata2Sumatif = round($nilaiSumatif/$jumlah,0);
                                 //Mengambil Nilai PAS
@@ -130,13 +130,13 @@
                             <td rowspan="2" class="text-center @if ($rata2Pas < $ngajar->kkm)
                                 bg-danger-subtle text-danger
                             @endif">{{$rata2Pas}}</td>
-                            <td rowspan="2" class="text-center @if ($totalRapor < $ngajar->kkm)
+                            <td rowspan="2" class="text-center ganti-nilai @if ($totalRapor < $ngajar->kkm)
                                 bg-danger-subtle text-danger
-                            @endif">{{$totalRapor}}</td>
-                            <td class="fs-12">{{$max_keterangan}}</td>
+                            @endif" style="cursor: pointer">{{$totalRapor}}</td>
+                            <td class="fs-12" style="cursor: pointer">{{$max_keterangan}}</td>
                         </tr>
                         <tr>
-                            <td class="fs-12">{{$min_keterangan}}</td>
+                            <td class="fs-12" style="cursor: pointer">{{$min_keterangan}}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -146,4 +146,37 @@
             <button class="btn btn-sm btn-warning text-warning-emphasis simpan-nilai"><i class="fas fa-save"></i> Konfirmasi Nilai</button>
         </div>
     </div>
+    <div class="modal fade in" id="modal-ganti-nilai">
+        <div class="modal-dialog-centered modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="row m-0 mt-3">
+                        <div class="col-12 p-0 form-group">
+                            <p class="fs-13">Perubahan Nilai dilakukan jika nilai sudah tidak bisa didongkrak lagi dan harus diubah secara manual</p>
+                            <input type="hidden" id="id_siswa">
+                            <input type="hidden" id="id_ngajar">
+                            <input type="text" class="form-control" style="font-size: 14px !important" name="nilai" id="nilai" placeholder="Masukkan Nilai baru">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-warning"><i class="fas fa-save"></i> simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('.ganti-nilai').click(function() {
+            var nilai = $(this).text();
+            var idSiswa = $(this).closest('tr').data('siswa');
+            var idNgajar = $(this).closest('tr').data('ngajar');
+            $('#nilai').val(nilai);
+            $('#id_siswa').val(idSiswa);
+            $('#id_ngajar').val(idNgajar);
+            $('#modal-ganti-nilai').modal("show");
+        })
+    </script>
 @endsection
