@@ -120,6 +120,17 @@
                                 }
                                 //Menghitung Nilai Rapor
                                 $totalRapor = round(((2*$rata2Formatif)+$rata2Sumatif+$rata2Pas)/4,0);
+
+                                //Mengambil Nilai Dari Temp
+                                $id_siswa = $siswa->uuid;
+                                $nilai_temp = array_values(array_filter($temp_array,function($var) use ($id_siswa) {
+                                    return ($var['id_siswa'] == $id_siswa && $var['jenis'] == 'nilai');
+                                }));
+                                $ada_temp_nilai = false;
+                                if(isset($nilai_temp[0])) {
+                                    $totalRapor = $nilai_temp[0]['perubahan'];
+                                    $ada_temp_nilai = true;
+                                }
                             @endphp
                             <td rowspan="2" class="text-center @if ($rata2Formatif < $ngajar->kkm)
                                 bg-danger-subtle text-danger
@@ -132,7 +143,7 @@
                             @endif">{{$rata2Pas}}</td>
                             <td rowspan="2" class="text-center ganti-nilai @if ($totalRapor < $ngajar->kkm)
                                 bg-danger-subtle text-danger
-                            @endif" style="cursor: pointer">{{$totalRapor}}</td>
+                            @endif @if ($ada_temp_nilai) ada-perubahan @endif" style="cursor: pointer">{{$totalRapor}}</td>
                             <td class="fs-12" style="cursor: pointer">{{$max_keterangan}}</td>
                         </tr>
                         <tr>
@@ -165,18 +176,23 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-warning simpan-nilai"><i class="fas fa-save"></i> simpan</button>
+                    <button class="btn btn-sm btn-danger hapus-nilai" style="display: none"><i class="fas fa-trash-can"></i> Hapus</button>
                 </div>
             </div>
         </div>
     </div>
     <script>
         $('.ganti-nilai').click(function() {
+            $('.hapus-nilai').hide();
             var nilai = $(this).text();
             var idSiswa = $(this).closest('tr').data('siswa');
             var idNgajar = $(this).closest('tr').data('ngajar');
             $('#nilai').val(nilai);
             $('#id_siswa').val(idSiswa);
             $('#id_ngajar').val(idNgajar);
+            if($(this).hasClass('ada-perubahan')) {
+                $('.hapus-nilai').show();
+            }
             $('#modal-ganti-nilai').modal("show");
         });
         $('.simpan-nilai').click(function() {
@@ -200,10 +216,10 @@
                     },
                     success: function (data) {
                         removeLoadingBig();
-                        cAlert('success','Sukses','Nilai berhasil disimpan',true);
+                        cAlert('green','Sukses','Nilai berhasil disimpan',true);
                     },
                     error: function (data) {
-                        console.log(data.responseJSON);
+                        console.log(data.responseJSON.message);
                     }
                 })
             }

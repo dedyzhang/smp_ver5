@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\IsGuru;
+use App\Http\Middleware\IsKurikulum;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;

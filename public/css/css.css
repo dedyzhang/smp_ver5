@@ -509,3 +509,18 @@ table.dataTables tbody td {
 .open-close-tab {
     cursor: pointer;
 }
+/* Tanda Perubahan di tabel nilai rapor */
+.nilai-table .ada-perubahan {
+    position: relative;
+}
+.nilai-table .ada-perubahan::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 10px 0;
+    border-color: transparent #ff0000 transparent transparent;
+    right: 0;
+    top: 0;
+    position: absolute;
+}

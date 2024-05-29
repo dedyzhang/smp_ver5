@@ -502,7 +502,15 @@ class PenilaianController extends Controller
             );
         }
 
-        return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','tupeArray','materiArray'));
+        $temp_array = array();
+        foreach($rapor_temp as $rapor) {
+            array_push($temp_array,array(
+                "id_siswa" => $rapor->id_siswa,
+                "jenis" => $rapor->jenis,
+                "perubahan" => $rapor->perubahan
+            ));
+        }
+        return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','temp_array','tupeArray','materiArray'));
     }
     /**
      * Rapor - Edit Rapor Nilai
@@ -511,9 +519,10 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $sem = $semester->semester;
         if($request->jenis == "nilai") {
-            $raporTemp = RaporTemp::create([
+            $raporTemp = RaporTemp::updateOrCreate([
                 'id_ngajar' => $request->idNgajar,
                 'id_siswa' => $request->idSiswa,
+            ],[
                 'jenis' => $request->jenis,
                 'perubahan' => $request->perubahan,
                 'semester' => $sem

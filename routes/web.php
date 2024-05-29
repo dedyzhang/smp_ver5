@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Route;
 
 //Middleware
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
+use App\Http\Middleware\isNgajar;
 use Illuminate\View\View as ViewView;
 
 Route::get('/', function () {
@@ -58,7 +60,7 @@ Route::middleware(IsAdmin::class)->controller(PelajaranController::class)->group
 });
 
 //Guru - Halaman Buku Guru Penilaian
-Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->group(function() {
+Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function() {
     //kktp
     Route::get('/bukuguru/kktp','kktpIndex')->name('penilaian.kktp.index');
     Route::post('/bukuguru/kktp','kktpEdit')->name('penilaian.kktp.edit');
