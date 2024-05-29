@@ -191,6 +191,7 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
                     data: {
                         "idNgajar" : idNgajar,
                         "idSiswa": idSiswa,
@@ -199,7 +200,7 @@
                     },
                     success: function (data) {
                         removeLoadingBig();
-                        console.log(data);
+                        cAlert('success','Sukses','Nilai berhasil disimpan',true);
                     },
                     error: function (data) {
                         console.log(data.responseJSON);

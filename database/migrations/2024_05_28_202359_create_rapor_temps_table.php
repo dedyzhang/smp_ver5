@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignUuid('id_siswa');
             $table->string('jenis')->nullable();
             $table->string('perubahan')->nullable();
+            $table->string('semester')->nullable();
             $table->timestamps();
         });
     }

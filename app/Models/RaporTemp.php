@@ -16,6 +16,7 @@ class RaporTemp extends Model
         'id_ngajar',
         'id_siswa',
         'jenis',
-        'perubahan'
+        'perubahan',
+        'semester'
     ];
 }

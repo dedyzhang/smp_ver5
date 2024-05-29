@@ -451,6 +451,7 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $sem = $semester->semester;
         $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+        $rapor_temp = RaporTemp::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $materiArray = array();
         $tupeArray = array();
 
@@ -500,19 +501,22 @@ class PenilaianController extends Controller
                 "nilai" => $nilai->nilai
             );
         }
-        
+
         return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','tupeArray','materiArray'));
     }
     /**
      * Rapor - Edit Rapor Nilai
      */
     public function raporEdit(Request $request,String $uuid) {
+        $semester = Semester::first();
+        $sem = $semester->semester;
         if($request->jenis == "nilai") {
             $raporTemp = RaporTemp::create([
                 'id_ngajar' => $request->idNgajar,
                 'id_siswa' => $request->idSiswa,
                 'jenis' => $request->jenis,
-                'perubahan' => $request->perubahan
+                'perubahan' => $request->perubahan,
+                'semester' => $sem
             ]);
         }
     }
