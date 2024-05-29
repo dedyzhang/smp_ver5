@@ -8,6 +8,7 @@ use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
 use App\Models\PTS;
+use App\Models\RaporTemp;
 use App\Models\Semester;
 use App\Models\Sumatif;
 use App\Models\Tupe;
@@ -501,5 +502,18 @@ class PenilaianController extends Controller
         }
         
         return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','tupeArray','materiArray'));
+    }
+    /**
+     * Rapor - Edit Rapor Nilai
+     */
+    public function raporEdit(Request $request,String $uuid) {
+        if($request->jenis == "nilai") {
+            $raporTemp = RaporTemp::create([
+                'id_ngajar' => $request->idNgajar,
+                'id_siswa' => $request->idSiswa,
+                'jenis' => $request->jenis,
+                'perubahan' => $request->perubahan
+            ]);
+        }
     }
 }

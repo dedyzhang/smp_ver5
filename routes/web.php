@@ -94,4 +94,5 @@ Route::middleware(IsKurikulum::class)->controller(PenilaianController::class)->g
     //Rapor
     Route::get('/bukuguru/rapor','raporIndex')->name('penilaian.rapor.index');
     Route::get('/bukuguru/rapor/{uuid}/show','raporShow')->name('penilaian.rapor.show');
+    Route::post('/bukuguru/rapor/{uuid}/edit','raporEdit')->name('penilaian.rapor.edit');
 });

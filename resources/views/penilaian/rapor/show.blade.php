@@ -149,11 +149,12 @@
     <div class="modal fade in" id="modal-ganti-nilai">
         <div class="modal-dialog-centered modal-dialog modal-sm">
             <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Ubah Nilai Rapor</h6>
+                    <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <div class="d-flex justify-content-end">
-                        <button class="btn btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="row m-0 mt-3">
+                    <div class="row m-0">
                         <div class="col-12 p-0 form-group">
                             <p class="fs-13">Perubahan Nilai dilakukan jika nilai sudah tidak bisa didongkrak lagi dan harus diubah secara manual</p>
                             <input type="hidden" id="id_siswa">
@@ -163,7 +164,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-sm btn-warning"><i class="fas fa-save"></i> simpan</button>
+                    <button class="btn btn-sm btn-warning simpan-nilai"><i class="fas fa-save"></i> simpan</button>
                 </div>
             </div>
         </div>
@@ -177,6 +178,36 @@
             $('#id_siswa').val(idSiswa);
             $('#id_ngajar').val(idNgajar);
             $('#modal-ganti-nilai').modal("show");
+        });
+        $('.simpan-nilai').click(function() {
+            var nilai = $('#nilai').val();
+            var idSiswa = $('#id_siswa').val();
+            var idNgajar = $('#id_ngajar').val();
+
+            var ubahNilai = () => {
+                BigLoading("Nilai sedang diubah, mohon tidak menutup aplikasi sebelum nilai berhasil diubah");
+                var url = "{{route('penilaian.rapor.edit',':id')}}";
+                url = url.replace(':id',idNgajar);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {
+                        "idNgajar" : idNgajar,
+                        "idSiswa": idSiswa,
+                        "perubahan": nilai,
+                        "jenis": "nilai"
+                    },
+                    success: function (data) {
+                        removeLoadingBig();
+                        console.log(data);
+                    },
+                    error: function (data) {
+                        console.log(data.responseJSON);
+                    }
+                })
+            }
+
+            cConfirm("Perhatian","Yakin untuk mengubah nilai siswa bersangkutan",ubahNilai);
         })
     </script>
 @endsection
