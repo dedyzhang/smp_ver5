@@ -89,6 +89,15 @@
                                 $rata2Formatif = round($nilaiFormatif/$jumlah,0);
                                 //Mencari Deskripsi Tertinggi dan terendah
                                 array_multisort(array_column($array_list_nilai, 'nilai'), SORT_ASC, ($array_list_nilai));
+                                //Mencari deskripsi temp
+                                // $desk_positif_temp = array_values(array_filter($temp_array,function($var) use ($id_siswa) {
+                                //     return ($var['id_siswa'] == $id_siswa && $var['jenis'] == 'deskripsi_positif');
+                                // }));
+                                // $ada_temp_desk_positif = false;
+                                // if(isset($desk_positif_temp[0])) {
+                                //     $ = $nilai_temp[0]['perubahan'];
+                                //     $ada_temp_nilai = true;
+                                // }
                                 //mencari rentang deskripsi
                                 $maxNilai = end($array_list_nilai)['nilai'];
                                 $maxUUID = end($array_list_nilai)['uuid'];
