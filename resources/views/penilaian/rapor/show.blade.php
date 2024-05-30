@@ -80,6 +80,7 @@
                                 foreach ($tupeArray as $tupe) {
                                     $nilaiFormatif += $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'];
                                     array_push($array_list_nilai, array(
+                                        "uuid" => $tupe['uuid'],
                                         "tupe" => $tupe['tupe'],
                                         "nilai" => $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai']
                                     ));
@@ -90,17 +91,23 @@
                                 array_multisort(array_column($array_list_nilai, 'nilai'), SORT_ASC, ($array_list_nilai));
                                 //mencari rentang deskripsi
                                 $maxNilai = end($array_list_nilai)['nilai'];
+                                $maxUUID = end($array_list_nilai)['uuid'];
                                 $maxDeskripsi = rtrim(lcfirst(end($array_list_nilai)['tupe']),'.');
                                 $minNilai = $array_list_nilai[0]['nilai'];
+                                $minUUID = $array_list_nilai[0]['uuid'];
                                 $minDeskripsi = rtrim(lcfirst($array_list_nilai[0]['tupe']),'.');
                                 if($maxNilai < $Cdown) {
                                     $max_keterangan = "Perlu bimbingan dalam ".$maxDeskripsi.".";
+                                    $max_predikat = "d";
                                 } else if($maxNilai >= $Cdown && $maxNilai <= $Cup) {
                                     $max_keterangan = "Menunjukkan penguasaan yang cukup baik dalam ".$maxDeskripsi.".";
+                                    $max_predikat = "c";
                                 } else if($maxNilai >= $Bdown && $maxNilai <= $Bup) {
                                     $max_keterangan = "Menunjukkan penguasaan yang baik dalam ".$maxDeskripsi.".";
+                                    $max_predikat = "b";
                                 } else if($maxNilai >= $Adown && $maxNilai <= $Aup) {
                                     $max_keterangan = "Menunjukkan penguasaan yang amat baik dalam ".$maxDeskripsi.".";
+                                    $max_predikat = "a";
                                 }
                                 $min_keterangan = 'Perlu ditingkatkan dalam '.$minDeskripsi.'.';
 
@@ -144,7 +151,7 @@
                             <td rowspan="2" class="text-center ganti-nilai @if ($totalRapor < $ngajar->kkm)
                                 bg-danger-subtle text-danger
                             @endif @if ($ada_temp_nilai) ada-perubahan @endif" style="cursor: pointer">{{$totalRapor}}</td>
-                            <td class="fs-12" style="cursor: pointer">{{$max_keterangan}}</td>
+                            <td class="fs-12 ganti-deskripsi-positif" data-uuid="{{$maxUUID}}" data-predikat={{$max_predikat}} style="cursor: pointer">{{$max_keterangan}}</td>
                         </tr>
                         <tr>
                             <td class="fs-12" style="cursor: pointer">{{$min_keterangan}}</td>
@@ -181,6 +188,46 @@
             </div>
         </div>
     </div>
+    <div class="modal fade in" id="modal-ganti-desc-positif">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p><b>Ganti Deskripsi Siswa</b></p>
+                    <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row m-0 p-0 form-group align-items-center">
+                        <div class="col-auto">
+                            Memiliki penguasaan yang
+                        </div>
+                        <div class="col-auto">
+                            <input type="hidden" id="id_siswa_desc_positif">
+                            <input type="hidden" id="id_ngajar_desc_positif">
+                            <select class="form-control" style="font-size: 14px !important" id="predikat" name="predikat">
+                                <option value="a">amat baik</option>
+                                <option value="b">baik</option>
+                                <option value="c">cukup baik</option>
+                                <option value="d">perlu bimbingan</option>
+                            </select>
+                        </div>
+                        <div class="col-auto">dalam</div>
+                    </div>
+                    <div class="row m-0 mt-3 p-0">
+                        <div class="col-12">
+                            <select class="form-control" style="font-size:14px !important" id="deskripsi-positif" name="deskripsi-positif">
+                                @foreach ($tupeArray as $tupe)
+                                    <option value="{{$tupe['uuid']}}">{{$tupe['tupe']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-deskripsi-positif"><i class="fas fa-save"></i> Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $('.ganti-nilai').click(function() {
             $('.hapus-nilai').hide();
@@ -200,7 +247,54 @@
             var idSiswa = $('#id_siswa').val();
             var idNgajar = $('#id_ngajar').val();
 
-            var ubahNilai = () => {
+            if(nilai == "") {
+                oAlert("orange","Perhatian","Nilai tidak boleh kosong");
+            } else {
+                var ubahNilai = () => {
+                    BigLoading("Nilai sedang diubah, mohon tidak menutup aplikasi sebelum nilai berhasil diubah");
+                    var url = "{{route('penilaian.rapor.edit',':id')}}";
+                    url = url.replace(':id',idNgajar);
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                        data: {
+                            "idNgajar" : idNgajar,
+                            "idSiswa": idSiswa,
+                            "perubahan": nilai,
+                            "jenis": "nilai"
+                        },
+                        success: function (data) {
+                            removeLoadingBig();
+                            cAlert('green','Sukses','Nilai berhasil disimpan',true);
+                        },
+                        error: function (data) {
+                            console.log(data.responseJSON.message);
+                        }
+                    });
+                }
+
+                cConfirm("Perhatian","Yakin untuk mengubah nilai siswa bersangkutan",ubahNilai);
+            }
+        })
+        $('.ganti-deskripsi-positif').click(function() {
+            var uuid = $(this).data('uuid');
+            var predikat = $(this).data('predikat');
+            var idSiswa = $(this).closest('tr').data('siswa');
+            var idNgajar = $(this).closest('tr').data('ngajar');
+            $('#id_siswa_desc_positif').val(idSiswa);
+            $('#id_ngajar_desc_positif').val(idNgajar);
+            $('#deskripsi-positif').val(uuid);
+            $('#predikat').val(predikat);
+            $('#modal-ganti-desc-positif').modal("show");
+        });
+        $('.simpan-deskripsi-positif').click(function() {
+            var predikat = $('#predikat').val();
+            var deskripsi = $('#deskripsi-positif').val();
+            var idSiswa = $('#id_siswa_desc_positif').val();
+            var idNgajar = $('#id_ngajar_desc_positif').val();
+            var perubahan = predikat+"."+deskripsi;
+            var gantiDeskripsiPositif = () => {
                 BigLoading("Nilai sedang diubah, mohon tidak menutup aplikasi sebelum nilai berhasil diubah");
                 var url = "{{route('penilaian.rapor.edit',':id')}}";
                 url = url.replace(':id',idNgajar);
@@ -211,20 +305,19 @@
                     data: {
                         "idNgajar" : idNgajar,
                         "idSiswa": idSiswa,
-                        "perubahan": nilai,
-                        "jenis": "nilai"
+                        "perubahan": perubahan,
+                        "jenis": "deskripsi_positif"
                     },
                     success: function (data) {
                         removeLoadingBig();
-                        cAlert('green','Sukses','Nilai berhasil disimpan',true);
+                        cAlert('green','Sukses','Deskripsi berhasil disimpan',true);
                     },
                     error: function (data) {
                         console.log(data.responseJSON.message);
                     }
-                })
+                });
             }
-
-            cConfirm("Perhatian","Yakin untuk mengubah nilai siswa bersangkutan",ubahNilai);
+            cConfirm("Perhatian","Yakin untuk ganti deskripsi rapor bersangkutan",gantiDeskripsiPositif);
         })
     </script>
 @endsection

@@ -518,15 +518,13 @@ class PenilaianController extends Controller
     public function raporEdit(Request $request,String $uuid) {
         $semester = Semester::first();
         $sem = $semester->semester;
-        if($request->jenis == "nilai") {
-            $raporTemp = RaporTemp::updateOrCreate([
-                'id_ngajar' => $request->idNgajar,
-                'id_siswa' => $request->idSiswa,
-            ],[
-                'jenis' => $request->jenis,
-                'perubahan' => $request->perubahan,
-                'semester' => $sem
-            ]);
-        }
+        $raporTemp = RaporTemp::updateOrCreate([
+            'id_ngajar' => $request->idNgajar,
+            'id_siswa' => $request->idSiswa,
+        ],[
+            'jenis' => $request->jenis,
+            'perubahan' => $request->perubahan,
+            'semester' => $sem
+        ]);
     }
 }
