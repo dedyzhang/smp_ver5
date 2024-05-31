@@ -521,8 +521,8 @@ class PenilaianController extends Controller
         $raporTemp = RaporTemp::updateOrCreate([
             'id_ngajar' => $request->idNgajar,
             'id_siswa' => $request->idSiswa,
+            'jenis' => $request->jenis
         ],[
-            'jenis' => $request->jenis,
             'perubahan' => $request->perubahan,
             'semester' => $sem
         ]);

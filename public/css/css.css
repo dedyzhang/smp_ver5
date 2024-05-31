@@ -157,6 +157,16 @@ body {
     top: 0;
     left: 0;
 }
+@media screen and (max-width: 2000px) {
+    .sidebar {
+        width: 15%;
+    }
+}
+@media screen and (max-width: 1600px) {
+    .sidebar {
+        width: 20%;
+    }
+}
 
 @media screen and (max-width: 1200px) {
     .sidebar {
@@ -250,6 +260,18 @@ body {
 .main-container {
     width: 80%;
     margin-left: calc(100vw - 80%);
+}
+@media screen and (max-width: 2000px) {
+    .main-container {
+        width: 85%;
+        margin-left: calc(100vw - 85%);
+    }
+}
+@media screen and (max-width: 1600px) {
+    .main-container {
+        width: 80%;
+        margin-left: calc(100vw - 80%);
+    }
 }
 @media screen and (max-width: 1200px) {
     .main-container {

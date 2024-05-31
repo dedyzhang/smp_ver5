@@ -89,34 +89,73 @@
                                 $rata2Formatif = round($nilaiFormatif/$jumlah,0);
                                 //Mencari Deskripsi Tertinggi dan terendah
                                 array_multisort(array_column($array_list_nilai, 'nilai'), SORT_ASC, ($array_list_nilai));
-                                //Mencari deskripsi temp
-                                // $desk_positif_temp = array_values(array_filter($temp_array,function($var) use ($id_siswa) {
-                                //     return ($var['id_siswa'] == $id_siswa && $var['jenis'] == 'deskripsi_positif');
-                                // }));
-                                // $ada_temp_desk_positif = false;
-                                // if(isset($desk_positif_temp[0])) {
-                                //     $ = $nilai_temp[0]['perubahan'];
-                                //     $ada_temp_nilai = true;
-                                // }
-                                //mencari rentang deskripsi
+                                
                                 $maxNilai = end($array_list_nilai)['nilai'];
                                 $maxUUID = end($array_list_nilai)['uuid'];
-                                $maxDeskripsi = rtrim(lcfirst(end($array_list_nilai)['tupe']),'.');
                                 $minNilai = $array_list_nilai[0]['nilai'];
                                 $minUUID = $array_list_nilai[0]['uuid'];
-                                $minDeskripsi = rtrim(lcfirst($array_list_nilai[0]['tupe']),'.');
-                                if($maxNilai < $Cdown) {
-                                    $max_keterangan = "Perlu bimbingan dalam ".$maxDeskripsi.".";
-                                    $max_predikat = "d";
-                                } else if($maxNilai >= $Cdown && $maxNilai <= $Cup) {
-                                    $max_keterangan = "Menunjukkan penguasaan yang cukup baik dalam ".$maxDeskripsi.".";
-                                    $max_predikat = "c";
-                                } else if($maxNilai >= $Bdown && $maxNilai <= $Bup) {
-                                    $max_keterangan = "Menunjukkan penguasaan yang baik dalam ".$maxDeskripsi.".";
-                                    $max_predikat = "b";
-                                } else if($maxNilai >= $Adown && $maxNilai <= $Aup) {
-                                    $max_keterangan = "Menunjukkan penguasaan yang amat baik dalam ".$maxDeskripsi.".";
-                                    $max_predikat = "a";
+                                
+                                //Mencari deskripsi temp Positif
+                                $id_siswa = $siswa->uuid;
+                                $desk_positif_temp = array_values(array_filter($temp_array,function($var) use ($id_siswa) {
+                                    return ($var['id_siswa'] == $id_siswa && $var['jenis'] == 'deskripsi_positif');
+                                }));
+                                $ada_temp_desk_positif = false;
+                                if(isset($desk_positif_temp[0])) {
+                                    $maxDeskripsi_array = explode('.',$desk_positif_temp[0]['perubahan']);
+                                    $maxDeskripsi_key = array_search($maxDeskripsi_array[1],array_column($tupeArray,'uuid'));
+                                    $maxDeskripsi = rtrim(lcfirst($tupeArray[$maxDeskripsi_key]['tupe']),'.');
+                                    $maxUUID = $maxDeskripsi_array[1];
+                                    $ada_temp_desk_positif = true;
+
+                                    if($maxDeskripsi_array[0] == "d") {
+                                        $max_keterangan = "Perlu bimbingan dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "d";
+                                    } else if($maxDeskripsi_array[0] == "c") {
+                                        $max_keterangan = "Menunjukkan penguasaan yang cukup baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "c";
+                                    } else if($maxDeskripsi_array[0] == "b") {
+                                        $max_keterangan = "Menunjukkan penguasaan yang baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "b";
+                                    } else if($maxDeskripsi_array[0] == "a") {
+                                        $max_keterangan = "Menunjukkan penguasaan yang amat baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "a";
+                                    }
+                                    $minDeskripsi = rtrim(lcfirst($array_list_nilai[0]['tupe']),'.');
+                                    
+                                    $min_keterangan = 'Perlu ditingkatkan dalam '.$minDeskripsi.'.';
+                                } else {
+                                    //mencari rentang deskripsi
+                                    $maxDeskripsi = rtrim(lcfirst(end($array_list_nilai)['tupe']),'.');
+                                    if($maxNilai < $Cdown) {
+                                        $max_keterangan = "Perlu bimbingan dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "d";
+                                    } else if($maxNilai >= $Cdown && $maxNilai <= $Cup) {
+                                        $max_keterangan = "Menunjukkan penguasaan yang cukup baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "c";
+                                    } else if($maxNilai >= $Bdown && $maxNilai <= $Bup) {
+                                        $max_keterangan = "Menunjukkan penguasaan yang baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "b";
+                                    } else if($maxNilai >= $Adown && $maxNilai <= $Aup) {
+                                        $max_keterangan = "Menunjukkan penguasaan yang amat baik dalam ".$maxDeskripsi.".";
+                                        $max_predikat = "a";
+                                    }
+                                }
+
+                                //Mencari Deskripsi temp Negatif
+                                $desk_negatif_temp = array_values(array_filter($temp_array,function($var) use ($id_siswa) {
+                                    return ($var['id_siswa'] == $id_siswa && $var['jenis'] == 'deskripsi_negatif');
+                                }));
+                                
+                                $ada_temp_desk_negatif = false;
+                                if(isset($desk_negatif_temp[0])) {
+                                    $minDeskripsi_key = array_search($desk_negatif_temp[0]['perubahan'],array_column($tupeArray,'uuid'));
+                                    $minDeskripsi = rtrim(lcfirst($tupeArray[$minDeskripsi_key]['tupe']),'.');
+                                    $minUUID = $desk_negatif_temp[0]['perubahan'];
+                                    $ada_temp_desk_negatif = true;
+                                } else {
+                                    $minNilai = $array_list_nilai[0]['nilai'];
+                                    $minDeskripsi = rtrim(lcfirst($array_list_nilai[0]['tupe']),'.');
                                 }
                                 $min_keterangan = 'Perlu ditingkatkan dalam '.$minDeskripsi.'.';
 
@@ -160,10 +199,10 @@
                             <td rowspan="2" class="text-center ganti-nilai @if ($totalRapor < $ngajar->kkm)
                                 bg-danger-subtle text-danger
                             @endif @if ($ada_temp_nilai) ada-perubahan @endif" style="cursor: pointer">{{$totalRapor}}</td>
-                            <td class="fs-12 ganti-deskripsi-positif" data-uuid="{{$maxUUID}}" data-predikat={{$max_predikat}} style="cursor: pointer">{{$max_keterangan}}</td>
+                            <td class="fs-12 ganti-deskripsi-positif @if ($ada_temp_desk_positif) ada-perubahan @endif" data-uuid="{{$maxUUID}}" data-predikat={{$max_predikat}} style="cursor: pointer">{{$max_keterangan}}</td>
                         </tr>
-                        <tr>
-                            <td class="fs-12" style="cursor: pointer">{{$min_keterangan}}</td>
+                        <tr data-siswa="{{$siswa->uuid}}" data-ngajar="{{$ngajar->uuid}}">
+                            <td class="fs-12 ganti-deskripsi-negatif @if ($ada_temp_desk_negatif) ada-perubahan @endif" data-uuid="{{$minUUID}}" style="cursor: pointer">{{$min_keterangan}}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -233,6 +272,39 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-warning text-warning-emphasis simpan-deskripsi-positif"><i class="fas fa-save"></i> Simpan</button>
+                    <button class="btn btn-sm btn-danger hapus-deskripsi-positif" style="display: none"><i class="fas fa-trash-can"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade in" id="modal-ganti-desc-negatif">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p><b>Ganti Deskripsi Siswa</b></p>
+                    <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row m-0 p-0 form-group align-items-center">
+                        <div class="col-auto">
+                            Perlu ditingkatkan dalam
+                        </div>
+                    </div>
+                    <div class="row m-0 mt-3 p-0">
+                        <div class="col-12">
+                            <input type="hidden" id="id_siswa_desc_negatif">
+                            <input type="hidden" id="id_ngajar_desc_negatif">
+                            <select class="form-control" style="font-size:14px !important" id="deskripsi-negatif" name="deskripsi-negatif">
+                                @foreach ($tupeArray as $tupe)
+                                    <option value="{{$tupe['uuid']}}">{{$tupe['tupe']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-deskripsi-negatif"><i class="fas fa-save"></i> Simpan</button>
+                    <button class="btn btn-sm btn-danger hapus-deskripsi-negatif" style="display: none"><i class="fas fa-trash-can"></i> Hapus</button>
                 </div>
             </div>
         </div>
@@ -287,6 +359,7 @@
             }
         })
         $('.ganti-deskripsi-positif').click(function() {
+            $('.hapus-deskripsi-positif').hide();
             var uuid = $(this).data('uuid');
             var predikat = $(this).data('predikat');
             var idSiswa = $(this).closest('tr').data('siswa');
@@ -295,6 +368,9 @@
             $('#id_ngajar_desc_positif').val(idNgajar);
             $('#deskripsi-positif').val(uuid);
             $('#predikat').val(predikat);
+            if($(this).hasClass('ada-perubahan')) {
+                $('.hapus-deskripsi-positif').show();
+            }
             $('#modal-ganti-desc-positif').modal("show");
         });
         $('.simpan-deskripsi-positif').click(function() {
@@ -327,6 +403,48 @@
                 });
             }
             cConfirm("Perhatian","Yakin untuk ganti deskripsi rapor bersangkutan",gantiDeskripsiPositif);
-        })
+        });
+        $('.ganti-deskripsi-negatif').click(function() {
+            $('.hapus-deskripsi-negatif').hide(); 
+            var uuid = $(this).data('uuid');
+            var idSiswa = $(this).closest('tr').data('siswa');
+            var idNgajar = $(this).closest('tr').data('ngajar');
+            $('#id_siswa_desc_negatif').val(idSiswa);
+            $('#id_ngajar_desc_negatif').val(idNgajar);
+            $('#deskripsi-negatif').val(uuid);
+            $('#modal-ganti-desc-negatif').modal("show");
+            if($(this).hasClass('ada-perubahan')) {
+                $('.hapus-deskripsi-negatif').show();
+            }
+        });
+        $('.simpan-deskripsi-negatif').click(function() {
+            var deskripsi = $('#deskripsi-negatif').val();
+            var idSiswa = $('#id_siswa_desc_negatif').val();
+            var idNgajar = $('#id_ngajar_desc_negatif').val();
+            var gantiDeskripsiNegatif = () => {
+                BigLoading("Deskripsi sedang diubah, mohon tidak menutup aplikasi sebelum nilai berhasil diubah");
+                var url = "{{route('penilaian.rapor.edit',':id')}}";
+                url = url.replace(':id',idNgajar);
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                    data: {
+                        "idNgajar" : idNgajar,
+                        "idSiswa": idSiswa,
+                        "perubahan": deskripsi,
+                        "jenis": "deskripsi_negatif"
+                    },
+                    success: function (data) {
+                        removeLoadingBig();
+                        cAlert('green','Sukses','Deskripsi berhasil disimpan',true);
+                    },
+                    error: function (data) {
+                        console.log(data.responseJSON.message);
+                    }
+                });
+            }
+            cConfirm("Perhatian","Yakin untuk ganti deskripsi rapor bersangkutan",gantiDeskripsiNegatif);
+        });
     </script>
 @endsection
