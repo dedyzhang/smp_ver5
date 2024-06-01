@@ -7,7 +7,9 @@ use App\Models\Guru;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
+use App\Models\Pelajaran;
 use App\Models\PTS;
+use App\Models\Rapor;
 use App\Models\RaporTemp;
 use App\Models\Semester;
 use App\Models\Sumatif;
@@ -16,9 +18,25 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Mavinoo\Batch\BatchFacade as Batch;
+use PhpParser\Node\Expr\Cast\String_;
 
 class PenilaianController extends Controller
 {
+    /**
+     * Penilain Index
+     */
+    public function index() : View {
+        $pelajaran = Pelajaran::get()->sortBy('urutan');
+
+        return view('penilaian.index',compact('pelajaran'));
+    }
+    /**
+     * Penilaian Index Get Pelajaran
+     */
+    public function get(String $uuid) {
+        $ngajar = Ngajar::with('kelas','pelajaran','guru')->where('id_pelajaran',$uuid)->get();
+        return response()->json(["success" => true,"data" => $ngajar]);
+    }
     /**
      * KKTP - Show Index
      */
@@ -452,6 +470,7 @@ class PenilaianController extends Controller
         $sem = $semester->semester;
         $materi = Materi::with('tupe')->where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $rapor_temp = RaporTemp::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+        $raporFinal = Rapor::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
         $materiArray = array();
         $tupeArray = array();
 
@@ -510,10 +529,17 @@ class PenilaianController extends Controller
                 "perubahan" => $rapor->perubahan
             ));
         }
-        return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','temp_array','tupeArray','materiArray'));
+
+        if($raporFinal->count() > 0) {
+            $sudah_konfirmasi = "sudah";
+        } else {
+            $sudah_konfirmasi = "belum";
+        }
+
+        return View("penilaian.rapor.show",compact('ngajar','formatif_array','sumatif_array','pas_array','temp_array','tupeArray','materiArray','semester','sudah_konfirmasi'));
     }
     /**
-     * Rapor - Edit Rapor Nilai
+     * Rapor Temp- Edit Rapor Temp Nilai
      */
     public function raporEdit(Request $request,String $uuid) {
         $semester = Semester::first();
@@ -526,5 +552,37 @@ class PenilaianController extends Controller
             'perubahan' => $request->perubahan,
             'semester' => $sem
         ]);
+    }
+    /**
+     * Rapor Temp - Hapus Temp Nilai Rapor
+     */
+    public function raporDelete(Request $request,String $id) {
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $raporTemp = RaporTemp::where([
+            ['id_ngajar','=',$id],
+            ['id_siswa','=',$request->idSiswa],
+            ['jenis','=',$request->jenis],
+            ['semester','=',$sem]
+        ]);
+        $raporTemp->delete();
+
+    }
+    /**
+     * Rapor - Konfirmasi Rapor
+     */
+    public function raporKonfirmasi(Request $request,String $id) {
+        $nilai = $request->nilai;
+
+        $rapor = Rapor::upsert($nilai,'uuid');
+    }
+    /**
+     * Rapor - Hapus Konfirmasi Rapor
+     */
+    public function hapusRaporKonfirmasi(String $id) {
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $rapor = Rapor::where([['id_ngajar','=',$id],['semester','=',$sem]]);
+        $rapor->delete();
     }
 }

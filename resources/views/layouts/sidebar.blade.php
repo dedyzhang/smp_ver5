@@ -23,6 +23,16 @@
                     <li class="submenu-list"><a href="{{route('siswa.index')}}"> Data Siswa</a></li>
                 </ul>
             </li>
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-pelajaran" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-book"></i>
+                    Penilaian
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-pelajaran">
+                    <li class="submenu-list"><a href="{{route('penilaian.index')}}"> Semua Nilai</a></li>
+                </ul>
+            </li>
             @endcan
             @canany(['kurikulum','guru'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">

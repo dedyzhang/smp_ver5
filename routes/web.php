@@ -58,7 +58,51 @@ Route::middleware(IsAdmin::class)->controller(PelajaranController::class)->group
     Route::get('/pelajaran/sort','sort')->name('pelajaran.sort');
     Route::post('/pelajaran/sort','sorting')->name('pelajaran.sorting');
 });
-
+//Admin - Halaman Data Penilaian
+Route::middleware(IsAdmin::class)->controller(PenilaianController::class)->group(function() {
+    //Penilaian Index
+    Route::get('/penilaian','index')->name('penilaian.index');
+    Route::get('/penilaian/{uuid}/get','get')->name('penilaian.get');
+    //kktp
+    Route::get('/penilaian/kktp','kktpIndex')->name('penilaian.kktp.index');
+    Route::post('/penilaian/kktp','kktpEdit')->name('penilaian.kktp.edit');
+    //Materi
+    Route::get('/penilaian/materi','materiIndex')->name('penilaian.materi.index');
+    Route::get('/penilaian/materi/{uuid}/show','materiShow')->name('penilaian.materi.show');
+    Route::post('/penilaian/materi/{uuid}/create','materiCreate')->name('penilaian.materi.create');
+    Route::put('/penilaian/materi/{uuid}/edit/','materiUpdate')->name('penilaian.materi.edit');
+    Route::delete('/penilaian/materi/{uuid}/delete/','materiDelete')->name('penilaian.materi.delete');
+    Route::post('/penilaian/materi/{uuid}/createTupe/','materiCreateTupe')->name('penilaian.materi.createTupe');
+    Route::post('/penilaian/materi/{uuid}/updateTupe/','materiUpdateTupe')->name('penilaian.materi.updateTupe');
+    Route::delete('/penilaian/materi/{uuid}/deleteTupe/','materiDeleteTupe')->name('penilaian.materi.deleteTupe');
+    //formatif
+    Route::get('/penilaian/formatif','formatifIndex')->name('penilaian.formatif.index');
+    Route::get('/penilaian/formatif/{uuid}/show','formatifShow')->name('penilaian.formatif.show');
+    Route::put('/penilaian/formatif/edit','formatifEdit')->name('penilaian.formatif.edit');
+    //Sumatif
+    Route::get('/penilaian/sumatif','sumatifIndex')->name('penilaian.sumatif.index');
+    Route::get('/penilaian/sumatif/{uuid}/show','sumatifShow')->name('penilaian.sumatif.show');
+    Route::put('/penilaian/sumatif/edit','sumatifEdit')->name('penilaian.sumatif.edit');
+    //pts
+    Route::get('/penilaian/pts','ptsIndex')->name('penilaian.pts.index');
+    Route::get('/penilaian/pts/{uuid}/show','ptsShow')->name('penilaian.pts.show');
+    Route::post('/penilaian/pts/{uuid}/store','ptsStore')->name('penilaian.pts.store');
+    Route::put('/penilaian/pts/edit','ptsEdit')->name('penilaian.pts.edit');
+    Route::delete('/penilaian/pts/{uuid}/destroy','ptsDestroy')->name('penilaian.pts.destroy');
+    //pas
+    Route::get('/penilaian/pas','pasIndex')->name('penilaian.pas.index');
+    Route::get('/penilaian/pas/{uuid}/show','pasShow')->name('penilaian.pas.show');
+    Route::post('/penilaian/pas/{uuid}/store','pasStore')->name('penilaian.pas.store');
+    Route::put('/penilaian/pas/edit','pasEdit')->name('penilaian.pas.edit');
+    Route::delete('/penilaian/pas/{uuid}/destroy','pasDestroy')->name('penilaian.pas.destroy');
+    //Rapor
+    Route::get('/penilaian/rapor','raporIndex')->name('penilaian.rapor.index');
+    Route::get('/penilaian/rapor/{uuid}/show','raporShow')->name('penilaian.rapor.show');
+    Route::post('/penilaian/rapor/{uuid}/edit','raporEdit')->name('penilaian.rapor.edit');
+    Route::delete('/penilaian/rapor/{uuid}/delete','raporDelete')->name('penilaian.rapor.delete');
+    Route::post('/penilaian/rapor/{uuid}/konfirmasi','raporKonfirmasi')->name('penilaian.rapor.konfirmasi');
+    Route::delete('/penilaian/rapor/{uuid}/konfirmasi','hapusRaporKonfirmasi')->name('penilaian.rapor.konfirmasi');
+});
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function() {
     //kktp
@@ -97,4 +141,7 @@ Route::middleware(isNgajar::class)->controller(PenilaianController::class)->grou
     Route::get('/bukuguru/rapor','raporIndex')->name('penilaian.rapor.index');
     Route::get('/bukuguru/rapor/{uuid}/show','raporShow')->name('penilaian.rapor.show');
     Route::post('/bukuguru/rapor/{uuid}/edit','raporEdit')->name('penilaian.rapor.edit');
+    Route::delete('/bukuguru/rapor/{uuid}/delete','raporDelete')->name('penilaian.rapor.delete');
+    Route::post('/bukuguru/rapor/{uuid}/konfirmasi','raporKonfirmasi')->name('penilaian.rapor.konfirmasi');
+    Route::delete('/bukuguru/rapor/{uuid}/konfirmasi','hapusRaporKonfirmasi')->name('penilaian.rapor.konfirmasi');
 });

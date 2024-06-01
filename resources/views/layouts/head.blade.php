@@ -15,4 +15,4 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="{{asset('css/css.css')}}">
-<title>SMP MW App</title>
+<title>SMP Maitreyawira</title>
