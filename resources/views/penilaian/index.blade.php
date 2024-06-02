@@ -25,30 +25,75 @@
                     <p><b>Data Penilaian</b></p>
                     <button class="btn btn-close btn-sm" data-bs-dismiss="modal"></button>
                 </div>
+                <div class="modal-body">
+                    <div class="accordion" id="accordion-pelajaran">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <script>
         $('.lihat-penilaian').click(function() {
+            loading();
             var uuid = $(this).closest('.card').data('uuid');
-            var url = "{{route('penilaian.get',':id')}}";
+            var url = "{{route('penilaian.admin.get',':id')}}";
             url = url.replace(':id',uuid);
             $.ajax({
                 type: "get",
                 url : url,
                 success: function(data) {
+                    var html = "";
                     if(data.success) {
                         var pelajaran = data.data;
-                        pelajaran.forEach(item => {
+                        pelajaran.sort(function(a,b){
+                            var kelasA = a.kelas.tingkat+a.kelas.kelas;
+                            var kelasB = b.kelas.tingkat+b.kelas.kelas;
 
+                            if(kelasA == kelasB) {return 0;}
+                            if(kelasA > kelasB) {
+                                return 1;
+                            } else {
+                                return -1;
+                            }
                         });
+                        pelajaran.forEach(item => {
+                            var link = `
+                            <a href="{{route('penilaian.admin.materi.show',':id')}}" class="list-group-item list-group-item-action">Materi</a>
+                            <a href="{{route('penilaian.admin.formatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Formatif</a>
+                            <a href="{{route('penilaian.admin.sumatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Sumatif</a>
+                            <a href="{{route('penilaian.admin.pts.show',':id')}}" class="list-group-item list-group-item-action">Nilai PTS</a>
+                            <a href="{{route('penilaian.admin.pas.show',':id')}}" class="list-group-item list-group-item-action">Nilai PAS</a>
+                            <a href="{{route('penilaian.admin.rapor.show',':id')}}" class="list-group-item list-group-item-action">Nilai Rapor</a>
+                            `;
+                            link = link.replaceAll(':id',item.uuid);
+                            html += `
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse.${item.uuid}" aria-expanded="false" aria-controls="collapse.${item.uuid}">
+                                    ${item.kelas.tingkat+item.kelas.kelas+" - "+item.guru.nama}
+                                </button>
+                                </h2>
+                                <div id="collapse.${item.uuid}" class="accordion-collapse collapse" data-bs-parent="#accordion-pelajaran">
+                                    <div class="accordion-body">
+                                        <div class="list-group fs-13">
+                                            ${link}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                        });
+                        $('#accordion-pelajaran').html(html);
+                        $('#modal-penilaian').modal("show");
+                        removeLoading();
                     }
                 },
                 error: function(data) {
                     console.log(data.responseJSON.message);
                 }
             })
-            $('#modal-penilaian').modal("show");
+
         })
     </script>
 @endsection

@@ -1,7 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('penilaian-sumatif-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @if (\Request::route()->getName() === 'penilaian.admin.sumatif.show')
+        {{Breadcrumbs::render('penilaian-admin-sumatif-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @else
+        {{Breadcrumbs::render('penilaian-sumatif-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @endif
     <div class="body-contain-customize col-12 col-sm-12 col-md-8 col-lg-6 col-xl-5">
         <p><b>Data Ngajar</b></p>
         <table class="table table-striped fs-13">
@@ -144,7 +148,7 @@
             } else {
                 $(ini).closest('td').addClass('text-danger').addClass('bg-danger-subtle');
             }
-            
+
         };
         // $('.open-close-tab').click(function(){
         //     var show = $(this).attr('class').split(' ');

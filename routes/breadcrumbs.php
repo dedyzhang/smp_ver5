@@ -85,4 +85,29 @@ Breadcrumbs::for('penilaian-rapor-show',function(BreadcrumbsTrail $trail, Pelaja
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.rapor.show',$ngajar));
 });
 //Penilaian.Admin.Breadcrumbs
-Breadcrumbs::for('penilaian',function(BreadcrumbsTrail $trail){ $trail->push('Penilaian',route('penilaian.index'));});
+Breadcrumbs::for('penilaian',function(BreadcrumbsTrail $trail){ $trail->push('Penilaian',route('penilaian.admin.index'));});
+Breadcrumbs::for('penilaian-admin-pts',function(BreadcrumbsTrail $trail){ $trail->push('PTS',route('penilaian.admin.pts'));});
+Breadcrumbs::for('penilaian-admin-materi-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.materi.show',$ngajar));
+});
+Breadcrumbs::for('penilaian-admin-formatif-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.formatif.show',$ngajar));
+});
+Breadcrumbs::for('penilaian-admin-sumatif-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.sumatif.show',$ngajar));
+});
+Breadcrumbs::for('penilaian-admin-pts-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.pts.show',$ngajar));
+});
+Breadcrumbs::for('penilaian-admin-pas-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.pas.show',$ngajar));
+});
+Breadcrumbs::for('penilaian-admin-rapor-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
+    $trail->parent('penilaian');
+    $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.rapor.show',$ngajar));
+});

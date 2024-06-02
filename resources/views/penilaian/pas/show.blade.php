@@ -1,7 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('penilaian-pas-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @if (\Request::route()->getName() === 'penilaian.admin.pas.show')
+        {{Breadcrumbs::render('penilaian-admin-pas-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @else
+        {{Breadcrumbs::render('penilaian-pas-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @endif
     <div class="body-contain-customize col-12 col-sm-12 col-md-8 col-lg-6 col-xl-5">
         <p><b>Data Ngajar</b></p>
         <table class="table table-striped fs-13">
@@ -49,7 +53,7 @@
         @endif
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">
-        <p><b>Penilaian Tengah Semester</b></p>
+        <p><b>Penilaian Akhis Semester/Tahun</b></p>
         <div class="table-responsive">
             <table class="table table-bordered fs-12 nilai-table">
                 <thead>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Formatif;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
@@ -12,6 +13,7 @@ use App\Models\PTS;
 use App\Models\Rapor;
 use App\Models\RaporTemp;
 use App\Models\Semester;
+use App\Models\Siswa;
 use App\Models\Sumatif;
 use App\Models\Tupe;
 use Illuminate\Http\RedirectResponse;
@@ -36,6 +38,23 @@ class PenilaianController extends Controller
     public function get(String $uuid) {
         $ngajar = Ngajar::with('kelas','pelajaran','guru')->where('id_pelajaran',$uuid)->get();
         return response()->json(["success" => true,"data" => $ngajar]);
+    }
+    /**
+     * Penilaian PTS Show All Index
+     */
+    public function ptsIndexAll() : View {
+        $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
+
+        return view('penilaian.pts',compact('kelas'));
+    }
+    /**
+     * Penilaian PTS Show All
+     */
+    public function ptsShowAll(String $id) : View {
+        $kelas = Kelas::findOrFail($id);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat'])->join('pelajaran','id_pelajaran','=','pelajaran.uuid')->where('id_kelas',$id)->orderBy('pelajaran.urutan','ASC')->get();
+        $siswa = Siswa::where('id_kelas',$id)->get();
+        return view('penilaian.pts.all',compact('ngajar','kelas','siswa'));
     }
     /**
      * KKTP - Show Index

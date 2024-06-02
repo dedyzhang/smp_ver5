@@ -1,7 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('penilaian-rapor-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @if (\Request::route()->getName() === 'penilaian.admin.rapor.show')
+        {{Breadcrumbs::render('penilaian-admin-rapor-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @else
+        {{Breadcrumbs::render('penilaian-rapor-show',$ngajar->pelajaran,$ngajar->kelas,$ngajar)}}
+    @endif
     <div class="body-contain-customize col-12 col-sm-12 col-md-8 col-lg-6 col-xl-5">
         <p><b>Data Ngajar</b></p>
         <table class="table table-striped fs-13">
