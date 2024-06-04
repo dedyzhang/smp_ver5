@@ -1,8 +1,8 @@
 @extends('layouts.main') @section('container')
-    {{ Breadcrumbs::render('penilaian-admin-pts-showAll', $kelas) }}
+    {{ Breadcrumbs::render('penilaian-admin-pas-showAll', $kelas) }}
     <div class="body-contain-customize col-12">
         <h5>
-            <b>PTS Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>
+            <b>PAS Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>
         </h5>
     </div>
     <div class="body-contain-customize col-12 mt-3">
@@ -39,12 +39,12 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $siswa->nama }}</td>
                             @foreach ($ngajar as $item)
-                                @if (isset($pts_array[$item->uuid . '.' . $siswa->uuid]))
+                                @if (isset($pas_array[$item->uuid . '.' . $siswa->uuid]))
                                     <td
-                                        class="text-center @if ($pts_array[$item->uuid . '.' . $siswa->uuid] < $item->kkm) text-danger bg-danger-subtle @endif">
-                                        {{ $pts_array[$item->uuid . '.' . $siswa->uuid] }}</td>
+                                        class="text-center @if ($pas_array[$item->uuid . '.' . $siswa->uuid] < $item->kkm) text-danger bg-danger-subtle @endif">
+                                        {{ $pas_array[$item->uuid . '.' . $siswa->uuid] }}</td>
                                     @php
-                                        $jumlah += $pts_array[$item->uuid . '.' . $siswa->uuid];
+                                        $jumlah += $pas_array[$item->uuid . '.' . $siswa->uuid];
                                     @endphp
                                 @else
                                     <td class="text-center">0</td>

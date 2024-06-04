@@ -87,6 +87,15 @@ Breadcrumbs::for('penilaian-rapor-show',function(BreadcrumbsTrail $trail, Pelaja
 //Penilaian.Admin.Breadcrumbs
 Breadcrumbs::for('penilaian',function(BreadcrumbsTrail $trail){ $trail->push('Penilaian',route('penilaian.admin.index'));});
 Breadcrumbs::for('penilaian-admin-pts',function(BreadcrumbsTrail $trail){ $trail->push('PTS',route('penilaian.admin.pts'));});
+Breadcrumbs::for('penilaian-admin-pts-showAll',function(BreadcrumbsTrail $trail, Kelas $kelas){
+    $trail->parent('penilaian-admin-pts');
+    $trail->push($kelas->tingkat.$kelas->kelas,route('penilaian.admin.pts.showAll',$kelas));
+});
+Breadcrumbs::for('penilaian-admin-pas',function(BreadcrumbsTrail $trail){ $trail->push('PAS',route('penilaian.admin.pas'));});
+Breadcrumbs::for('penilaian-admin-pas-showAll',function(BreadcrumbsTrail $trail, Kelas $kelas){
+    $trail->parent('penilaian-admin-pas');
+    $trail->push($kelas->tingkat.$kelas->kelas,route('penilaian.admin.pas.showAll',$kelas));
+});
 Breadcrumbs::for('penilaian-admin-materi-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
     $trail->parent('penilaian');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.materi.show',$ngajar));

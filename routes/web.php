@@ -68,6 +68,9 @@ Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::clas
     //Show All PTS
     Route::get('/penilaian/pts','ptsIndexAll')->name('penilaian.admin.pts');
     Route::get('/penilaian/pts/{uuid}/showAll','ptsShowAll')->name('penilaian.admin.pts.showAll');
+    //show All PAS
+    Route::get('/penilaian/pas','pasIndexAll')->name('penilaian.admin.pas');
+    Route::get('/penilaian/pas/{uuid}/showAll','pasShowAll')->name('penilaian.admin.pas.showAll');
     //Materi
     Route::get('/penilaian/materi/{uuid}/show','materiShow')->name('penilaian.admin.materi.show');
     //formatif

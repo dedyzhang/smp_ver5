@@ -52,17 +52,67 @@ class PenilaianController extends Controller
      */
     public function ptsShowAll(String $id) : View {
         $kelas = Kelas::findOrFail($id);
-        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat'])->join('pelajaran','id_pelajaran','=','pelajaran.uuid')->where('id_kelas',$id)->orderBy('pelajaran.urutan','ASC')->get();
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*','pelajaran','pelajaran_singkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->where('id_kelas',$id)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach($ngajar as $item) {
+            array_push($id_ngajar,$item->uuid);
+        }
+        $pts_array = array();
+        $pts = PTS::whereIn('id_ngajar',$id_ngajar)->get();
+        foreach($pts as $item) {
+            $pts_array[$item->id_ngajar.".".$item->id_siswa] = $item->nilai;
+        }
         $siswa = Siswa::where('id_kelas',$id)->get();
-        return view('penilaian.pts.all',compact('ngajar','kelas','siswa'));
+        return view('penilaian.pts.all',compact('ngajar','kelas','siswa','pts_array'));
     }
+    /**
+     * Penilaian PTS Show All Index
+     */
+    public function pasIndexAll() : View {
+        $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
+
+        return view('penilaian.pas',compact('kelas'));
+    }
+    /**
+     * Penilaian PTS Show All
+     */
+    public function pasShowAll(String $id) : View {
+        $kelas = Kelas::findOrFail($id);
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*','pelajaran','pelajaran_singkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->where('id_kelas',$id)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach($ngajar as $item) {
+            array_push($id_ngajar,$item->uuid);
+        }
+        $pas_array = array();
+        $pas = PAS::whereIn('id_ngajar',$id_ngajar)->get();
+        foreach($pas as $item) {
+            $pas_array[$item->id_ngajar.".".$item->id_siswa] = $item->nilai;
+        }
+        $siswa = Siswa::where('id_kelas',$id)->get();
+        return view('penilaian.pas.all',compact('ngajar','kelas','siswa','pas_array'));
+    }
+
+
     /**
      * KKTP - Show Index
      */
     public function kktpIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view('penilaian.kktp.index',compact('ngajar'));
     }
     /**
@@ -79,7 +129,14 @@ class PenilaianController extends Controller
     public function materiIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.materi.index",compact('ngajar'));
     }
     /**
@@ -225,7 +282,14 @@ class PenilaianController extends Controller
     public function formatifIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.formatif.index",compact('ngajar'));
     }
     /**
@@ -284,7 +348,14 @@ class PenilaianController extends Controller
     public function sumatifIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.sumatif.index",compact('ngajar'));
     }
     /**
@@ -335,7 +406,14 @@ class PenilaianController extends Controller
     public function ptsIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.pts.index",compact('ngajar'));
     }
     /**
@@ -406,7 +484,14 @@ class PenilaianController extends Controller
     public function pasIndex() : View {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.pas.index",compact('ngajar'));
     }
     /**
@@ -477,7 +562,14 @@ class PenilaianController extends Controller
     public function raporIndex(Request $request) {
         $id = auth()->user()->uuid;
         $guru = Guru::where('id_login',$id)->first();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$guru->uuid)->get()->sortBy('urutan',SORT_NATURAL,true);
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
         return view("penilaian.rapor.index",compact('ngajar'));
     }
     /**
