@@ -96,6 +96,12 @@ Breadcrumbs::for('penilaian-admin-pas-showAll',function(BreadcrumbsTrail $trail,
     $trail->parent('penilaian-admin-pas');
     $trail->push($kelas->tingkat.$kelas->kelas,route('penilaian.admin.pas.showAll',$kelas));
 });
+Breadcrumbs::for('penilaian-admin-rapor',function(BreadcrumbsTrail $trail){ $trail->push('Rapor',route('penilaian.admin.rapor'));});
+Breadcrumbs::for('penilaian-admin-rapor-showAll',function(BreadcrumbsTrail $trail, Kelas $kelas){
+    $trail->parent('penilaian-admin-rapor');
+    $trail->push($kelas->tingkat.$kelas->kelas,route('penilaian.admin.rapor.showAll',$kelas));
+});
+
 Breadcrumbs::for('penilaian-admin-materi-show',function(BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar){
     $trail->parent('penilaian');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.materi.show',$ngajar));

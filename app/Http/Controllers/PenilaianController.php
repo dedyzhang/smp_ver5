@@ -69,7 +69,7 @@ class PenilaianController extends Controller
         return view('penilaian.pts.all',compact('ngajar','kelas','siswa','pts_array'));
     }
     /**
-     * Penilaian PTS Show All Index
+     * Penilaian PAS Show All Index
      */
     public function pasIndexAll() : View {
         $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
@@ -77,7 +77,7 @@ class PenilaianController extends Controller
         return view('penilaian.pas',compact('kelas'));
     }
     /**
-     * Penilaian PTS Show All
+     * Penilaian PAS Show All
      */
     public function pasShowAll(String $id) : View {
         $kelas = Kelas::findOrFail($id);
@@ -96,6 +96,39 @@ class PenilaianController extends Controller
         }
         $siswa = Siswa::where('id_kelas',$id)->get();
         return view('penilaian.pas.all',compact('ngajar','kelas','siswa','pas_array'));
+    }
+    /**
+     * Penilaian PAS Show All Index
+     */
+    public function raporIndexAll() : View {
+        $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
+
+        return view('penilaian.rapor',compact('kelas'));
+    }
+    /**
+     * Penilaian PAS Show All
+     */
+    public function raporShowAll(String $id) : View {
+        $kelas = Kelas::findOrFail($id);
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*','pelajaran','pelajaran_singkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->where('id_kelas',$id)
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach($ngajar as $item) {
+            array_push($id_ngajar,$item->uuid);
+        }
+        $rapor_array = array();
+        $rapor = Rapor::whereIn('id_ngajar',$id_ngajar)->get();
+        foreach($rapor as $item) {
+            $rapor_array[$item->id_ngajar.".".$item->id_siswa] = array(
+                "nilai" => $item->nilai,
+                "positif" => $item->deskripsi_positif,
+                "negatif" => $item->deskripsi_negatif
+            );
+        }
+        $siswa = Siswa::where('id_kelas',$id)->get();
+        return view('penilaian.rapor.all',compact('ngajar','kelas','siswa','rapor_array'));
     }
 
 

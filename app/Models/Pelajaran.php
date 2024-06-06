@@ -15,6 +15,7 @@ class Pelajaran extends Model
     protected $fillable = [
         'pelajaran',
         'pelajaran_singkat',
+        'has_penjabaran',
         'urutan'
     ];
 }

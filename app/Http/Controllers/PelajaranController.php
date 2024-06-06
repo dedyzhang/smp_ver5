@@ -48,6 +48,7 @@ class PelajaranController extends Controller
         $input = Pelajaran::create([
             'pelajaran' => $request->pelajaran,
             'pelajaran_singkat' => $request->pelajaran_singkat,
+            'has_penjabaran' => 0,
             'urutan' => $urut
         ]);
 
@@ -123,5 +124,35 @@ class PelajaranController extends Controller
         Pelajaran::upsert($pelajaran_array,'uuid',['urutan']);
 
         return redirect()->route('pelajaran.sort')->with(['success' => "Pelajaran berhasil diurut kembali"]);
+    }
+    /**
+     * Dapatkan Data Penjabaran
+     */
+    public function getPenjabaran()
+    {
+        $english = Pelajaran::where('has_penjabaran',1)->get();
+        $mandarin = Pelajaran::where('has_penjabaran',2)->get();
+        if($english->isEmpty() && $mandarin->isEmpty()) {
+            return response()->json(["success" => false]);
+        } else {
+            return response()->json(["success"=> true, "english" => $english,"mandarin" => $mandarin]);
+        }
+    }
+    /**
+     * Atur Penjabaran
+     */
+    public function setPenjabaran(Request $request)
+    {
+        $inggris = $request->english;
+        $mandarin = $request->mandarin;
+
+        $english_query = Pelajaran::findOrFail($inggris)->update([
+            "has_penjabaran" => 1
+        ]);
+        $mandarin_query = Pelajaran::findOrFail($mandarin);
+
+        $mandarin_query->update([
+            "has_penjabaran" => 2
+        ]);
     }
 }

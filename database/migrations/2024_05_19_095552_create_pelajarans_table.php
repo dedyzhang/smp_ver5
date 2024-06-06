@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid()->primary();
             $table->string('pelajaran')->nullable();
             $table->string('pelajaran_singkat')->nullable();
+            $table->integer('has_penjabaran')->nullable();
             $table->string('urutan');
             $table->timestamps();
         });

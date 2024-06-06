@@ -59,6 +59,8 @@ Route::resource('/pelajaran',PelajaranController::class)->except('show')->middle
 Route::middleware(IsAdmin::class)->controller(PelajaranController::class)->group(function() {
     Route::get('/pelajaran/sort','sort')->name('pelajaran.sort');
     Route::post('/pelajaran/sort','sorting')->name('pelajaran.sorting');
+    Route::get('/pelajaran/penjabaran','getPenjabaran')->name('pelajaran.penjabaran');
+    Route::post('/pelajaran/penjabaran','setPenjabaran')->name('pelajaran.penjabaran');
 });
 //Admin - Halaman Data Penilaian
 Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::class)->group(function() {
@@ -71,6 +73,9 @@ Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::clas
     //show All PAS
     Route::get('/penilaian/pas','pasIndexAll')->name('penilaian.admin.pas');
     Route::get('/penilaian/pas/{uuid}/showAll','pasShowAll')->name('penilaian.admin.pas.showAll');
+    //show All Rapor
+    Route::get('/penilaian/rapor','raporIndexAll')->name('penilaian.admin.rapor');
+    Route::get('/penilaian/rapor/{uuid}/showAll','raporShowAll')->name('penilaian.admin.rapor.showAll');
     //Materi
     Route::get('/penilaian/materi/{uuid}/show','materiShow')->name('penilaian.admin.materi.show');
     //formatif

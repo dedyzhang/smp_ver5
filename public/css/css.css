@@ -263,6 +263,7 @@ body {
 .main-container {
     width: 80%;
     margin-left: calc(100vw - 80%);
+    overflow-x: hidden !important;
 }
 @media screen and (max-width: 2000px) {
     .main-container {
@@ -560,4 +561,14 @@ table.dataTables tbody td {
         width: 100%;
         display: inline-block;
     }
+}
+/*Tabel nilai rapor di menu penilaian > rapor */
+.nilai-rapor .child-cell.hide {
+    display: none;
+}
+.nilai-rapor .tutup {
+    background: #fbc4ab;
+}
+.nilai-rapor .buka {
+    background: #caffbf;
 }

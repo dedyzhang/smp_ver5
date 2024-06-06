@@ -8,7 +8,7 @@ function loading() {
     if (count < 2) {
         $("body").prepend(html);
     }
-    $(".loader").fadeIn();
+    $(".loader").fadeIn(100);
     $(".loader")
         .promise()
         .done(function () {
@@ -32,18 +32,17 @@ function BigLoading(text) {
         content: text,
         backgroundDismiss: false,
         escapeKey: false,
-        buttons : {
-            buttonA : {
-                text : "Tunggu"
-            }
+        buttons: {
+            buttonA: {
+                text: "Tunggu",
+            },
         },
         onOpenBefore: function () {
             this.buttons.buttonA.hide();
-        }
+        },
     });
 
-    removeLoadingBig = function ()
-    {
+    removeLoadingBig = function () {
         alertLoading.close();
-    }
+    };
 }

@@ -53,7 +53,7 @@
                         <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Semua Nilai</a></li>
                         <li class="submenu-list"><a href="{{ route('penilaian.admin.pts') }}"> PTS</a></li>
                         <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
-                        <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Rapor</a></li>
+                        <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
                     </ul>
                 </li>
             @endcan
