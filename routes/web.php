@@ -88,6 +88,8 @@ Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::clas
     Route::get('/penilaian/pas/{uuid}/show','pasShow')->name('penilaian.admin.pas.show');
     //Rapor
     Route::get('/penilaian/rapor/{uuid}/show','raporShow')->name('penilaian.admin.rapor.show');
+    //Rapor
+    Route::get('/penilaian/penjabaran/{uuid}/show','penjabaranShow')->name('penilaian.admin.penjabaran.show');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function() {
@@ -112,6 +114,9 @@ Route::middleware(isNgajar::class)->controller(PenilaianController::class)->grou
     //Rapor
     Route::get('/bukuguru/rapor','raporIndex')->name('penilaian.rapor.index');
     Route::get('/bukuguru/rapor/{uuid}/show','raporShow')->name('penilaian.rapor.show');
+    //Penjabaran
+    Route::get('/bukuguru/penjabaran','penjabaranIndex')->name('penilaian.penjabaran.index');
+    Route::get('/bukuguru/penjabaran/{uuid}/show','penjabaranShow')->name('penilaian.penjabaran.show');
 });
 
 //Admin - Guru - Action untuk Penilaian
@@ -140,4 +145,8 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::delete('/bukuguru/rapor/{uuid}/delete','raporDelete')->name('penilaian.rapor.delete');
     Route::post('/bukuguru/rapor/{uuid}/konfirmasi','raporKonfirmasi')->name('penilaian.rapor.konfirmasi');
     Route::delete('/bukuguru/rapor/{uuid}/konfirmasi','hapusRaporKonfirmasi')->name('penilaian.rapor.konfirmasi');
+    //Penjabaran
+    Route::post('/bukuguru/penjabaran/{uuid}/store','penjabaranStore')->name('penilaian.penjabaran.store');
+    Route::put('/bukuguru/penjabaran/edit','penjabaranEdit')->name('penilaian.penjabaran.edit');
+    Route::delete('/bukuguru/penjabaran/{uuid}/destroy','penjabaranDestroy')->name('penilaian.penjabaran.destroy');
 });

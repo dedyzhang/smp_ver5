@@ -146,6 +146,10 @@ class PelajaranController extends Controller
         $inggris = $request->english;
         $mandarin = $request->mandarin;
 
+        $allPelajaran = Pelajaran::where('has_penjabaran','>','0')->update([
+            "has_penjabaran" => 0
+        ]);
+
         $english_query = Pelajaran::findOrFail($inggris)->update([
             "has_penjabaran" => 1
         ]);

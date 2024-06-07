@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Formatif;
 use App\Models\Guru;
+use App\Models\JabarInggris;
+use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
@@ -18,6 +20,7 @@ use App\Models\Sumatif;
 use App\Models\Tupe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\View\View;
 use Mavinoo\Batch\BatchFacade as Batch;
 use PhpParser\Node\Expr\Cast\String_;
@@ -728,5 +731,145 @@ class PenilaianController extends Controller
         $sem = $semester->semester;
         $rapor = Rapor::where([['id_ngajar','=',$id],['semester','=',$sem]]);
         $rapor->delete();
+    }
+    /**
+     * Penjabaran - Index Show View
+     */
+    public function penjabaranIndex() {
+        $id = auth()->user()->uuid;
+        $guru = Guru::where('id_login',$id)->first();
+        $ngajar = Ngajar::select(['ngajar.*','pelajaran','pelajaran_singkat','kelas','tingkat'])
+        ->join('pelajaran','id_pelajaran','=','pelajaran.uuid')
+        ->join('kelas','id_kelas','=','kelas.uuid')
+        ->where('id_guru',$guru->uuid)
+        ->whereIn('pelajaran.has_penjabaran',array('1','2'))
+        ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+        ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+        ->orderByRaw('length(kelas.kelas), kelas.kelas')
+        ->get();
+        return view("penilaian.penjabaran.index",compact('ngajar'));
+    }
+    /**
+     * Penjabaran - Show Isi dari Penjabaran
+     */
+    public function penjabaranShow(String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $has_penjabaran = $ngajar->pelajaran->has_penjabaran;
+
+        if($has_penjabaran == 1) {
+            $jabaran = 'inggris';
+            $penjabaran = JabarInggris::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+            $penjabaran_array = array();
+            foreach($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar.".".$jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'listening' => $jabar->listening,
+                    'speaking' => $jabar->speaking,
+                    'writing' => $jabar->writing,
+                    'reading' => $jabar->reading,
+                    'grammar' => $jabar->grammar,
+                    'vocabulary' => $jabar->vocabulary,
+                    'singing' => $jabar->singing
+                );
+            }
+        } else if($has_penjabaran == 2) {
+            $jabaran = 'mandarin';
+            $penjabaran = JabarMandarin::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+            $penjabaran_array = array();
+            foreach($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar.".".$jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'listening' => $jabar->listening,
+                    'speaking' => $jabar->speaking,
+                    'writing' => $jabar->writing,
+                    'reading' => $jabar->reading,
+                    'vocabulary' => $jabar->vocabulary,
+                    'singing' => $jabar->singing
+                );
+            }
+        }
+
+        return View("penilaian.penjabaran.show",compact('ngajar','penjabaran','jabaran','penjabaran_array'));
+    }
+    /**
+     * Penjabaran - Penjabaran Store
+     */
+    public function penjabaranStore(Request $request,String $uuid) {
+        $ngajar = Ngajar::with('pelajaran','kelas','guru','siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $jabaran = $request->penjabaran;
+        if($jabaran == 'inggris') {
+            $penjabaran = JabarInggris::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+            if($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                foreach($ngajar->siswa as $siswa) {
+                    array_push($nilai_array,array(
+                        'id_ngajar' => $ngajar->uuid,
+                        'id_siswa' => $siswa->uuid,
+                        'semester' => $sem,
+                        'listening' => 0,
+                        'speaking' => 0,
+                        'writing' => 0,
+                        'reading' => 0,
+                        'grammar' => 0,
+                        'vocabulary' => 0,
+                        'singing' => 0
+                    ));
+                }
+                JabarInggris::upsert($nilai_array,['uuid'],['id_ngajar','id_siswa','semester','listening','speaking','writing','reading','grammar','vocabulary','singing']);
+            }
+        } else {
+            $penjabaran = JabarMandarin::where([['id_ngajar','=',$uuid],['semester','=',$sem]])->get();
+            if($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                foreach($ngajar->siswa as $siswa) {
+                    array_push($nilai_array,array(
+                        'id_ngajar' => $ngajar->uuid,
+                        'id_siswa' => $siswa->uuid,
+                        'semester' => $sem,
+                        'listening' => 0,
+                        'speaking' => 0,
+                        'writing' => 0,
+                        'reading' => 0,
+                        'vocabulary' => 0,
+                        'singing' => 0
+                    ));
+                }
+                JabarMandarin::upsert($nilai_array,['uuid'],['id_ngajar','id_siswa','semester','listening','speaking','writing','reading','vocabulary','singing']);
+            }
+        }
+    }
+    /**
+     * Penjabaran - Simpan Nilai Penjabaran
+     */
+    public function penjabaranEdit(Request $request) {
+        $nilai = $request->nilai;
+        $penjabaran = $request->penjabaran;
+
+        if($penjabaran == "inggris") {
+            Batch::update(new JabarInggris,$nilai,'uuid');
+        } else {
+            Batch::update(new JabarMandarin,$nilai,'uuid');
+        }
+    }
+    /**
+     * Penjabaran - Hapus Nilai Penjabaran
+     */
+    public function penjabaranDestroy(Request $request,String $uuid) {
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $penjabaran = $request->penjabaran;
+
+        if($penjabaran == "inggris") {
+            $jabaran = JabarInggris::where([['id_ngajar','=',$uuid],['semester','=',$sem]]);
+        } else {
+            $jabaran = JabarMandarin::where([['id_ngajar','=',$uuid],['semester','=',$sem]]);
+        }
+        $jabaran->delete();
     }
 }

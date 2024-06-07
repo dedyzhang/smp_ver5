@@ -24,7 +24,7 @@
                     </ul>
                 </li>
             @endcan
-            @canany(['kurikulum', 'guru'])
+            @canany(['kurikulum', 'guru','kesiswaan'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-guru" class="menu-title" data-bs-toggle="collapse">
                         <i class="fa-solid fa-chalkboard-user"></i>
@@ -39,6 +39,7 @@
                         <li class="submenu-list"><a href="{{ route('penilaian.pts.index') }}"> PTS</a></li>
                         <li class="submenu-list"><a href="{{ route('penilaian.pas.index') }}"> PAS/T</a></li>
                         <li class="submenu-list"><a href="{{ route('penilaian.rapor.index') }}"> Rapor</a></li>
+                        <li class="submenu-list"><a href="{{ route('penilaian.penjabaran.index') }}"> Penjabaran</a></li>
                     </ul>
                 </li>
             @endcan

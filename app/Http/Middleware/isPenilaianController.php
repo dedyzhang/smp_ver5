@@ -18,7 +18,11 @@ class isPenilaianController
        if(!auth()->check()) {
             return redirect('/login');
         } else {
-            if(auth()->user()->access === 'admin' || auth()->user()->access === 'kurikulum' || auth()->user()->access === 'guru') {
+            if(auth()->user()->access === 'admin'
+            || auth()->user()->access === 'kurikulum'
+            || auth()->user()->access === 'kesiswaan'
+            || auth()->user()->access === 'guru'
+            ) {
                 return $next($request);
             } else {
                 abort(403);

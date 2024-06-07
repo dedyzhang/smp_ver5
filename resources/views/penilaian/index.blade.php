@@ -58,14 +58,26 @@
                             }
                         });
                         pelajaran.forEach(item => {
-                            var link = `
-                            <a href="{{route('penilaian.admin.materi.show',':id')}}" class="list-group-item list-group-item-action">Materi</a>
-                            <a href="{{route('penilaian.admin.formatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Formatif</a>
-                            <a href="{{route('penilaian.admin.sumatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Sumatif</a>
-                            <a href="{{route('penilaian.admin.pts.show',':id')}}" class="list-group-item list-group-item-action">Nilai PTS</a>
-                            <a href="{{route('penilaian.admin.pas.show',':id')}}" class="list-group-item list-group-item-action">Nilai PAS</a>
-                            <a href="{{route('penilaian.admin.rapor.show',':id')}}" class="list-group-item list-group-item-action">Nilai Rapor</a>
-                            `;
+                            if(item.pelajaran.has_penjabaran == 1 || item.pelajaran.has_penjabaran == 2) {
+                                var link = `
+                                <a href="{{route('penilaian.admin.materi.show',':id')}}" class="list-group-item list-group-item-action">Materi</a>
+                                <a href="{{route('penilaian.admin.formatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Formatif</a>
+                                <a href="{{route('penilaian.admin.sumatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Sumatif</a>
+                                <a href="{{route('penilaian.admin.pts.show',':id')}}" class="list-group-item list-group-item-action">Nilai PTS</a>
+                                <a href="{{route('penilaian.admin.pas.show',':id')}}" class="list-group-item list-group-item-action">Nilai PAS</a>
+                                <a href="{{route('penilaian.admin.rapor.show',':id')}}" class="list-group-item list-group-item-action">Nilai Rapor</a>
+                                <a href="{{route('penilaian.admin.penjabaran.show',':id')}}" class="list-group-item list-group-item-action">Nilai Penjabaran</a>
+                                `;
+                            } else {
+                                var link = `
+                                <a href="{{route('penilaian.admin.materi.show',':id')}}" class="list-group-item list-group-item-action">Materi</a>
+                                <a href="{{route('penilaian.admin.formatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Formatif</a>
+                                <a href="{{route('penilaian.admin.sumatif.show',':id')}}" class="list-group-item list-group-item-action">Nilai Sumatif</a>
+                                <a href="{{route('penilaian.admin.pts.show',':id')}}" class="list-group-item list-group-item-action">Nilai PTS</a>
+                                <a href="{{route('penilaian.admin.pas.show',':id')}}" class="list-group-item list-group-item-action">Nilai PAS</a>
+                                <a href="{{route('penilaian.admin.rapor.show',':id')}}" class="list-group-item list-group-item-action">Nilai Rapor</a>
+                                `;
+                                }
                             link = link.replaceAll(':id',item.uuid);
                             html += `
                             <div class="accordion-item">

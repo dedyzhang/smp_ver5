@@ -18,7 +18,9 @@ class isNgajar
         if(!auth()->check()) {
             return redirect('/login');
         } else {
-            if(auth()->user()->access === 'kurikulum' || auth()->user()->access === 'guru') {
+            if(auth()->user()->access === 'kurikulum'
+            || auth()->user()->access === 'guru'
+            || auth()->user()->access === 'kesiswaan') {
                 return $next($request);
             } else {
                 abort(403);
