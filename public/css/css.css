@@ -596,3 +596,13 @@ table.dataTables tbody td {
     flex-wrap: wrap;
     width: 4rem;
 }
+/* Tombol di tambah jadwal */
+
+.tambah-jadwal {
+    font-size: 10px;
+    padding: 3px 5px;
+}
+.hapus-jadwal {
+    font-size: 10px;
+    padding: 3px 5px;
+}

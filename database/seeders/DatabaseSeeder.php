@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\JadwalHari;
 use App\Models\Nis;
 use App\Models\Semester;
 use App\Models\User;
@@ -27,5 +28,12 @@ class DatabaseSeeder extends Seeder
             'semester' => '1',
             'tp' => '2023/2024'
         ]);
+        JadwalHari::upsert([
+            ['no_hari' => 1,'nama_hari' => 'senin'],
+            ['no_hari' => 2,'nama_hari' => 'selasa'],
+            ['no_hari' => 3,'nama_hari' => 'rabu'],
+            ['no_hari' => 4,'nama_hari' => 'kamis'],
+            ['no_hari' => 5,'nama_hari' => 'jumat']
+        ],['uuid']);
     }
 }

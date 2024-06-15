@@ -176,6 +176,8 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
     Route::get('/jadwal/create','create')->name('jadwal.create');
     Route::post('/jadwal/create','store')->name('jadwal.store');
     Route::post('/jadwal/edit','edit')->name('jadwal.edit');
+    Route::post('/jadwal/{uuid}/generate','generate')->name('jadwal.generate');
+    Route::get('/jadwal/{uuid}/showngajar','showNgajar')->name('jadwal.showNgajar');
     Route::get('/jadwal/{uuid}/show','show')->name('jadwal.show');
     Route::get('/jadwal/{uuid}/show/waktu','waktuIndex')->name('jadwal.waktu.index');
     Route::get('/jadwal/{uuid}/show/waktu/create','waktuCreate')->name('jadwal.waktu.create');

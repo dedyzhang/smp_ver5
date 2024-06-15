@@ -5,7 +5,7 @@
         <h5><b>Pengaturan Waktu</b></h5>
         <p>Pengaturan Waktu dalam Jadwal Pelajaran</p>
     </div>
-    <div class="body-contain-customize col-12 mt-3">
+    <div class="body-contain-customize col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex mt-3">
         <a href="{{route('jadwal.waktu.create',$versi->uuid)}}" class="btn btn-warning btn-sm text-warning-emphasis"><i class="fas fa-plus"></i> Tambah</a>
     </div>
     <div class="body-contain-customize col-12 mt-3">
