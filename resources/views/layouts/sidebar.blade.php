@@ -24,6 +24,18 @@
                     </ul>
                 </li>
             @endcan
+            @canany(['admin','kurikulum'])
+                <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                    <a href="#menu-absensi" class="menu-title" data-bs-toggle="collapse">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Absensi
+                        <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                    </a>
+                    <ul class="submenu collapse" id="menu-absensi">
+                        <li class="submenu-list"><a href="{{ route('absensi.index') }}"> Atur Tanggal</a></li>
+                    </ul>
+                </li>
+            @endcan
             @canany(['kurikulum', 'guru','kesiswaan'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-guru" class="menu-title" data-bs-toggle="collapse">
@@ -58,6 +70,17 @@
                     </ul>
                 </li>
             @endcan
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-jadwal" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-clock"></i>
+                    Jadwal Sekolah
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-jadwal">
+                    <li class="submenu-list"><a href="{{ route('jadwal.index') }}"> Jadwal Pelajaran</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Jadwal Akademik</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 </div>

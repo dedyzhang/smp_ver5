@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
@@ -62,6 +64,9 @@ Route::middleware(IsAdmin::class)->controller(PelajaranController::class)->group
     Route::get('/pelajaran/penjabaran','getPenjabaran')->name('pelajaran.penjabaran');
     Route::post('/pelajaran/penjabaran','setPenjabaran')->name('pelajaran.penjabaran');
 });
+
+// {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
+
 //Admin - Halaman Data Penilaian
 Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::class)->group(function() {
     //Penilaian Index
@@ -118,7 +123,6 @@ Route::middleware(isNgajar::class)->controller(PenilaianController::class)->grou
     Route::get('/bukuguru/penjabaran','penjabaranIndex')->name('penilaian.penjabaran.index');
     Route::get('/bukuguru/penjabaran/{uuid}/show','penjabaranShow')->name('penilaian.penjabaran.show');
 });
-
 //Admin - Guru - Action untuk Penilaian
 Route::middleware(isPenilaianController::class)->controller(PenilaianController::class)->group(function() {
     //Materi
@@ -149,4 +153,33 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/penjabaran/{uuid}/store','penjabaranStore')->name('penilaian.penjabaran.store');
     Route::put('/bukuguru/penjabaran/edit','penjabaranEdit')->name('penilaian.penjabaran.edit');
     Route::delete('/bukuguru/penjabaran/{uuid}/destroy','penjabaranDestroy')->name('penilaian.penjabaran.destroy');
+});
+
+//{---------------------------------------------------End------------------------------------------------------------------}
+
+
+// {----------------------------------------------Halaman Absensi----------------------------------------------------------}
+
+Route::middleware(IsAdminKurikulum::class)->controller(AbsensiController::class)->group(function() {
+    Route::get('/absensi','index')->name('absensi.index');
+    Route::get('/absensi/get','get')->name('absensi.get');
+    Route::get('/absensi/create','create')->name('absensi.create');
+    Route::post('/absensi/store','store')->name('absensi.store');
+    Route::delete('/absensi/destroy','destroy')->name('absensi.destroy');
+});
+// {----------------------------------------------------End------------------------------------------------------------------}
+
+
+// {----------------------------------------------Halaman Jadwal-------------------------------------------------------------}
+Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)->group(function() {
+    Route::get('/jadwal','index')->name('jadwal.index');
+    Route::get('/jadwal/create','create')->name('jadwal.create');
+    Route::post('/jadwal/create','store')->name('jadwal.store');
+    Route::post('/jadwal/edit','edit')->name('jadwal.edit');
+    Route::get('/jadwal/{uuid}/show','show')->name('jadwal.show');
+    Route::get('/jadwal/{uuid}/show/waktu','waktuIndex')->name('jadwal.waktu.index');
+    Route::get('/jadwal/{uuid}/show/waktu/create','waktuCreate')->name('jadwal.waktu.create');
+    Route::post('/jadwal/{uuid}/show/waktu/create','waktuStore')->name('jadwal.waktu.store');
+    Route::get('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuEdit')->name('jadwal.waktu.edit');
+    Route::put('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuUpdate')->name('jadwal.waktu.update');
 });

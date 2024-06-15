@@ -138,3 +138,11 @@ Breadcrumbs::for('penilaian-admin-penjabaran-show',function(BreadcrumbsTrail $tr
     $trail->parent('penilaian');
     $trail->push($pelajaran->pelajaran_singkat." ".$kelas->tingkat.$kelas->kelas,route('penilaian.admin.penjabaran.show',$ngajar));
 });
+
+
+//Absensi.Breadcrumbs
+Breadcrumbs::for('absensi',function(BreadcrumbsTrail $trail){ $trail->push('Absensi',route('absensi.index'));});
+Breadcrumbs::for('absensi-create',function(BreadcrumbsTrail $trail){
+    $trail->parent('absensi');
+    $trail->push('Tambah',route('absensi.create'));
+});

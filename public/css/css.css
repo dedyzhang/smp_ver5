@@ -201,7 +201,7 @@ body {
     padding: 15px 0;
 }
 .sidebar-logo-contain {
-    padding: 15px 0 30px 20px;
+    padding: 15px 15px 30px 20px;
     display: flex;
     align-items: center;
     position: relative;
@@ -217,7 +217,8 @@ body {
     padding: 5px;
     border-radius: 50%;
     font-size: 10px;
-    transform: translate(-25px, 20px);
+    position: absolute;
+    transform: translate(20px, 20px);
 }
 .sidebar-contain ul.menu {
     display: block;
@@ -571,4 +572,27 @@ table.dataTables tbody td {
 }
 .nilai-rapor .buka {
     background: #caffbf;
+}
+
+/*Absensi - Tambah Absensi Punya Calendar */
+
+.absensi-tambah .calendar {
+    display: inline-block;
+    width: 100%;
+    overflow-x: auto;
+}
+.absensi-tambah .days,
+.absensi-tambah .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin: auto;
+    justify-content: space-between;
+}
+.absensi-tambah .week div,
+.absensi-tambah .days div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 4rem;
 }
