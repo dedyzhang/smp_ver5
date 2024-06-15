@@ -131,4 +131,15 @@ class JadwalController extends Controller
         ]);
         return redirect()->route('jadwal.waktu.edit',['uuid' => $uuid,'waktuUUID' => $waktu->uuid])->with(["success" => "success Mengedit Waktu"]);
     }
+    /**
+     * Waktu - Hapus Waktu
+     */
+    function waktuDelete(String $uuid, String $waktuUUID) {
+        JadwalWaktu::findOrFail($waktuUUID)->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Berhasil detele"
+        ]);
+    }
 }

@@ -182,4 +182,5 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
     Route::post('/jadwal/{uuid}/show/waktu/create','waktuStore')->name('jadwal.waktu.store');
     Route::get('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuEdit')->name('jadwal.waktu.edit');
     Route::put('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuUpdate')->name('jadwal.waktu.update');
+    Route::delete('/jadwal/{uuid}/show/waktu/{waktuUUID}/delete','waktuDelete')->name('jadwal.waktu.delete');
 });

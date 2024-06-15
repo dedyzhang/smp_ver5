@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                     @foreach ($waktu as $waktu)
-                        <tr>
+                        <tr id="waktu.{{$waktu->uuid}}">
                             <td>{{$loop->iteration}}</td>
                             <td>{{$waktu->waktu_mulai}}</td>
                             <td>{{$waktu->waktu_akhir}}</td>
@@ -35,4 +35,30 @@
             </table>
         </div>
     </div>
+    <script>
+        $('.hapus-jadwal').click(function(){
+            var uuid = $(this).closest('tr').attr('id').split('.').pop();
+            var deleteData = () => {
+                var url = "{{route('jadwal.waktu.delete',['uuid' => ':id','waktuUUID' => ':id2'])}}";
+                url = url.replace(':id',"{{$versi->uuid}}").replace(':id2',uuid);
+                loading();
+                $.ajax({
+                    type: "delete",
+                    url : url,
+                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                    success: function(data) {
+                        if(data.success === true) {
+                            removeLoading();
+                            location.reload();
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            }
+            cConfirm("Perhatian","Yakin untuk menghapus data ini",deleteData);
+        });
+    </script>
+
 @endsection
