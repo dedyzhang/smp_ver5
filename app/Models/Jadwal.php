@@ -19,6 +19,26 @@ class Jadwal extends Model
         'id_ngajar',
         'id_pelajaran',
         'id_guru',
-        'id_kelas'
+        'id_kelas',
+        'spesial'
     ];
+
+    public function kelas() {
+        return $this->belongsTo(Kelas::class,'id_kelas');
+    }
+    public function guru() {
+        return $this->belongsTo(Guru::class,'id_guru');
+    }
+    public function ngajar() {
+        return $this->belongsTo(Ngajar::class,'id_ngajar');
+    }
+    public function pelajaran() {
+        return $this->belongsTo(Pelajaran::class,'id_pelajaran');
+    }
+    public function hari() {
+        return $this->belongsTo(JadwalHari::class,'id_hari');
+    }
+    public function waktu() {
+        return $this->belongsTo(JadwalWaktu::class,'id_waktu');
+    }
 }

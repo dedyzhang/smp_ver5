@@ -76,19 +76,35 @@ class JadwalController extends Controller
         $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
         $waktu = JadwalWaktu::where('id_jadwal',$uuid)->orderBy('waktu_mulai','ASC')->get();
         $hari = JadwalHari::orderBy('no_hari','ASC')->get();
-        $jadwal = Jadwal::where('id_jadwal',$uuid)->get();
+        $jadwal = Jadwal::with('kelas','pelajaran','guru','ngajar')->where('id_jadwal',$uuid)->get();
         $pelajaran = Pelajaran::get()->sortBy('urutan');
 
         $array_jadwal = array();
 
         foreach($jadwal as $item) {
+            if(isset($item->pelajaran)) {
+                $pljran = $item->pelajaran->pelajaran;
+                $pljran_singkat = $item->pelajaran->pelajaran_singkat;
+            } else {
+                $pljran = "";
+                $pljran_singkat = "";
+            }
+            if(isset($item->guru)) {
+                $guru = $item->guru->nama;
+            } else {
+                $guru = "";
+            }
             $array_jadwal[$item->id_hari.".".$item->id_waktu.".".$item->id_kelas] = array(
                 "uuid" => $item->uuid,
                 "id_hari"=> $item->id_hari,
                 "id_waktu" => $item->id_waktu,
                 "id_kelas" => $item->id_kelas,
+                "kelas" => $item->kelas->tingkat.$item->kelas->kelas,
                 "id_pelajaran" => $item->id_pelajaran,
+                "pelajaran" => $pljran,
+                "pelajaran_singkat" => $pljran_singkat,
                 "id_guru" => $item->id_guru,
+                "guru" => $guru,
                 "id_ngajar" => $item->id_ngajar,
                 "jenis" => $item->jenis,
                 "spesial" => $item->spesial
@@ -99,8 +115,43 @@ class JadwalController extends Controller
     /**
      * Update - Update data didalam jadwal
      */
-    function update(String $uuid) {
+    function update(Request $request,String $uuid) {
+        $versiID = $uuid;
+        $jadwalID = $request->uuid;
+        $pelajaranID = $request->pelajaran;
+
+        $jadwal = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+            ['id_jadwal','=',$versiID],
+            ['uuid','=',$jadwalID]
+        ])->first();
+        $pelajaran = Pelajaran::where('pelajaran_singkat',$pelajaranID)->first();
         
+        //cek apakah ada di data ngajar
+        $ngajar = Ngajar::where([
+            ['id_kelas','=', $jadwal->kelas->uuid],
+            ['id_pelajaran','=',$pelajaran->uuid]
+        ])->first();
+
+        if($ngajar === null) {
+            return response()->json(["success" => false,"message" => "tidak ada Jam Mengajar untuk mata pelajaran ini"]);
+        } else {
+            $bentrok = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+                ['id_jadwal','=',$versiID],
+                ['id_hari',"=",$jadwal->id_hari],
+                ['id_waktu','=',$jadwal->id_waktu],
+                ['id_guru','=',$ngajar->id_guru],
+            ])->get();
+            if($bentrok->count() >= 1) {
+                return "Sudah ada ngajar di jam sama";
+            } else {
+                $jadwal->update([
+                    "id_pelajaran" => $pelajaran->uuid,
+                    "id_guru" => $ngajar->id_guru,
+                    "id_ngajar" => $ngajar->uuid,
+                    "jenis"=> "mapel"
+                ]);
+            }
+        }
     }
     /**
      * Generate - Generate Jadwal

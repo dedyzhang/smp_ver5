@@ -39,7 +39,7 @@
                                     @if(isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] === "")
                                         <td class="editable" data-kelas="{{$kelasItem->uuid}}" data-uuid="{{$array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['uuid']}}" contenteditable="true"></td>
                                     @elseif (isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] !== "")
-                                        <td></td>
+                                        <td>{{$array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['pelajaran_singkat']}}</td>
                                     @else
                                         <td></td>
                                     @endif
@@ -77,27 +77,44 @@
             cConfirm("Perhatian","Yakin untuk generate Jadwal<p class='fs-12'>Setelah generate maka jadwal sudah tidak bisa menambahkan waktu lagi</p>",GenerateJadwal);
         });
         $('table').on('blur','.editable',function() {
+            $('.editable').prop('contenteditable',false);
+            var ini = this;
             var pelajaran = $(this).text();
             var uuid = $(this).data('uuid');
-            var url = "route('jadwal.update',':id')";
+            var url = "{{route('jadwal.update',':id')}}";
             url = url.replace(':id',"{{$versi->uuid}}");
-            $(this).css({
-                'background':'url({{asset('img/loading.gif')}}) right no-repeat',
-                'background-size': 'contain',
-                'background-origin': 'content-box'
-            });
-            $.ajax({
-                type: :"put",
-                url: url,
-                data : {pelajaran : pelajaran,uuid: uuid},
-                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
-                success: function(data) {
-                    console.log(data);
-                },
-                error: function(data) {
-                    console.log(data);
-                }
-            });
+            if($(this).text() != "") {
+                $(this).css({
+                    'background':'url({{asset('img/loading.gif')}}) right no-repeat',
+                    'background-size': 'contain',
+                    'background-origin': 'content-box'
+                });
+                $.ajax({
+                    type:"put",
+                    url: url,
+                    data : {pelajaran : pelajaran,uuid: uuid},
+                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                    success: function(data) {
+                        console.log(data);
+                        $('.editable').prop('contenteditable',true);
+                        if(data.success == false) {
+                            $(ini).css({
+                                'background':'url({{asset('img/error.png')}}) right no-repeat',
+                                'background-size': 'contain',
+                                'background-origin': 'content-box'
+                            });
+                            $(ini).attr('data-bs-toggle','tooltip').attr('data-bs-title',data.message).attr('data-bs-placement','top');
+                        }
+                        
+                    },
+                    error: function(data) {
+                        console.log(data);
+                        $('.editable').prop('contenteditable',true);
+                    }
+                });
+            } else {
+                $('.editable').prop('contenteditable',true);
+            }
         });
     </script>
 @endsection
