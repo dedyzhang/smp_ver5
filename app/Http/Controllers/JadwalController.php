@@ -130,13 +130,6 @@ class JadwalController extends Controller
 
     }
     /**
-     * Show Ngajar - Tampilkan Ngajar
-     */
-    function showNgajar(String $uuid) {
-        $ngajar = Ngajar::with('pelajaran','guru','kelas')->where('id_pelajaran',$uuid)->get();
-        return $ngajar;
-    }
-    /**
      * Waktu - Menampilkan Waktu didalam Jadwal
      */
     function waktuIndex(String $uuid) : View {

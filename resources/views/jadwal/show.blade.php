@@ -9,38 +9,12 @@
         <a href="{{route('jadwal.waktu.index',$versi->uuid)}}" class="btn btn-sm btn-warning text-warning-emphasis"><i class="fas fa-clock"></i> Atur Waktu</a>
         <a class="btn btn-sm btn-success generate-jadwal"><i class="fas fa-recycle"></i> Generate Jadwal</a>
     </div>
-    <div class="body-contain-customize col-12 mt-3">
-        <div class="row m-0 p-0">
-            <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
-                <p>Jenis Jadwal</p>
-                <div class="form-check form-check-inline">
-                    <label for="mapel" class="form-check-label">Mapel</label>
-                    <input type="radio" name="jenis" id="mapel" value="mapel" class="form-check-input">
-                </div>
-                <div class="form-check form-check-inline">
-                    <label for="spesial" class="form-check-label">Spesial</label>
-                    <input type="radio" name="jenis" id="spesial" value="spesial" class="form-check-input">
-                </div>
-            </div>
-            <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 mapel-opsi" style="display: none">
-                <label for="pelajaran" class="mb-2">Pelajaran</label>
-                <select class="form-control" name="pelajaran" id="pelajaran">
-                    <option value="">Pilihlah Salah Satu</option>
-                    @foreach ($pelajaran as $plj)
-                        <option value="{{$plj->uuid}}">{{$plj->pelajaran_singkat}}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 spesial-opsi" style="display: none">
-                <label for="spesial" class="mb-2">Spesial</label>
-                <input type="text" class="form-control" name="spesial" id="spesial" placeholder="Masukkan Deskripsi Mapel">
-            </div>
-        </div>
-        <div class="row m-0 mt-3 p-0">
-            <div class="col-12">
-                <button class="btn btn-sm btn-warning simpan-mapel"><i class="fas fa-save"></i> Simpan</button>
-            </div>
-        </div>
+    <div class="body-contain-customize col-12">
+        <ul>
+        @foreach ($pelajaran as $item)
+            <li>{{$item->pelajaran_singkat}}</li>
+        @endforeach
+        </ul>
     </div>
     <div class="body-contain-customize col-12 mt-3">
         @foreach ($hari as $hariItem)
@@ -63,7 +37,7 @@
                                 <td>{{$waktuItem->waktu_mulai."-".$waktuItem->waktu_akhir}}</td>
                                 @foreach ($kelas as $kelasItem)
                                     @if(isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] === "")
-                                        <td><button data-kelas="{{$kelasItem->uuid}}" disabled class="btn btn-sm btn-success tambah-jadwal"><i class="fas fa-plus"></i></button></td>
+                                        <td class="editable" data-kelas="{{$kelasItem->uuid}}" contenteditable="true"></td>
                                     @elseif (isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] !== "")
                                         <td></td>
                                     @else
@@ -102,58 +76,16 @@
             };
             cConfirm("Perhatian","Yakin untuk generate Jadwal<p class='fs-12'>Setelah generate maka jadwal sudah tidak bisa menambahkan waktu lagi</p>",GenerateJadwal);
         });
-        $('input[name="jenis"]').change(function() {
-            var jenis = $('input[name="jenis"]:checked').val();
-            // alert(jenis);
-            if(jenis == "mapel") {
-                $('.mapel-opsi').css("display","block");
-                $('.spesial-opsi').css("display","none");
-            } else {
-                $('.mapel-opsi').css("display","none");
-                $('.spesial-opsi').css('display','block');
-            }
+        $('table').on('blur','.editable',function() {
+            var pelajaran = $(this).text();
+            $(this).css({
+                'background':'url({{asset('img/loading.gif')}}) right no-repeat',
+                'background-size': 'contain',
+                'background-origin': 'content-box'
+            });
+            $.ajax({
+                type: :"post",
+            });
         });
-        $('.simpan-mapel').click(function() {
-            var jenis = $('input[name="jenis"]:checked').val();
-            $('.tambah-jadwal').prop('disabled',true);
-            if(jenis == "mapel") {
-                var mapel = $('#pelajaran').val();
-                if(mapel == "") {
-                    oAlert("blue","Perhatian","pelajaran tidak boleh kosong");
-                } else {
-                    loading();
-                    url = "{{route('jadwal.showNgajar',':id')}}";
-                    url = url.replace(':id',mapel);
-                    $.ajax({
-                        type: "get",
-                        url: url,
-                        headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
-                        success: function(data) {
-                            var pelajaran = data;
-                            pelajaran.forEach(element => {
-                                var ngajarKelas = element.kelas.uuid;
-                                $('.tambah-jadwal').each(function() {
-                                    var kelas = $(this).data('kelas');
-                                    if(ngajarKelas == kelas) {
-                                        $(this).prop('disabled',false);
-                                    }
-                                })
-                            });
-                            removeLoading();
-                        },
-                        error: function(data) {
-                            console.log(data.responseJSON.message);
-                        }
-                    })
-                }
-            }
-        });
-        $('.tambah-jadwal').click(function() {
-            var pelajaran = $('#pelajaran option:selected').text();
-            var pelajaranID = $('#pelajaran').val();
-            var jenis = $('input[name="jenis"]:checked').val();
-
-            $(this).html(pelajaran).attr('class','btn btn-sm btn-danger hapus-jadwal');
-        })
     </script>
 @endsection
