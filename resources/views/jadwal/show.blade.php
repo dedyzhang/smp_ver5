@@ -37,7 +37,7 @@
                                 <td>{{$waktuItem->waktu_mulai."-".$waktuItem->waktu_akhir}}</td>
                                 @foreach ($kelas as $kelasItem)
                                     @if(isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] === "")
-                                        <td class="editable" data-kelas="{{$kelasItem->uuid}}" contenteditable="true"></td>
+                                        <td class="editable" data-kelas="{{$kelasItem->uuid}}" data-uuid="{{$array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['uuid']}}" contenteditable="true"></td>
                                     @elseif (isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] !== "")
                                         <td></td>
                                     @else
@@ -78,13 +78,25 @@
         });
         $('table').on('blur','.editable',function() {
             var pelajaran = $(this).text();
+            var uuid = $(this).data('uuid');
+            var url = "route('jadwal.update',':id')";
+            url = url.replace(':id',"{{$versi->uuid}}");
             $(this).css({
                 'background':'url({{asset('img/loading.gif')}}) right no-repeat',
                 'background-size': 'contain',
                 'background-origin': 'content-box'
             });
             $.ajax({
-                type: :"post",
+                type: :"put",
+                url: url,
+                data : {pelajaran : pelajaran,uuid: uuid},
+                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                success: function(data) {
+                    console.log(data);
+                },
+                error: function(data) {
+                    console.log(data);
+                }
             });
         });
     </script>

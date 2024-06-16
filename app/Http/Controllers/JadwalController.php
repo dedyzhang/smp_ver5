@@ -97,6 +97,12 @@ class JadwalController extends Controller
         return View('jadwal.show',compact('versi','array_jadwal','kelas','waktu','hari','pelajaran'));
     }
     /**
+     * Update - Update data didalam jadwal
+     */
+    function update(String $uuid) {
+        
+    }
+    /**
      * Generate - Generate Jadwal
      */
     function generate(String $uuid) {
