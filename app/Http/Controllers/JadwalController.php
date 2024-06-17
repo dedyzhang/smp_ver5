@@ -125,31 +125,75 @@ class JadwalController extends Controller
             ['uuid','=',$jadwalID]
         ])->first();
         $pelajaran = Pelajaran::where('pelajaran_singkat',$pelajaranID)->first();
-        
-        //cek apakah ada di data ngajar
-        $ngajar = Ngajar::where([
-            ['id_kelas','=', $jadwal->kelas->uuid],
-            ['id_pelajaran','=',$pelajaran->uuid]
-        ])->first();
 
-        if($ngajar === null) {
-            return response()->json(["success" => false,"message" => "tidak ada Jam Mengajar untuk mata pelajaran ini"]);
-        } else {
-            $bentrok = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
-                ['id_jadwal','=',$versiID],
-                ['id_hari',"=",$jadwal->id_hari],
-                ['id_waktu','=',$jadwal->id_waktu],
-                ['id_guru','=',$ngajar->id_guru],
-            ])->get();
-            if($bentrok->count() >= 1) {
-                return "Sudah ada ngajar di jam sama";
-            } else {
+        if($pelajaranID == "") {
+            if($jadwal->jenis != "spesial") {
                 $jadwal->update([
-                    "id_pelajaran" => $pelajaran->uuid,
-                    "id_guru" => $ngajar->id_guru,
-                    "id_ngajar" => $ngajar->uuid,
-                    "jenis"=> "mapel"
+                    "id_pelajaran" => "",
+                    "id_guru" => "",
+                    "id_ngajar" => "",
+                    "jenis"=> ""
                 ]);
+                return response()->json(["success" => true]);
+            } else {
+                $oldValue = $request->old;
+                $jadwal2 = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+                    ['id_jadwal','=',$versiID],
+                    ['spesial','=',$oldValue]
+                ]);
+                $jadwal2->update([
+                    'jenis' => "",
+                    "spesial" => ""
+                ]);
+                return response()->json(["success" => true,"reload" => true]);
+            }
+        } else if($pelajaran === null) {
+            if(str_starts_with($pelajaranID,'S.')) {
+                $split = explode('.',$pelajaranID);
+                $spesialString = end($split);
+                $jadwal->update([
+                    "id_pelajaran" => "",
+                    "id_guru" => "",
+                    "id_ngajar" => "",
+                    "jenis"=> "spesial",
+                    "spesial" => $spesialString
+                ]);
+                return response()->json(["success" => true,"spesial" => $spesialString]);
+            } else {
+                return response()->json(["success" => false,"message" => "Kode Pelajaran tidak ditemukan"]);
+            }
+
+        } else {
+            //cek apakah ada di data ngajar
+            $ngajar = Ngajar::where([
+                ['id_kelas','=', $jadwal->kelas->uuid],
+                ['id_pelajaran','=',$pelajaran->uuid]
+            ])->first();
+            if($ngajar === null) {
+                return response()->json(["success" => false,"message" => "tidak ada Jam Mengajar untuk mata pelajaran ini"]);
+            } else {
+                $bentrok = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+                    ['id_jadwal','=',$versiID],
+                    ['id_hari',"=",$jadwal->id_hari],
+                    ['id_waktu','=',$jadwal->id_waktu],
+                    ['id_guru','=',$ngajar->id_guru],
+                ])->first();
+
+                if($bentrok !== null) {
+                    return response()->json(["success" => false,"message" => "Sudah ada jam mengajar di jam yang sama"]);
+                } else {
+                    $jadwal->update([
+                        "id_pelajaran" => $pelajaran->uuid,
+                        "id_guru" => $ngajar->id_guru,
+                        "id_ngajar" => $ngajar->uuid,
+                        "jenis"=> "mapel"
+                    ]);
+                    $jadwal = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+                        ['id_jadwal','=',$versiID],
+                        ['uuid','=',$jadwalID]
+                    ])->first();
+                    return response()->json(["success" => true,"guru" => $jadwal->guru->nama]);
+                }
             }
         }
     }
@@ -161,6 +205,12 @@ class JadwalController extends Controller
         $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
         $waktu = JadwalWaktu::where('id_jadwal',$id_jadwal)->orderBy('waktu_mulai','ASC')->get();
         $hari = JadwalHari::orderBy('no_hari','ASC')->get();
+
+        $jadwal = Jadwal::where('id_jadwal',$id_jadwal);
+
+        if($jadwal->count() > 0) {
+            $jadwal->delete();
+        }
 
         $array_insert = array();
         foreach($hari as $hari) {
@@ -184,6 +234,7 @@ class JadwalController extends Controller
             }
         }
         $jadwalInsert = Jadwal::upsert($array_insert,['uuid']);
+
 
     }
     /**
