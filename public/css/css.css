@@ -2,6 +2,33 @@
     font-family: main;
     src: url("../fonts/Main.ttf");
 }
+/* Setup to print this div only */
+
+@media print {
+    body {
+        visibility: hidden;
+    }
+    .section-to-print {
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100% !important;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .section-to-print .table-item {
+        width: 50% !important;
+    }
+    .section-to-print .text-place {
+        width: 100%;
+    }
+    .section-to-print table tr td {
+        padding: 5px;
+        font-size: 8px;
+        min-width: 30px;
+    }
+}
 
 .fs-10 {
     font-size: 10px;

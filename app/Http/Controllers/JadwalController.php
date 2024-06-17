@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalHari;
 use App\Models\JadwalVer;
@@ -20,7 +21,49 @@ class JadwalController extends Controller
      */
     function index() : View {
         $jadwalVer = JadwalVer::orderBy('created_at','desc')->get();
-        return View('jadwal.index',compact('jadwalVer'));
+        $jadwalSekarang = JadwalVer::where('status','active')->first();
+        $array_jadwal = array();
+        if($jadwalSekarang !== null) {
+            $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
+            $waktu = JadwalWaktu::where('id_jadwal',$jadwalSekarang->uuid)->orderBy('waktu_mulai','ASC')->get();
+            $hari = JadwalHari::orderBy('no_hari','ASC')->get();
+            $jadwal = Jadwal::with('kelas','pelajaran','guru','ngajar')->where('id_jadwal',$jadwalSekarang->uuid)->get();
+            $pelajaran = Pelajaran::get()->sortBy('urutan');
+            $guruAll = Guru::get()->sortBy('nama');
+
+            foreach($jadwal as $item) {
+                if(isset($item->pelajaran)) {
+                    $pljran = $item->pelajaran->pelajaran;
+                    $pljran_singkat = $item->pelajaran->pelajaran_singkat;
+                } else {
+                    $pljran = "";
+                    $pljran_singkat = "";
+                }
+                if(isset($item->guru)) {
+                    $guru = $item->guru->nama;
+                } else {
+                    $guru = "";
+                }
+                $array_jadwal[$item->id_hari.".".$item->id_waktu.".".$item->id_kelas] = array(
+                    "uuid" => $item->uuid,
+                    "id_hari"=> $item->id_hari,
+                    "id_waktu" => $item->id_waktu,
+                    "id_kelas" => $item->id_kelas,
+                    "kelas" => $item->kelas->tingkat.$item->kelas->kelas,
+                    "id_pelajaran" => $item->id_pelajaran,
+                    "pelajaran" => $pljran,
+                    "pelajaran_singkat" => $pljran_singkat,
+                    "id_guru" => $item->id_guru,
+                    "guru" => $guru,
+                    "id_ngajar" => $item->id_ngajar,
+                    "jenis" => $item->jenis,
+                    "spesial" => $item->spesial
+                );
+            }
+            return View('jadwal.index',compact('jadwalVer','array_jadwal','kelas','waktu','hari','jadwalSekarang','guruAll'));
+        } else {
+            return View('jadwal.index',compact('jadwalVer','array_jadwal'));
+        }
     }
     /**
      * Create - Menampilkan Halaman Tambah Jadwal
@@ -139,6 +182,7 @@ class JadwalController extends Controller
                 $oldValue = $request->old;
                 $jadwal2 = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
                     ['id_jadwal','=',$versiID],
+                    ['id_hari','=',$request->hari],
                     ['spesial','=',$oldValue]
                 ]);
                 $jadwal2->update([
@@ -160,7 +204,20 @@ class JadwalController extends Controller
                 ]);
                 return response()->json(["success" => true,"spesial" => $spesialString]);
             } else {
-                return response()->json(["success" => false,"message" => "Kode Pelajaran tidak ditemukan"]);
+                if($jadwal->jenis == "spesial") {
+                    $oldValue = $request->old;
+                    $jadwal2 = Jadwal::with('kelas','pelajaran','guru','waktu','hari','ngajar')->where([
+                    ['id_jadwal','=',$versiID],
+                    ['id_hari','=',$request->hari],
+                    ['spesial','=',$oldValue]
+                    ]);
+                    $jadwal2->update([
+                        "spesial" => $pelajaranID
+                    ]);
+                    return response()->json(["success" => true,"spesial" => $pelajaranID]);
+                } else {
+                    return response()->json(["success" => false,"message" => "Kode Pelajaran tidak ditemukan"]);
+                }
             }
 
         } else {
@@ -177,9 +234,14 @@ class JadwalController extends Controller
                     ['id_hari',"=",$jadwal->id_hari],
                     ['id_waktu','=',$jadwal->id_waktu],
                     ['id_guru','=',$ngajar->id_guru],
-                ])->first();
-
-                if($bentrok !== null) {
+                ])->get();
+                $jumlahBentrok = $bentrok->count();
+                foreach($bentrok as $item) {
+                    if($item->id_ngajar != $ngajar->uuid) {
+                        $jumlahBentrok += 1;
+                    }
+                }
+                if($jumlahBentrok > 1) {
                     return response()->json(["success" => false,"message" => "Sudah ada jam mengajar di jam yang sama"]);
                 } else {
                     $jadwal->update([

@@ -30,7 +30,7 @@
         @foreach ($hari as $hariItem)
             <p class="fs-14"><b>{{$hariItem->nama_hari}}</b></p>
             <div class="table-responsive">
-                <table class="table table-bordered fs-11">
+                <table class="table table-bordered fs-11" data-hari="{{$hariItem->uuid}}" id="hari-{{$hariItem->nama_hari}}">
                     <thead>
                         <tr>
                             <td width="3%" style="min-width: 30px">No</td>
@@ -72,14 +72,18 @@
         var count = 0;
         var td = "";
         var spesial = "";
+        var hari = "";
         $(document).ready(function() {
+            BigLoading('Aplikasi sedang menampilkan jadwal');
             $('.spesial').each(function() {
+                var hariNow = $(this).closest('table').attr('id').split('-').pop();
                 if(count == 0) {
                     spesial = $(this).data('spesial');
                     td = this;
                     count++;
+                    hari = hariNow;
                 } else {
-                    if(spesial == $(this).data('spesial')) {
+                    if(spesial == $(this).data('spesial') && hari == hariNow ) {
                         count++;
                         $(td).attr('colspan',count);
                         $(this).hide();
@@ -87,9 +91,15 @@
                         spesial = $(this).data('spesial');
                         count = 1;
                         td = this;
+                        hari = hariNow;
                     }
                 }
             });
+            $('.spesial').promise().done(function() {
+                setTimeout(() => {
+                    removeLoadingBig();
+                }, 500);
+            })
         });
         $('.toggle-pengisian').click(function() {
             if($(this).hasClass('tutup')) {
@@ -133,6 +143,7 @@
             var ini = this;
             var pelajaran = $(this).text();
             var uuid = $(this).data('uuid');
+            var hari = $(this).closest('table').data('hari');
             var url = "{{route('jadwal.update',':id')}}";
             url = url.replace(':id',"{{$versi->uuid}}");
             if(textAwal != pelajaran) {
@@ -144,7 +155,7 @@
                 $.ajax({
                     type:"put",
                     url: url,
-                    data : {pelajaran : pelajaran,uuid: uuid,old: textAwal},
+                    data : {pelajaran : pelajaran,uuid: uuid,old: textAwal,hari: hari},
                     headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
                     success: function(data) {
                         $('.editable').prop('contenteditable',true);
