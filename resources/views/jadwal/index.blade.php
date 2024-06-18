@@ -59,6 +59,7 @@
         </div>
     @endcanany
     @if(!empty($array_jadwal))
+        @canany(['admin','kurikulum','kesiswaan','sapras','guru','kepalasekolah'])
         <div class="body-contain-customize col-12 mt-5">
             <div class="row m-0 p-0">
                 <div class="col-4 m-0 form-group">
@@ -72,7 +73,8 @@
                 </div>
             </div>
         </div>
-        <div class="body-contain-customize col-12 mt-3 section-to-print">
+        @endcanany
+        <div class="body-contain-customize col-12 mt-3 position-relative printable-jadwal">
             <div class="text-place">
                 <h6 class="fs-16 mb-1"><b>Jadwal Ver. {{$jadwalSekarang->versi}}</b></h6>
                 <p class="mb-1 fs-10"><i>Dibuat pada tanggal {{$jadwalSekarang->created_at}}</i></p>
@@ -211,7 +213,7 @@
             }
         });
         $('.print-jadwal').click(function() {
-
+            window.print();
         });
     </script>
 @endsection

@@ -8,7 +8,7 @@
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
 
-            {{-- For Admin --}}
+            {{-- Menu Guru --}}
             @can('admin')
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-data" class="menu-title" data-bs-toggle="collapse">
@@ -24,6 +24,7 @@
                     </ul>
                 </li>
             @endcan
+            {{-- Absensi --}}
             @canany(['admin','kurikulum'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-absensi" class="menu-title" data-bs-toggle="collapse">
@@ -36,7 +37,8 @@
                     </ul>
                 </li>
             @endcan
-            @canany(['kurikulum', 'guru','kesiswaan'])
+            {{-- Buku Guru --}}
+            @canany(['kurikulum', 'guru','kesiswaan','sapras'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-guru" class="menu-title" data-bs-toggle="collapse">
                         <i class="fa-solid fa-chalkboard-user"></i>
@@ -55,7 +57,20 @@
                     </ul>
                 </li>
             @endcan
-            @canany(['admin', 'kurikulum'])
+            @canany(['admin','kurikulum','guru','kesiswaan','sapras'])
+                <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                    <a href="#menu-agenda" class="menu-title" data-bs-toggle="collapse">
+                        <i class="fa-solid fa-address-book"></i>
+                        Agenda Guru
+                        <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                    </a>
+                    <ul class="submenu collapse" id="menu-agenda">
+                        <li class="submenu-list"><a href="{{ route('agenda.create') }}"> Tambah Agenda</a></li>
+                    </ul>
+                </li>
+            @endcan
+            {{-- Penilaian --}}
+            @canany(['admin', 'kurikulum','kepalasekolah'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-pelajaran" class="menu-title" data-bs-toggle="collapse">
                         <i class="fa-solid fa-book"></i>
@@ -70,6 +85,7 @@
                     </ul>
                 </li>
             @endcan
+            {{-- Jadwal --}}
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-jadwal" class="menu-title" data-bs-toggle="collapse">
                     <i class="fa-solid fa-clock"></i>
@@ -78,7 +94,7 @@
                 </a>
                 <ul class="submenu collapse" id="menu-jadwal">
                     <li class="submenu-list"><a href="{{ route('jadwal.index') }}"> Jadwal Pelajaran</a></li>
-                    <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Jadwal Akademik</a></li>
+                    {{-- <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Jadwal Akademik</a></li> --}}
                 </ul>
             </li>
         </ul>

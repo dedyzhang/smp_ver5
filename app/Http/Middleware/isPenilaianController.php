@@ -22,6 +22,7 @@ class isPenilaianController
             || auth()->user()->access === 'kurikulum'
             || auth()->user()->access === 'kesiswaan'
             || auth()->user()->access === 'guru'
+            || auth()->user()->access === 'sapras'
             ) {
                 return $next($request);
             } else {

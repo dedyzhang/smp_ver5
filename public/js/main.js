@@ -108,4 +108,6 @@ $(document).ready(function () {
             selection.addRange(range);
         }
     };
+    //Install select2
+    $('select[data-toggle="select"]').select2();
 });

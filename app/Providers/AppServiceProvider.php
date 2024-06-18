@@ -51,8 +51,20 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('kesiswaan',function(){
             return Auth::user()->access === "kesiswaan";
         });
+        Gate::define('sapras',function(){
+            return Auth::user()->access === "sapras";
+        });
         Gate::define('guru',function(){
             return Auth::user()->access === "guru";
+        });
+        Gate::define('siswa',function(){
+            return Auth::user()->access === "siswa";
+        });
+        Gate::define('orangtua',function(){
+            return Auth::user()->access === "orangtua";
+        });
+        Gate::define('kepalasekolah',function(){
+            return Auth::user()->access === "kepalasekolah";
         });
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsensiController;
+use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -171,8 +172,9 @@ Route::middleware(IsAdminKurikulum::class)->controller(AbsensiController::class)
 
 
 // {----------------------------------------------Halaman Jadwal-------------------------------------------------------------}
+Route::get('/jadwal',[JadwalController::class,'index'])->name('jadwal.index')->middleware('auth');
+
 Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)->group(function() {
-    Route::get('/jadwal','index')->name('jadwal.index');
     Route::get('/jadwal/create','create')->name('jadwal.create');
     Route::post('/jadwal/create','store')->name('jadwal.store');
     Route::post('/jadwal/edit','edit')->name('jadwal.edit');
@@ -185,4 +187,11 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
     Route::get('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuEdit')->name('jadwal.waktu.edit');
     Route::put('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit','waktuUpdate')->name('jadwal.waktu.update');
     Route::delete('/jadwal/{uuid}/show/waktu/{waktuUUID}/delete','waktuDelete')->name('jadwal.waktu.delete');
+});
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {----------------------------------------------Halaman Agenda-------------------------------------------------------------}
+Route::middleware(isNgajar::class)->controller(AgendaController::class)->group(function() {
+    Route::get('/agenda','create')->name('agenda.create');
+    Route::get('/agenda/cektanggal','cektanggal')->name('agenda.cekTanggal');
 });
