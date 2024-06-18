@@ -39,6 +39,14 @@
                                 $(ini).removeClass('is-invalid');
                                 $(ini).closest('.form-group').find('.invalid-feedback').remove();
                             }
+                            var pelajaran = data;
+                            
+                            pelajaran.forEach(element => {
+                                var newOption = new Option(element.kelas.tingkat+element.kelas.kelas,element.uuid,false,false);
+                                alert(newOption);
+                                $('#jadwal').append(newOption).trigger('change');    
+                            });
+                            $('#jadwal').html(option);
                             console.log(data);
                         } else {
                             $(ini).addClass('is-invalid');
