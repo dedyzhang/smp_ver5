@@ -194,4 +194,5 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
 Route::middleware(isNgajar::class)->controller(AgendaController::class)->group(function() {
     Route::get('/agenda','create')->name('agenda.create');
     Route::get('/agenda/cektanggal','cektanggal')->name('agenda.cekTanggal');
+    Route::get('/agenda/cekjadwal','cekjadwal')->name('agenda.cekJadwal');
 });

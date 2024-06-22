@@ -109,5 +109,9 @@ $(document).ready(function () {
         }
     };
     //Install select2
-    $('select[data-toggle="select"]').select2();
+    $('select[data-toggle="select"]').select2({
+        theme: "bootstrap-5",
+        selectionCssClass: "select2--small",
+        dropdownCssClass: "select2--small",
+    });
 });

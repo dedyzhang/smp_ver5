@@ -41,4 +41,7 @@ class Jadwal extends Model
     public function waktu() {
         return $this->belongsTo(JadwalWaktu::class,'id_waktu');
     }
+    public function siswa() {
+        return $this->belongsToMany(Siswa::class,'kelas','uuid','uuid','id_kelas','id_kelas');
+    }
 }
