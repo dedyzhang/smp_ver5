@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('jadwal')}}
     <div class="body-contain-customize col-12">
         <h5><b>Jadwal Pelajaran</b></h5>
         <p>Jadwal pelajaran mengatur dan mengkoordinasikan berbagai kegiatan pembelajaran secara sistematis, sehingga siswa dan pengajar dapat mengetahui kapan dan di mana mereka harus berada untuk mengikuti pelajaran tertentu.</p>
@@ -22,7 +23,7 @@
         </div>
         <div class="row m-0 p-0 mt-3">
             @foreach ($jadwalVer as $version)
-                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 p-2">
                     <div class="card rounded-4 border-light" data-uuid="{{$version->uuid}}">
                         <div class="card-body">
                             <h5><i class="fas fa-clock"></i> <b>Ver. {{$version->versi}}</b></h5>

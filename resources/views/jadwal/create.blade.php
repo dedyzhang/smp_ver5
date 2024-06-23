@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('jadwal-create')}}
     <div class="body-contain-customize col-12">
         <p><b>Tambahkan Versi Jadwal</b></p>
         <form action="{{route('jadwal.store')}}" method="post">

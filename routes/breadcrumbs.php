@@ -1,6 +1,10 @@
 <?php
 
+use App\Models\Agenda;
 use App\Models\Guru;
+use App\Models\Jadwal;
+use App\Models\JadwalVer;
+use App\Models\JadwalWaktu;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
@@ -145,4 +149,39 @@ Breadcrumbs::for('absensi',function(BreadcrumbsTrail $trail){ $trail->push('Abse
 Breadcrumbs::for('absensi-create',function(BreadcrumbsTrail $trail){
     $trail->parent('absensi');
     $trail->push('Tambah',route('absensi.create'));
+});
+
+//Jadwal.Breadcrumbs
+Breadcrumbs::for('jadwal',function(BreadcrumbsTrail $trail){ $trail->push('Jadwal',route('jadwal.index'));});
+Breadcrumbs::for('jadwal-create',function(BreadcrumbsTrail $trail){
+    $trail->parent('jadwal');
+    $trail->push('Create',route('jadwal.create'));
+});
+Breadcrumbs::for('jadwal-versi-show',function(BreadcrumbsTrail $trail,JadwalVer $versi){
+    $trail->parent('jadwal');
+    $trail->push('Ver. '.$versi->versi,route('jadwal.show',$versi));
+});
+Breadcrumbs::for('jadwal-versi-waktu',function(BreadcrumbsTrail $trail,JadwalVer $versi){
+    $trail->parent('jadwal-versi-show',$versi);
+    $trail->push('Waktu',route('jadwal.waktu.index',$versi));
+});
+Breadcrumbs::for('jadwal-versi-waktu-create',function(BreadcrumbsTrail $trail,JadwalVer $versi){
+    $trail->parent('jadwal-versi-waktu',$versi);
+    $trail->push('Create',route('jadwal.waktu.create',$versi));
+});
+Breadcrumbs::for('jadwal-versi-waktu-edit',function(BreadcrumbsTrail $trail,String $uuid,JadwalWaktu $waktu){
+    $versi = JadwalVer::findOrFail($uuid);
+    $trail->parent('jadwal-versi-waktu',$versi);
+    $trail->push('Edit',route('jadwal.waktu.edit',['uuid' => $uuid,'waktuUUID' => $waktu->uuid]));
+});
+
+//Agenda.Breadcrumbs
+Breadcrumbs::for('agenda',function(BreadcrumbsTrail $trail){ $trail->push('Agenda',route('agenda.index'));});
+Breadcrumbs::for('agenda-create',function(BreadcrumbsTrail $trail){
+    $trail->parent('agenda');
+    $trail->push('Create',route('agenda.create'));
+});
+Breadcrumbs::for('agenda-edit',function(BreadcrumbsTrail $trail,Agenda $agenda, Kelas $kelas, Pelajaran $pelajaran, JadwalWaktu $waktu){
+    $trail->parent('agenda');
+    $trail->push($kelas->tingkat.$kelas->kelas." - ".$pelajaran->pelajaran_singkat."( ".$waktu->waktu_mulai." )",route('agenda.edit',$agenda->uuid));
 });

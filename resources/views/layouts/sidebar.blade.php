@@ -61,11 +61,11 @@
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                     <a href="#menu-agenda" class="menu-title" data-bs-toggle="collapse">
                         <i class="fa-solid fa-address-book"></i>
-                        Agenda Guru
+                        Buku Agenda
                         <i class="indicator-icon fa-solid fa-chevron-right"></i>
                     </a>
                     <ul class="submenu collapse" id="menu-agenda">
-                        <li class="submenu-list"><a href="{{ route('agenda.create') }}"> Tambah Agenda</a></li>
+                        <li class="submenu-list"><a href="{{ route('agenda.index') }}">Lihat Agenda</a></li>
                     </ul>
                 </li>
             @endcan

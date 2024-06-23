@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('jadwal-versi-waktu-edit',$uuid,$waktuJadwal)}}
     <div class="body-contain-customize col-12">
         <h5><b>Edit Waktu</b></h5>
         <p>Mengedit Waktu dalam Jadwal Pelajaran</p>

@@ -192,7 +192,18 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
 
 // {----------------------------------------------Halaman Agenda-------------------------------------------------------------}
 Route::middleware(isNgajar::class)->controller(AgendaController::class)->group(function() {
-    Route::get('/agenda','create')->name('agenda.create');
+    Route::get('/agenda','index')->name('agenda.index');
+    Route::get('/agenda/create','create')->name('agenda.create');
+    Route::get('/agenda/{uuid}/show','show')->name('agenda.show');
+    Route::get('/agenda/{uuid}/edit','edit')->name('agenda.edit');
+    Route::post('/agenda/{uuid}/edit','update')->name('agenda.update');
+    Route::get('/agenda/create/{uuid}','createWithID')->name('agenda.createID');
+    Route::post('/agenda/create','store')->name('agenda.store');
     Route::get('/agenda/cektanggal','cektanggal')->name('agenda.cekTanggal');
     Route::get('/agenda/cekjadwal','cekjadwal')->name('agenda.cekJadwal');
+    Route::post('/agenda/{uuid}/edit/absensi','storeAbsensi')->name('agenda.store.absensi');
+    Route::post('/agenda/{uuid}/edit/pancasila','storePancasila')->name('agenda.store.pancasila');
+    Route::delete('/agenda/{uuid}/delete/absensi','deleteAbsensi')->name('agenda.delete.absensi');
+    Route::delete('/agenda/{uuid}/delete/pancasila','deletePancasila')->name('agenda.delete.pancasila');
+
 });

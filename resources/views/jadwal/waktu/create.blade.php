@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('jadwal-versi-waktu-create',$versi)}}
     <div class="body-contain-customize col-12">
         <h5><b>Tambah Waktu</b></h5>
         <p>Penambahan Waktu dalam Jadwal Pelajaran</p>

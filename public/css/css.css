@@ -670,25 +670,3 @@ table.dataTables tbody td {
     flex-wrap: wrap;
     width: 4rem;
 }
-/* Tombol di tambah jadwal */
-
-.tambah-jadwal {
-    font-size: 10px;
-    padding: 3px 5px;
-}
-.hapus-jadwal {
-    font-size: 10px;
-    padding: 3px 5px;
-}
-/* atur select2 punya font */
-.select2-results__option {
-    font-size: 12px;
-}
-.select2.select2-container {
-    font-size: 12px;
-}
-.select2.select2-container .select2-selection {
-    height: 32px;
-    border-radius: 5px;
-    border: 1px solid #dbdada;
-}

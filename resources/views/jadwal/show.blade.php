@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('jadwal-versi-show',$versi)}}
     <div class="body-contain-customize col-12">
         <h5>Jadwal Ver {{$versi->versi}}</h5>
         <p>Pengaturan Jadwal seperti penambahan Waktu dan pengaturan Jam Mata Pelajaran</p>
@@ -20,9 +21,9 @@
             <li>Untuk Jadwal Spesial seperti upacara,senam, dll. Ketik "S." disusul dengan keterangan jadwal spesial berikut. Contohnya <i><b>S.Upacara</b></i></li>
         </ol>
         <p class="mt-2 mb-1"><b>List Mata Pelajaran</b></p>
-        <ul class="d-inline-flex m-0 p-0">
+        <ul class="d-inline-flex m-0 p-0 flex-wrap">
         @foreach ($pelajaran as $item)
-            <li class="d-block" style="width: 80px">{{$item->pelajaran_singkat}}</li>
+            <li class="d-block pb-2" style="width: 80px">{{$item->pelajaran_singkat}}</li>
         @endforeach
         </ul>
     </div>
