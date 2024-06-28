@@ -168,6 +168,10 @@ Route::middleware(IsAdminKurikulum::class)->controller(AbsensiController::class)
     Route::post('/absensi/store','store')->name('absensi.store');
     Route::delete('/absensi/destroy','destroy')->name('absensi.destroy');
 });
+Route::get('/absensi/kehadiran',[AbsensiController::class,'kehadiranIndex'])->name('absensi.kehadiran')->middleware('auth');
+Route::get('/absensi/kehadiran/histori',[AbsensiController::class,'kehadiranHistori'])->name('absensi.kehadiran.histori')->middleware('auth');
+Route::get('/absensi/kehadiran/hadir/{jenis}',[AbsensiController::class,'kehadiranHadir'])->name('absensi.kehadiran.hadir')->middleware('auth');
+Route::post('/absensi/kehadiran/hadir/{jenis}',[AbsensiController::class,'kehadiranStoreHadir'])->name('absensi.kehadiran.hadir')->middleware('auth');
 // {----------------------------------------------------End------------------------------------------------------------------}
 
 
