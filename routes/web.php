@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -209,5 +210,12 @@ Route::middleware(isNgajar::class)->controller(AgendaController::class)->group(f
     Route::post('/agenda/{uuid}/edit/pancasila','storePancasila')->name('agenda.store.pancasila');
     Route::delete('/agenda/{uuid}/delete/absensi','deleteAbsensi')->name('agenda.delete.absensi');
     Route::delete('/agenda/{uuid}/delete/pancasila','deletePancasila')->name('agenda.delete.pancasila');
+});
+// {----------------------------------------------------END------------------------------------------------------------------}
 
+// {---------------------------------------------Halaman Classroom------------------------------------------------------------}
+Route::middleware(isNgajar::class)->controller(ClassroomController::class)->group(function() {
+    Route::get('/classroom','index')->name('classroom.index');
+    Route::get('/classroom/{uuid}/show','show')->name('classroom.show');
+    Route::get('/classroom/{uuid}/create/{jenis}','create')->name('classroom.create');
 });

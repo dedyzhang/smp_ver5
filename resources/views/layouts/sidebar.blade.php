@@ -87,6 +87,10 @@
                     </ul>
                 </li>
             @endcan
+            {{-- Classroom --}}
+            @canany(['guru','kesiswaan','sapras'])
+                <li class="menu-list"><a href="{{route('classroom.index')}}"> <i class="fa-solid fa-home"></i> Classroom</a></li>
+            @endcan
             {{-- Jadwal --}}
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-jadwal" class="menu-title" data-bs-toggle="collapse">
