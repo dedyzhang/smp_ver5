@@ -114,4 +114,20 @@ $(document).ready(function () {
         selectionCssClass: "select2--small",
         dropdownCssClass: "select2--small",
     });
+    //File Input Plugins installation
+    $(".file-input").fileinput();
+    //Tinymce Installation
+    tinymce.init({
+        selector: ".tinymce-select",
+        external_plugins: {
+            tiny_mce_wiris:
+                "https://cdn.jsdelivr.net/npm/@wiris/mathtype-tinymce6@8.10.0/plugin.min.js",
+        },
+        plugins:
+            "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage advtemplate mentions tableofcontents footnotes mergetags autocorrect typography inlinecss markdown",
+        toolbar1:
+            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough  tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry removeformat",
+        toolbar2:
+            "link image media table mergetags | hecklist numlist bullist indent outdent | align lineheight",
+    });
 });
