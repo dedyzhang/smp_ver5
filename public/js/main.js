@@ -115,7 +115,9 @@ $(document).ready(function () {
         dropdownCssClass: "select2--small",
     });
     //File Input Plugins installation
-    $(".file-input").fileinput();
+    $(".file-input").fileinput({
+        showUpload: false,
+    });
     //Tinymce Installation
     tinymce.init({
         selector: ".tinymce-select",
@@ -130,4 +132,5 @@ $(document).ready(function () {
         toolbar2:
             "link image media table mergetags | hecklist numlist bullist indent outdent | align lineheight",
     });
+    //Get Key by value
 });

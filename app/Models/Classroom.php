@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Classroom extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
     protected $table = 'classroom';
     protected $fillable = [
@@ -26,4 +26,9 @@ class Classroom extends Model
         'status',
         'token'
     ];
+
+    public function ngajar()
+    {
+        return $this->belongsTo(Ngajar::class, 'id_ngajar');
+    }
 }

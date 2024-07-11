@@ -15,14 +15,16 @@ class isPenilaianController
      */
     public function handle(Request $request, Closure $next): Response
     {
-       if(!auth()->check()) {
+        if (!auth()->check()) {
             return redirect('/login');
         } else {
-            if(auth()->user()->access === 'admin'
-            || auth()->user()->access === 'kurikulum'
-            || auth()->user()->access === 'kesiswaan'
-            || auth()->user()->access === 'guru'
-            || auth()->user()->access === 'sapras'
+            if (
+                auth()->user()->access === 'admin'
+                || auth()->user()->access === 'kurikulum'
+                || auth()->user()->access === 'kesiswaan'
+                || auth()->user()->access === 'guru'
+                || auth()->user()->access === 'sapras'
+                || auth()->user()->access === 'kepalasekolah'
             ) {
                 return $next($request);
             } else {

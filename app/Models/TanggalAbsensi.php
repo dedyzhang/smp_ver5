@@ -8,12 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class TanggalAbsensi extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
     protected $table = 'absensi_tanggal';
     protected $fillable = [
         'tanggal',
-        'minggu_ke',
         'agenda',
         'ada_siswa',
         'semester'

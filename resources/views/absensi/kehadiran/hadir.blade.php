@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('absensi-kehadiran-hadir',$jenis)}}
     @if ($jenis == "datang")
         <audio id="audioAbsen" src="{{asset('files/datang.wav')}}"></audio>
     @else

@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('classroom-show',$ngajar->pelajaran, $ngajar->kelas,$ngajar)}}
     <div class="body-contain-customize col-12">
         <h5><b>Classroom</b></h5>
         <p>Halaman ini digunakan guru untuk membuat materi pembelajaran maupun mengupload file pembelajaran yang akan diakses oleh siswa bersangkutan</p>
@@ -34,5 +35,120 @@
             <a href="{{route('classroom.create',['uuid' => $ngajar->uuid,'jenis' => 'materi'])}}" class="btn btn-sm btn-warning text-warning-emphasis"><i class="fas fa-plus"></i> Tambah Materi Pembelajaran</a>
             <a href="{{route('classroom.create',['uuid' => $ngajar->uuid,'jenis' => 'latihan'])}}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Tambah Latihan</a>
         </div>
+    </div>
+    <div id="aspect-content">
+        @foreach ($classroom as $item)
+            <div class="aspect-tab @if ($item->status == "save")
+                bg-warning-subtle
+            @endif">
+                <input id="item-{{$item->uuid}}" type="checkbox" class="aspect-input" name="aspect">
+                <label for="item-{{$item->uuid}}" class="aspect-label"></label>
+                <div class="aspect-content">
+                    <div class="aspect-info">
+                        <div class="chart-pie negative over50">
+                            <span class="chart-pie-count">0</span>
+                            <div>
+                                <div class="first-fill"></div>
+                                <div class="second-fill" style="transform: rotate(249deg)"></div>
+                            </div>
+                        </div>
+                        <div class="aspect-name">
+                            <p class="m-0 text-secondary"><b>{{ucwords($item->jenis)}}</b></p>
+                            <p class="m-0">{{$item->judul}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="aspect-tab-content">
+                    <div class="sentiment-wrapper">
+                        <div>
+                            <div>
+                                <div class="opinion-header fs-10 text-danger">TANGGAL POST : {{date('d F Y, H:i:s',strtotime($item->tanggal_post))}}</div>
+                                <div>
+                                    <div>{{$item->deskripsi}}</div>
+                                    <div class="token-place mt-3">
+                                        TOKEN : {{$item->token}}
+                                    </div>
+                                    <div class="button-place mt-3 gap-2 d-grid d-sm-grid d-md-flex d-xl-flex d-lg-flex">
+                                        @if ($item->status == "assign")
+                                            <a href="{{route('classroom.preview',['uuid' => $ngajar->uuid,'uuidClassroom' => $item->uuid])}}" class="btn btn-sm btn-warning text-warning-emphasis">
+                                                <i class="fas fa-pencil"></i> Preview
+                                            </a>
+                                            <button class="btn btn-sm btn-primary">
+                                                <i class="fas fa-recycle"></i> Reset Token
+                                            </button>
+                                            <button class="btn btn-sm btn-danger">
+                                                <i class="fas fa-times"></i> Tutup Token
+                                            </button>
+                                        @else
+                                            <a href="{{route('classroom.edit',['uuid' => $ngajar->uuid,'uuidClassroom' => $item->uuid])}}" class="btn btn-sm btn-warning text-warning-emphasis">
+                                                <i class="fas fa-pencil"></i> Edit Materi
+                                            </a>
+                                            <button class="btn btn-sm btn-primary assign-materi" data-uuid="{{$item->uuid}}">
+                                                <i class="fas fa-book-open"></i> Assign Materi
+                                            </button>
+                                            <button class="btn btn-sm btn-danger delete-materi" data-uuid="{{$item->uuid}}">
+                                                <i class="fas fa-trash-can"></i> Delete Materi
+                                            </button>
+                                        @endif
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+        <script>
+            $('.assign-materi').click(function() {
+                var uuid = $(this).data('uuid');
+                var assignMateri = () => {
+                    loading();
+                    var route = "{{route('classroom.assign',':id')}}";
+                    route = route.replace(':id',uuid);
+                    $.ajax({
+                        type: "POST",
+                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                        url: route,
+                        success: function(data) {
+                            if(data.success == true) {
+                                cAlert("green","Berhasil","Classroom berhasil di Assign",true);
+                            }
+                            console.log(data);
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON.message);
+                        }
+                    })
+                }
+                cConfirm("Perhatian","Yakin untuk Assign Materi ini, setelah Materi Diassign, Maka Guru tidak bisa membatalkannya",assignMateri);
+            });
+            $('.delete-materi').click(function() {
+                var uuid = $(this).data('uuid');
+                var deleteMateri = () => {
+                    var deleteAll = $('#check-delete-all').is(':checked');
+                    loading();
+                    var route = "{{route('classroom.delete',':id')}}";
+                    route = route.replace(':id',uuid);
+                    $.ajax({
+                        type: "delete",
+                        data: {deleteAll : deleteAll},
+                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                        url: route,
+                        success: function(data) {
+                            if(data.success == true) {
+                                cAlert("green","Berhasil","Classroom berhasil di Delete",true);
+                            }
+                            console.log(data);
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON.message);
+                        }
+                    });
+                }
+                cConfirm("Perhatian","<p>Yakin Untuk Delete Materi</p><div class='form-check'><label for='check-delete-all'>Hapus Semua Materi Yang Sama</label><input type='checkbox' class='form-check-input' id='check-delete-all' value='yes'/></div>",deleteMateri);
+            });
+        </script>
     </div>
 @endsection

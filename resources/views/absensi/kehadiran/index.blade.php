@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('absensi-kehadiran')}}
     <div class="body-contain-customize col-12">
         <h5><b>Absensi Kehadiran</b></h5>
         <p>Halaman ini peruntukkan untuk user melakukan absensi kehadiran dan pulang</p>
