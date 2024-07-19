@@ -200,6 +200,23 @@ class AbsensiController extends Controller
         return View('absensi.kehadiran.histori', compact('absensi_array', 'tanggal'));
     }
 
+    public function rekapAbsensi(Request $request)
+    {
+        $dari = date($request->dari);
+        $sampai = date($request->sampai);
+
+        $absensi = TanggalAbsensi::whereBetween('tanggal', [$dari, $sampai])->get();
+        $tanggal_array = $absensi->map->only('uuid');
+        $guru = Guru::orderBy('nama', 'asc')->get();
+        $absensiGuru = AbsensiGuru::whereIn('id_tanggal', $tanggal_array)->get();
+        $absen_array = array();
+        foreach ($absensiGuru as $item) {
+            $absen_array[$item->id_tanggal . "." . $item->id_guru][$item->jenis] = date('H:i', strtotime($item->waktu));
+        }
+
+        return response()->json(["tanggal" => $absensi, "absensi" => $absen_array, "guru" => $guru]);
+    }
+
     /**
      * --------------------Siswa-----------------------
      */

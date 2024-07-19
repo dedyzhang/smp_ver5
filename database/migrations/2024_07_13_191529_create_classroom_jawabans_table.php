@@ -11,13 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('absensi_siswa', function (Blueprint $table) {
+        Schema::create('classroom_jawaban', function (Blueprint $table) {
             $table->uuid()->primary();
-            $table->foreignUuid('id_tanggal');
+            $table->foreignUuid('id_classroom');
             $table->foreignUuid('id_siswa');
-            $table->foreignUuid('waktu')->nullable();
-            $table->string('absensi')->nullable();
-            $table->string('keterangan')->nullable();
+            $table->text('jawaban')->nullable();
+            $table->integer('nilai')->nullable();
+            $table->boolean('selesai')->nullable();
+            $table->string('status')->nullable();
+            $table->text('komentar')->nullable();
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('absensi_siswa');
+        Schema::dropIfExists('classroom_jawabans');
     }
 };

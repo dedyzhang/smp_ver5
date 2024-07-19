@@ -72,7 +72,71 @@
             <button class="btn btn-sm btn-primary save-materi"><i class="fas fa-save"></i> Save Materi</button>
         </div>
     @else
-
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>A. Detail Latihan Pembelajaran</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                    <label for="judul">Judul Materi</label>
+                    <input type="text" name="judul" id="judul" class="form-control validate" placeholder="Masukkan Judul Materi">
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="kelas">Kelas Yang Dituju</label>
+                    <select class="form-control validate" data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
+                        <option value="">Pilih Kelas Yang Dituju</option>
+                        @foreach ($list_ngajar as $element)
+                            <option
+                                @if ($element->uuid == $ngajar->uuid)
+                                    selected
+                                @endif
+                            value="{{$element->uuid}}">{{$element->pelajaran_singkat." ".$element->tingkat.$element->kelas}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                    <label for="deskripsi">Deskripsi</label>
+                    <textarea class="form-control validate" name="deskripsi" rows="4" id="deskripsi" placeholder="Masukkan Deskripsi Pembelajaran"></textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="waktu">Tanggal & Jam Harus Selesai</label>
+                    <input type="datetime-local" class="form-control validate" name="waktu" id="waktu">
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="token">Kunci Layar</label>
+                    <select class="form-control validate" data-toggle="select" name="token" id="token" >
+                        <option value="tidak">tidak</option>
+                        <option value="iya">iya</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>B. Isi Latihan Pembelajaran</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="file">Upload File</label>
+                    <p>File Boleh diupload lebih dari 1, Maksimal 5. Gunakan (ctrl + klik) kiri mouse untuk memilih file lebih dari 1</p>
+                    <input type="file" name="file" id="file" class="file-input" multiple class="form-control" placeholder="Masukkan Judul Materi">
+                </div>
+            </div>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="link">Link Youtube</label>
+                    <input type="text" name="link" id="link" class="form-control" placeholder="Masukkan Link Youtube">
+                </div>
+            </div>
+        </div>
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>C. Deskripsi Latihan Pembelajaran</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="deskripsiMateri">Deskripsi Materi</label>
+                    <textarea class="tinymce-select" id="deskripsiMateri"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="body-contain-customize col-12 mt-3">
+            <button class="btn btn-sm btn-primary save-materi"><i class="fas fa-save"></i> Save Latihan</button>
+        </div>
     @endif
     <script>
         $('.save-materi').click(function() {
@@ -107,11 +171,11 @@
                 formdata.append('link',$('#link').val());
                 var myContent = tinymce.get("deskripsiMateri").getContent();
                 formdata.append('isi',myContent);
-                formdata.append('status','save');
+                formdata.append('status',"save");
 
-                var route = "{{route('classroom.store',['uuid' => ':id','jenis' => 'materi'])}}";
+                var route = "{{route('classroom.store',['uuid' => ':id','jenis' => ':id2'])}}";
                 var backRoute = "{{route('classroom.show',':id')}}";
-                route = route.replace(':id','{{$ngajar->uuid}}');
+                route = route.replace(':id','{{$ngajar->uuid}}').replace(':id2','{{$jenis}}');
                 backRoute = backRoute.replace(':id','{{$ngajar->uuid}}');
                 $.ajax({
                     type: "post",
@@ -122,6 +186,7 @@
                     processData: false,
                     enctype: 'multipart/form-data',
                     success: function(data) {
+                        console.log(data);
                         if(data.success == true) {
                             removeLoadingBig();
                             cAlert("green","Berhasil","Classroom Berhasil Disimpan",false,backRoute);

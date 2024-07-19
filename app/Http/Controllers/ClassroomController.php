@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classroom;
+use App\Models\ClassroomJawaban;
 use App\Models\ClassroomSiswa;
 use App\Models\Guru;
 use App\Models\Ngajar;
@@ -105,6 +106,58 @@ class ClassroomController extends Controller
                     "jenis" => "materi",
                     "judul" => $judul,
                     "tanggal_post" => $tanggalPost,
+                    "deskripsi" => $deskripsi,
+                    "file" => $namafile,
+                    "link" => $link,
+                    "isi" => $isi,
+                    "show_nilai" => false,
+                    "status" => $status,
+                    "token" => $token
+                ));
+            }
+            Classroom::upsert($input_array, ['uuid']);
+            return response()->json(["success" => true]);
+        } else {
+            $ngajar = Ngajar::findOrFail($uuid);
+            $idBahan = "H" . rand(100000, 999999);
+            $judul = $request->judul;
+            $deskripsi = $request->deskripsi;
+            $link = $request->link;
+            $isi = $request->isi;
+            $adaToken = $request->token;
+            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $status = $request->status;
+            if ($adaToken == "tidak") {
+                $token = "XXXX";
+            } else {
+                $token = rand(1000, 9999);
+            }
+
+            //Cek Ada File
+            $adafile = $request->adafile;
+            $namafile = "";
+
+            if ($adafile == "ada") {
+                foreach ($request->file('files') as $file) {
+                    $ext = $file->extension();
+                    $filename = $file->hashName();
+                    $file->storeAs('public/classroom/teacher', $filename);
+                    $namafile .= $filename . ",";
+                }
+                $namafile = substr($namafile, 0, -1);
+            }
+
+            $input_array = array();
+            $kelas = explode(',', $request->kelas);
+            foreach ($kelas as $item) {
+                array_push($input_array, array(
+                    "id_bahan" => $idBahan,
+                    "id_ngajar" => $item,
+                    "jenis" => "latihan",
+                    "judul" => $judul,
+                    "tanggal_post" => $tanggalPost,
+                    "tanggal_due" => $tanggalSelesai,
                     "deskripsi" => $deskripsi,
                     "file" => $namafile,
                     "link" => $link,
@@ -231,6 +284,90 @@ class ClassroomController extends Controller
             }
             Classroom::upsert($input_array, ['uuid']);
             return response()->json(["success" => true]);
+        } else {
+            $ngajar = Ngajar::findOrFail($uuid);
+            $classroom = Classroom::findOrFail($uuidClassroom);
+            $classroomAll = Classroom::where('id_bahan', $classroom->id_bahan);
+
+            $judul = $request->judul;
+            $deskripsi = $request->deskripsi;
+            $link = $request->link;
+            $isi = $request->isi;
+            $adaToken = $request->token;
+            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $status = $request->status;
+            if ($adaToken == "tidak") {
+                $token = "XXXX";
+            } else {
+                $token = rand(1000, 9999);
+            }
+
+            //Cek Ada File
+            $adafile = $request->adafile;
+            $namafile = $classroom->file;
+
+            if ($adafile == "ada") {
+                if ($namafile !== "") {
+                    $namafile = $namafile . ",";
+                }
+                foreach ($request->file('files') as $file) {
+                    $ext = $file->extension();
+                    $filename = $file->hashName();
+                    $file->storeAs('public/classroom/teacher', $filename);
+                    $namafile .= $filename . ",";
+                }
+                $namafile = substr($namafile, 0, -1);
+            }
+            $classroomAll->update([
+                'judul' => $judul,
+                'deskripsi' => $deskripsi,
+                'tanggal_due' => $tanggalSelesai,
+                'file' => $namafile,
+                'link' => $link,
+                'isi' => $isi,
+                'token' => $token
+            ]);
+
+            // $input_array = array();
+            $classroomAll2 = $classroomAll->get();
+            $oldKelas = array();
+            foreach ($classroomAll2 as $allClass) {
+                array_push($oldKelas, $allClass->id_ngajar);
+            }
+            $kelas = explode(',', $request->kelas);
+            $newKelas = array();
+            foreach ($oldKelas as $item) {
+                if (in_array($item, $kelas) === false) {
+                    Classroom::where([
+                        ['id_bahan', '=', $classroom->id_bahan],
+                        ['id_ngajar', '=', $item]
+                    ])->delete();
+                } else {
+                    array_push($newKelas, $item);
+                }
+            }
+            $newArrayKelas = array_diff($kelas, $newKelas);
+            $input_array = array();
+            foreach ($newArrayKelas as $item) {
+                array_push($input_array, array(
+                    "id_bahan" => $classroom->id_bahan,
+                    "id_ngajar" => $item,
+                    "jenis" => "materi",
+                    "judul" => $judul,
+                    "tanggal_post" => $tanggalPost,
+                    'tanggal_due' => $tanggalSelesai,
+                    "deskripsi" => $deskripsi,
+                    "file" => $namafile,
+                    "link" => $link,
+                    "isi" => $isi,
+                    "show_nilai" => false,
+                    "status" => $status,
+                    "token" => $token
+                ));
+            }
+            Classroom::upsert($input_array, ['uuid']);
+            return response()->json(["success" => true]);
         }
     }
     /**
@@ -303,7 +440,22 @@ class ClassroomController extends Controller
         } else {
             $file_array = array();
         }
-        return View('classroom.preview', compact('classroom', 'file_array', 'status_array', 'siswa', 'uuid'));
+
+        if ($classroom->jenis == "latihan") {
+            $jawabanAll = ClassroomJawaban::where('id_classroom', $classroom->uuid)->get();
+            $jawaban_array = array();
+            foreach ($jawabanAll as $item) {
+                if ($item->selesai == 1) {
+                    $jawaban_array[$item->id_siswa] = array(
+                        'nilai' => $item->nilai,
+                        'status' => $item->status
+                    );
+                }
+            }
+        } else {
+            $jawaban_array = array();
+        }
+        return View('classroom.preview', compact('classroom', 'file_array', 'status_array', 'jawaban_array', 'siswa', 'uuid'));
     }
     /**
      * Reset Siswa
@@ -319,6 +471,75 @@ class ClassroomController extends Controller
             'status' => 'reset'
         ]);
     }
+    /**
+     * Lihat Jawaban Siswa
+     */
+    public function lihatJawaban(Request $request, String $uuid)
+    {
+        $idClassroom = $uuid;
+        $idSiswa = $request->idSiswa;
+
+        $jawaban = ClassroomJawaban::where([
+            ['id_classroom', '=', $idClassroom],
+            ['id_siswa', '=', $idSiswa]
+        ])->first();
+
+        return response()->json(['jawaban' => $jawaban]);
+    }
+    /**
+     * Update Nilai
+     */
+    public function nilai(Request $request, String $uuid)
+    {
+        if ($request->revisi == "true") {
+            $status = "revisi";
+        } else {
+            $status = "selesai";
+        }
+        $classroomJawaban = ClassroomJawaban::where([
+            ['id_classroom', '=', $uuid],
+            ['id_siswa', '=', $request->idSiswa]
+        ])->first();
+        $classroomJawaban->timestamps = false; // Will not modify the timestamps on save
+        $classroomJawaban->update([
+            'nilai' => $request->nilai,
+            'komentar' => $request->deskripsi,
+            'status' => $status
+        ]);
+        return response()->json(["success" => true]);
+    }
+    /**
+     * Reset Token
+     */
+    public function resetToken(Request $request, String $uuid)
+    {
+        if ($request->token == "reset") {
+            $token = rand(1000, 9999);
+        } else {
+            $token = "XXXX";
+        }
+        Classroom::findOrFail($uuid)->update([
+            'token' => $token
+        ]);
+        return response()->json(["token" => $token]);
+    }
+    /**
+     * Show Nilai - Toggle Tampilkan Nilai Atau Tidak di Classroom
+     */
+    public function showNilai(Request $request, String $uuid)
+    {
+        $idClassroom = $uuid;
+        $showNilai = $request->show;
+        if ($showNilai == "false") {
+            $show_nilai = 0;
+        } else {
+            $show_nilai = 1;
+        }
+        Classroom::findOrFail($uuid)->update([
+            'show_nilai' => $show_nilai
+        ]);
+    }
+
     /**
      * -----------Siswa----------------
      */
@@ -405,7 +626,18 @@ class ClassroomController extends Controller
         } else {
             $file_array = array();
         }
-        return View('classroom.siswa.preview', compact('classroom', 'file_array', 'siswa_aktif', 'ngajar'));
+
+        if ($classroom->jenis == "latihan") {
+            $getJawaban = ClassroomJawaban::where([
+                ['id_classroom', '=', $classroom->uuid],
+                ['id_siswa', '=', $siswa->uuid],
+            ])->first();
+            $jawaban = $getJawaban->jawaban;
+        } else {
+            $getJawaban = null;
+            $jawaban = "";
+        }
+        return View('classroom.siswa.preview', compact('classroom', 'file_array', 'siswa_aktif', 'ngajar', 'jawaban', 'getJawaban'));
     }
     public function siswaDetectOut(String $uuid)
     {
@@ -414,6 +646,55 @@ class ClassroomController extends Controller
         $classroomSiswa->update([
             'status' => "out",
             'last_seen' => $now
+        ]);
+    }
+    public function siswaCreate(Request $request)
+    {
+        $id = auth()->user()->uuid;
+        $siswa = Siswa::where('id_login', $id)->first();
+        $jawaban = $request->jawaban;
+        $id_classroom = $request->idClassroom;
+
+        $cekJawaban = ClassroomJawaban::where([
+            ['id_classroom', '=', $id_classroom],
+            ['id_siswa', '=', $siswa->uuid],
+        ])->first();
+
+        if ($cekJawaban !== null) {
+            $cekJawaban->update([
+                'jawaban' => $jawaban
+            ]);
+        } else {
+            ClassroomJawaban::create([
+                'id_classroom' => $id_classroom,
+                'id_siswa' => $siswa->uuid,
+                'jawaban' => $jawaban,
+                'nilai' => 0,
+                'selesai' => 0,
+                'status' => 'belum',
+                'komentar' => ''
+            ]);
+        }
+    }
+    public function siswaSubmit(Request $request)
+    {
+        $id = auth()->user()->uuid;
+        $siswa = Siswa::where('id_login', $id)->first();
+        $id_classroom = $request->idClassroom;
+
+        $cekJawaban = ClassroomJawaban::where([
+            ['id_classroom', '=', $id_classroom],
+            ['id_siswa', '=', $siswa->uuid],
+        ])->first();
+
+        if ($cekJawaban->status == "revisi") {
+            $status = "perbaikan";
+        } else {
+            $status = "belum";
+        }
+        $cekJawaban->update([
+            'selesai' => 1,
+            'status' => $status
         ]);
     }
 }

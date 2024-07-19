@@ -16,33 +16,33 @@
 @else
     bg-success-subtle
 @endif">
-    <h1 style="font-size: 50px"><b id="time">{{$kehadiran->waktu}}</b></h1>
+    <h1 style="font-size: 50px"><b id="time">@if(isset($kehadiran->waktu)) {{$kehadiran->waktu}} @else 0:0:0 @endif</b></h1>
 </div>
 <div class="body-contain-customize col-12 mt-3 d-grid d-sm-grid d-lg-none d-md-none d-xl-none">
-    @if ($kehadiran === "")
+    @if ($kehadiran === null)
     <a href="{{route('absensi.kehadiran.siswa.hadir','datang')}}" class="btn btn-sm btn-success">Absen Kehadiran</a>
     @else
     <i class="text-center">Kamu Sudah Melakukan Absensi Hari Ini. Terima Kasih</i>
     @endif
 </div>
 <script>
-    @if ($kehadiran === "")
+    @if ($kehadiran === null)
         $(document).ready(function() {
-        function startTime() {
-            const today = new Date();
-            let h = today.getHours();
-            let m = today.getMinutes();
-            let s = today.getSeconds();
-            m = checkTime(m);
-            s = checkTime(s);
-            $('#time').html(h+":"+m+":"+s);
-        }
+            function startTime() {
+                const today = new Date();
+                let h = today.getHours();
+                let m = today.getMinutes();
+                let s = today.getSeconds();
+                m = checkTime(m);
+                s = checkTime(s);
+                $('#time').html(h+":"+m+":"+s);
+            }
 
-        function checkTime(i) {
-            if (i < 10) {i="0" + i};
-            return i;
-        }
-        setInterval(startTime, 1000); })
+            function checkTime(i) {
+                if (i < 10) {i="0" + i};
+                return i;
+            }
+            setInterval(startTime, 1000); })
     @endif
 
 </script>

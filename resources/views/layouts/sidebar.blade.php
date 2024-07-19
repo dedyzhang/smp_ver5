@@ -17,7 +17,7 @@
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
                 <ul class="submenu collapse" id="menu-data">
-                    <li class="submenu-list"><a href="{{ route('guru.index') }}"> Data Guru & Staf</a></li>
+                    <li class="submenu-list"><a href="{{ route('guru.index') }}"> Data PTK</a></li>
                     <li class="submenu-list"><a href="{{ route('kelas.index') }}"> Data Kelas</a></li>
                     <li class="submenu-list"><a href="{{ route('pelajaran.index') }}"> Data Pelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('siswa.index') }}"> Data Siswa</a></li>
@@ -36,7 +36,7 @@
                 <ul class="submenu collapse" id="menu-absensi">
                     <li class="submenu-list"><a href="{{ route('absensi.kehadiran') }}"> Absen Kehadiran</a></li>
                     <li class="submenu-list"><a href="{{ route('absensi.kehadiran.histori') }}"> Lihat Absensi</a></li>
-                    @canany(['admin','kurikulum','kepalasekolah'])
+                    @canany(['admin','kurikulum'])
                     <li class="submenu-list"><a href="{{ route('absensi.index') }}"> Atur Tanggal</a></li>
                     @endcan
                 </ul>
@@ -126,6 +126,7 @@
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
                 <ul class="submenu collapse" id="menu-walikelas">
+                    <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
                 </ul>
             </li>
@@ -144,6 +145,22 @@
                     </li> --}}
                 </ul>
             </li>
+
+            @can('admin')
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-cetak" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-print"></i>
+                    Cetak Data
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-cetak">
+                    <li class="submenu-list"><a href="{{ route('cetak.siswa.index') }}"> Data Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.absensi.guru.index') }}"> Absensi Guru</a></li>
+                </ul>
+            </li>
+            <li class="menu-list"><a href="{{route('setting.index')}}"> <i class="fa-solid fa-gear"></i> Setting</a>
+            </li>
+            @endcan
         </ul>
     </div>
 </div>

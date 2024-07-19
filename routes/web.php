@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
 use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\WalikelasController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 //Middleware
 use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAdminKurikulum;
+use App\Http\Middleware\IsAdminKurikulumKepala;
 use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
 use App\Http\Middleware\isNgajar;
@@ -24,7 +27,7 @@ use App\Http\Middleware\IsSiswa;
 use App\Http\Middleware\IsWalikelas;
 
 Route::get('/', function () {
-    return 'main Page';
+    return view('home.index');
 });
 
 //Route Login
@@ -71,10 +74,26 @@ Route::middleware(IsAdmin::class)->controller(PelajaranController::class)->group
     Route::post('/pelajaran/penjabaran', 'setPenjabaran')->name('pelajaran.penjabaran');
 });
 
+//Admin - Halaman Data Setting
+Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(function () {
+    Route::get('/settings', 'index')->name('setting.index');
+    Route::post('/settings/semester', 'updateSemester')->name('setting.semester');
+    Route::post('/settings/nis', 'updatenis')->name('setting.nis');
+});
+
+//Admin - Halaman Cetak Excel
+Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(function () {
+    Route::get('/cetak/siswa', 'siswa')->name('cetak.siswa.index');
+    Route::get('/cetak/siswa/{params}', 'cetakSiswa')->name('cetak.siswa.excel');
+    Route::get('/cetak/guru', 'guru')->name('cetak.guru.excel');
+    Route::get('/cetak/absensi/guru', 'absensiGuru')->name('cetak.absensi.guru.index');
+    Route::get('/cetak/absensi/guru/{dari}/{sampai}', 'cetakAbsensiGuru')->name('cetak.absensi.guru.excel');
+});
+
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
 
 //Admin - Halaman Data Penilaian
-Route::middleware(IsAdminKurikulum::class)->controller(PenilaianController::class)->group(function () {
+Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController::class)->group(function () {
     //Penilaian Index
     Route::get('/penilaian', 'index')->name('penilaian.admin.index');
     Route::get('/penilaian/{uuid}/get', 'get')->name('penilaian.admin.get');
@@ -173,6 +192,9 @@ Route::middleware(IsAdminKurikulum::class)->controller(AbsensiController::class)
     Route::post('/absensi/store', 'store')->name('absensi.store');
     Route::delete('/absensi/destroy', 'destroy')->name('absensi.destroy');
 });
+
+Route::post('/absensi/rekap', [AbsensiController::class, 'rekapAbsensi'])->name('absensi.guru.rekap')->middleware(IsAdmin::class);
+
 Route::middleware(isPenilaianController::class)->controller(AbsensiController::class)->group(function () {
     Route::get('/absensi/kehadiran', [AbsensiController::class, 'kehadiranIndex'])->name('absensi.kehadiran');
     Route::get('/absensi/kehadiran/histori', [AbsensiController::class, 'kehadiranHistori'])->name('absensi.kehadiran.histori');
@@ -238,6 +260,10 @@ Route::middleware(isNgajar::class)->controller(ClassroomController::class)->grou
     Route::delete('/classroom/{uuid}/delete', 'delete')->name('classroom.delete');
     Route::get('/classroom/{uuid}/preview/{uuidClassroom}', 'preview')->name('classroom.preview');
     Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
+    Route::get('/classroom/{uuid}/lihatJawaban}', 'lihatJawaban')->name('classroom.lihatJawaban');
+    Route::post('/classroom/{uuid}/nilai}', 'nilai')->name('classroom.nilai');
+    Route::post('/classroom/{uuid}/reset', 'resetToken')->name('classroom.resetToken');
+    Route::post('/classroom/{uuid}/showNilai', 'showNilai')->name('classroom.showNilai');
 });
 // {-------------------------------------------Halaman Classroom Siswa---------------------------------------------------------}
 Route::middleware(IsSiswa::class)->controller(ClassroomController::class)->group(function () {
@@ -246,6 +272,8 @@ Route::middleware(IsSiswa::class)->controller(ClassroomController::class)->group
     Route::get('/classroom/siswa/{uuid}/show/{uuidClassroom}', 'siswaPreview')->name('classroom.siswa.preview');
     Route::post('/classroom/siswa/token', 'siswaCekToken')->name('classroom.siswa.cekToken');
     Route::post('/classroom/siswa/detectOut/{uuid}', 'siswaDetectOut')->name('classroom.siswa.detectOut');
+    Route::post('/classroom/siswa/create', 'siswaCreate')->name('classroom.siswa.create');
+    Route::post('/classroom/siswa/submit', 'siswaSubmit')->name('classroom.siswa.submit');
 });
 
 // {----------------------------------------------------END------------------------------------------------------------------}
@@ -254,5 +282,10 @@ Route::middleware(IsSiswa::class)->controller(ClassroomController::class)->group
 Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->group(function () {
     Route::get('/walikelas/absensi', 'absensi')->name('walikelas.absensi');
     Route::get('/walikelas/absensi/create', 'absensiCreate')->name('walikelas.absensi.create');
+    Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
     Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
+    Route::get('/walikelas/siswa', 'siswa')->name('walikelas.siswa');
+    Route::get('/walikelas/siswa/{uuid}', 'siswaShow')->name('walikelas.siswa.show');
+    Route::post('/walikelas/siswa/{uuid}/reset/', 'resetSiswa')->name('walikelas.siswa.reset');
+    Route::post('/walikelas/siswa/{uuid}/resetOrtu/', 'resetOrangtua')->name('walikelas.siswa.resetOrtu');
 });

@@ -56,6 +56,7 @@
         <div class="body-contain-customize col-12 mt-3">
             <p><b>List File dalam Materi</b></p>
         </div>
+        @if(count($files) >= 1 && !empty($files[0]))
         <div class="row m-0 p-0 mt-3">
             @foreach ($files as $item)
                 <div class="col-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 p-0">
@@ -81,6 +82,7 @@
             @endforeach
 
         </div>
+        @endif
         <div class="body-contain-customize col-12 mt-3">
             <p><b>Upload File Baru</b></p>
             <div class="row m-0 p-0">
@@ -124,7 +126,124 @@
             </div>
         </div>
     @else
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>A. Detail Latihan Pembelajaran</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                    <label for="judul">Judul Latihan</label>
+                    <input type="text" value="{{$classroom->judul}}" name="judul" id="judul" class="form-control validate" placeholder="Masukkan Judul Materi">
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="kelas">Kelas Yang Dituju</label>
+                    <select class="form-control validate" data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
+                        <option value="">Pilih Kelas Yang Dituju</option>
+                        @foreach ($list_ngajar as $element)
+                            @php
+                                if(in_array($element->uuid,$array_ngajar)) {
+                                    $selected = "selected";
+                                } else {
+                                    $selected = "";
+                                }
+                            @endphp
+                            <option {{$selected}} value="{{$element->uuid}}">{{$element->pelajaran_singkat." ".$element->tingkat.$element->kelas}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-8 col-xl-8">
+                    <label for="deskripsi">Deskripsi</label>
+                    <textarea class="form-control validate" name="deskripsi" rows="4" id="deskripsi" placeholder="Masukkan Deskripsi Pembelajaran">{{$classroom->deskripsi}}</textarea>
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="waktu">Tanggal & Jam Harus Selesai</label>
+                    <input type="datetime-local" class="form-control validate" name="waktu" id="waktu" value="{{date('Y-m-d\Th:i',strtotime($classroom->tanggal_due))}}">
+                </div>
+                <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                    <label for="token">Kunci Layar</label>
+                    @php
+                        if($classroom->token != "XXXX") {
+                            $token = "iya";
+                        } else {
+                            $token = "tidak";
+                        }
+                    @endphp
+                    <select class="form-control validate" data-toggle="select" name="token" id="token">
+                        <option value="tidak" @if ($token == "tidak") selected @endif>tidak</option>
+                        <option value="iya" @if ($token == "iya") selected @endif>iya</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        @if(count($files) >= 1 && !empty($files[0]))
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>List File dalam Materi</b></p>
+        </div>
+        <div class="row m-0 p-0 mt-3">
+            @foreach ($files as $item)
+                <div class="col-12 col-sm-12 col-md-6 col-lg-3 col-xl-3 p-0">
+                    <div class="card rounded-4 m-2 border-0" data-path="{{$item}}">
+                        <div class="card-body row m-0">
+                            <div class="col-3">
+                                <i class="fas fa-file fa-3x text-primary-emphasis"></i>
+                            </div>
+                            <div class="col-9">
+                                <p class="card-title mb-0">Files {{$loop->iteration}}</p>
+                                <div class="button-place">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis lihat-file">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash-can delete-file"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+        @endif
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>Upload File Baru</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="file">Upload File</label>
+                    <p>File Boleh diupload lebih dari 1, Maksimal 5. Gunakan (ctrl + klik) kiri mouse untuk memilih file lebih dari 1</p>
+                    <input type="file" name="file" id="file" class="file-input" multiple class="form-control" placeholder="Masukkan Judul Materi">
+                </div>
+            </div>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="link">Link Youtube</label>
+                    <input type="text" name="link" id="link" value="{{$classroom->link}}" class="form-control" placeholder="Masukkan Link Youtube">
+                </div>
+            </div>
+        </div>
+        <div class="body-contain-customize col-12 mt-3">
+            <p><b>C. Deskripsi Materi Pembelajaran</b></p>
+            <div class="row m-0 p-0">
+                <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <label for="deskripsiMateri">Deskripsi Materi</label>
+                    <textarea class="tinymce-select" id="deskripsiMateri">{{$classroom->isi}}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="body-contain-customize col-12 mt-3">
+            <button class="btn btn-sm btn-primary save-materi"><i class="fas fa-save"></i> Save Materi</button>
+        </div>
+        <div class="modal fade in p-0" id="showFileModal">
+            <div class="modal-dialog modal-dialog-centered modal-fullscreen">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6>PDF Reader</h6>
+                        <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="pdf-reader" style="height:100%"></div>
+                    </div>
 
+                </div>
+            </div>
+        </div>
     @endif
     <script>
         $('.save-materi').click(function() {

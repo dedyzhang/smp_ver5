@@ -16,40 +16,38 @@ use Illuminate\View\View;
 class GuruController extends Controller
 {
     //index controller
-    public function index() : View
+    public function index(): View
     {
         $gurus = Guru::with('users')->orderBy('nama')->get();
 
-        return view('guru.index',compact('gurus'));
+        return view('guru.index', compact('gurus'));
     }
 
     //Halaman Tambah Guru dan Insert Data Guru
-    public function create() : View {
+    public function create(): View
+    {
         return view('guru.create');
     }
-    public function store(Request $request) : RedirectResponse {
+    public function store(Request $request): RedirectResponse
+    {
         $request->validate([
             'nama' => 'required',
             'nik' => 'required|unique:users,username|numeric',
             'jk' => 'required',
             'role' => 'required',
-        ],[
-            'nik.required'=> 'NIK Wajib Diisi',
-            'nik.unique' => 'NIK '.$request->nik." Sudah dipakai",
+        ], [
+            'nik.required' => 'NIK Wajib Diisi',
+            'nik.unique' => 'NIK ' . $request->nik . " Sudah dipakai",
         ]);
 
-        //Buat Password Random
-        $seed = str_split('abcdefghijklmnopqrstuvwxyz'
-                 .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                 .'0123456789'); // and any other characters
-        shuffle($seed); // probably optional since array_is randomized; this may be redundant
-        $rand = '';
-        foreach (array_rand($seed, 6) as $k) $rand .= $seed[$k];
+        //Buat Password
+
+        $rand = 'Guru.' . $request->nik;
         $password = Hash::make($rand);
 
         $user = User::create([
-            'username'=> $request->nik,
-            'password'=> $password,
+            'username' => $request->nik,
+            'password' => $password,
             'access' => $request->role,
             'token' => '1',
         ]);
@@ -63,18 +61,19 @@ class GuruController extends Controller
         return redirect()->route('guru.index')->with(['success' => 'Data Berhasil Disimpan']);
     }
     //Tampilkan Data Guru
-    public function show(string $uuid) {
+    public function show(string $uuid)
+    {
         $guru = Guru::findOrFail($uuid);
 
         return compact('guru');
     }
     //Halaman Edit Guru dan Update Data Guru
-    public function edit(string $uuid) : View
+    public function edit(string $uuid): View
     {
         $guru = Guru::with('users')->findOrFail($uuid);
-        return view('guru.edit',compact('guru'));
+        return view('guru.edit', compact('guru'));
     }
-    public function update(Request $request,$uuid) : RedirectResponse
+    public function update(Request $request, $uuid): RedirectResponse
     {
         $guru = Guru::with('users')->findOrFail($uuid);
 
@@ -94,18 +93,19 @@ class GuruController extends Controller
             'tmt_smp' => $request->tmt_smp,
             'no_telp' => $request->no_telp
         ]);
-        if($guru->users->access != $request->role && $guru->users->access != "admin") {
+        if ($guru->users->access != $request->role && $guru->users->access != "admin") {
             $guru->users->update([
-                'access'=> $request->role
+                'access' => $request->role
             ]);
         }
 
         return redirect()->back()->with(['success' => 'Data Berhasil Diupdate']);
     }
     //Hapus data PTK
-    public function destroy($uuid) {
-        $guru = Guru::with(['users','walikelas'])->findOrFail($uuid);
-        if($guru->walikelas){
+    public function destroy($uuid)
+    {
+        $guru = Guru::with(['users', 'walikelas'])->findOrFail($uuid);
+        if ($guru->walikelas) {
             $guru->walikelas->delete();
         }
         $guru->users->delete();
@@ -117,11 +117,12 @@ class GuruController extends Controller
         ]);
     }
     //Reset Password
-    public function reset(String $uuid) {
+    public function reset(String $uuid)
+    {
         $guru = Guru::with('users')->findOrFail($uuid);
         $seed = str_split('abcdefghijklmnopqrstuvwxyz'
-                 .'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-                 .'0123456789'); // and any other characters
+            . 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+            . '0123456789'); // and any other characters
         shuffle($seed); // probably optional since array_is randomized; this may be redundant
         $rand = '';
         foreach (array_rand($seed, 6) as $k) $rand .= $seed[$k];
@@ -133,43 +134,44 @@ class GuruController extends Controller
 
         return response()->json([
             'success' => true,
-            'password'=> $rand
+            'password' => $rand
         ]);
     }
     /**
      * Guru Atur Pelajaran yang dingajar
      */
-    public function pelajaran(String $uuid) : View {
+    public function pelajaran(String $uuid): View
+    {
         $guru = Guru::findOrFail($uuid);
         $pelajaran = Pelajaran::get()->sortBy('urutan');
         $kelas = Kelas::OrderByRaw('tingkat ASC, kelas ASC')->get();
-        $ngajar = Ngajar::with('pelajaran','kelas')->where('id_guru',$uuid)->get();
+        $ngajar = Ngajar::with('pelajaran', 'kelas')->where('id_guru', $uuid)->get();
 
-        return view('guru.pelajaran',compact('pelajaran','kelas','guru','ngajar'));
+        return view('guru.pelajaran', compact('pelajaran', 'kelas', 'guru', 'ngajar'));
     }
     /**
      * Masukkan Data Ngajar di data Guru kedalam databases
      */
-    public function ngajar(Request $request,String $uuid)
+    public function ngajar(Request $request, String $uuid)
     {
         $datas = $request->dataArray;
 
         $count = 0;
-        foreach($datas as $data) {
+        foreach ($datas as $data) {
             $ngajar = Ngajar::where([
-                ['id_guru',$data['id_guru']],
-                ['id_pelajaran',$data['id_pelajaran']],
-                ['id_kelas',$data['id_kelas']]
+                ['id_guru', $data['id_guru']],
+                ['id_pelajaran', $data['id_pelajaran']],
+                ['id_kelas', $data['id_kelas']]
             ])->first();
 
-            if($ngajar !== null) {
-                $count ++;
+            if ($ngajar !== null) {
+                $count++;
             }
         }
-        if($count > 0) {
+        if ($count > 0) {
             return response()->json(["success" => false, "message" => "Terdapat data pelajaran dan data Kelas yang duplikat"]);
         } else {
-            Ngajar::upsert($datas,'uuid',['id_pelajaran','id_kelas','id_guru']);
+            Ngajar::upsert($datas, 'uuid', ['id_pelajaran', 'id_kelas', 'id_guru']);
             return response()->json(["success" => true]);
         }
     }

@@ -277,11 +277,11 @@ Breadcrumbs::for('classroom-preview', function (BreadcrumbsTrail $trail, String 
 });
 Breadcrumbs::for('classroom-create', function (BreadcrumbsTrail $trail, Ngajar $ngajar, String $jenis) {
     $trail->parent('classroom-show', $ngajar->pelajaran, $ngajar->kelas, $ngajar);
-    $trail->push("Preview", route('classroom.create', ['uuid' => $ngajar->uuid, 'jenis' => $jenis]));
+    $trail->push("Create", route('classroom.create', ['uuid' => $ngajar->uuid, 'jenis' => $jenis]));
 });
 Breadcrumbs::for('classroom-edit', function (BreadcrumbsTrail $trail, Classroom $classroom, Ngajar $ngajar) {
     $trail->parent('classroom-show', $ngajar->pelajaran, $ngajar->kelas, $ngajar);
-    $trail->push("Preview", route('classroom.edit', ['uuid' => $ngajar->uuid, 'uuidClassroom' => $classroom->uuid]));
+    $trail->push("Edit", route('classroom.edit', ['uuid' => $ngajar->uuid, 'uuidClassroom' => $classroom->uuid]));
 });
 Breadcrumbs::for('classroom-siswa', function (BreadcrumbsTrail $trail) {
     $trail->push('Classroom', route('classroom.siswa.index'));

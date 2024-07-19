@@ -2,13 +2,17 @@
 
 @section('container')
     {{Breadcrumbs::render('guru')}}
-    <div class="body-contain-customize col-md-6 col-lg-3 col-xl-2 col-sm-6 col-8">
+    <div class="body-contain-customize col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex col-xl-auto d-xl-flex gap-2">
 
         {{-- <p class="body-title"><b>Menu Guru</b></p>
         <hr /> --}}
-        <a href="{{route('guru.create')}}" class="btn btn-sm btn-warning fs-14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tooltip on top">
+        <a href="{{route('guru.create')}}" class="btn btn-sm btn-warning fs-14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tambah Guru">
             <i class="fa-solid fa-plus"></i>
             Tambah Guru
+        </a>
+         <a href="{{route('cetak.guru.excel')}}" class="btn btn-sm btn-primary fs-14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Guru">
+            <i class="fa-solid fa-file-excel"></i>
+            Download Guru
         </a>
     </div>
     <div class="body-contain-customize col-md-12 col-lg-12 col-sm-12 mt-3">

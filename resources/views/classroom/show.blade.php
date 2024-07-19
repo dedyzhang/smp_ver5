@@ -62,21 +62,24 @@
                     <div class="sentiment-wrapper">
                         <div>
                             <div>
-                                <div class="opinion-header fs-10 text-danger">TANGGAL POST : {{date('d F Y, H:i:s',strtotime($item->tanggal_post))}}</div>
-                                <div>
+                                <div class="opinion-header fs-10 text-danger mb-0">TANGGAL POST : {{date('d F Y, H:i:s',strtotime($item->tanggal_post))}}</div>
+                                @if($item->tanggal_due !== null)
+                                <div class="opinion-header fs-10 text-success">TANGGAL DUE : {{date('d F Y, H:i:s',strtotime($item->tanggal_due))}}</div>
+                                @endif
+                                <div class="mt-3">
                                     <div>{{$item->deskripsi}}</div>
                                     <div class="token-place mt-3">
-                                        TOKEN : {{$item->token}}
+                                        TOKEN : <span class="token-cycle">{{$item->token}}</span>
                                     </div>
                                     <div class="button-place mt-3 gap-2 d-grid d-sm-grid d-md-flex d-xl-flex d-lg-flex">
                                         @if ($item->status == "assign")
                                             <a href="{{route('classroom.preview',['uuid' => $ngajar->uuid,'uuidClassroom' => $item->uuid])}}" class="btn btn-sm btn-warning text-warning-emphasis">
                                                 <i class="fas fa-pencil"></i> Preview
                                             </a>
-                                            <button class="btn btn-sm btn-primary">
+                                            <button class="btn btn-sm btn-primary reset-token" data-uuid="{{$item->uuid}}">
                                                 <i class="fas fa-recycle"></i> Reset Token
                                             </button>
-                                            <button class="btn btn-sm btn-danger">
+                                            <button class="btn btn-sm btn-danger tutup-token" data-uuid="{{$item->uuid}}">
                                                 <i class="fas fa-times"></i> Tutup Token
                                             </button>
                                         @else
@@ -90,8 +93,6 @@
                                                 <i class="fas fa-trash-can"></i> Delete Materi
                                             </button>
                                         @endif
-
-
                                     </div>
                                 </div>
                             </div>
@@ -148,6 +149,44 @@
                     });
                 }
                 cConfirm("Perhatian","<p>Yakin Untuk Delete Materi</p><div class='form-check'><label for='check-delete-all'>Hapus Semua Materi Yang Sama</label><input type='checkbox' class='form-check-input' id='check-delete-all' value='yes'/></div>",deleteMateri);
+            });
+            $('.reset-token').click(function() {
+                var uuid = $(this).data('uuid');
+                var url = "{{route('classroom.resetToken',':id')}}";
+                url = url.replace(':id',uuid);
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {token : 'reset'},
+                    headers: {'X-CSRF-TOKEN' : '{{csrf_token()}}'},
+                    success: function(data) {
+                        $('.token-cycle').text(data.token);
+                        removeLoading();
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            });
+            $('.tutup-token').click(function() {
+                var uuid = $(this).data('uuid');
+                var url = "{{route('classroom.resetToken',':id')}}";
+                url = url.replace(':id',uuid);
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {token : 'tutup'},
+                    headers: {'X-CSRF-TOKEN' : '{{csrf_token()}}'},
+                    success: function(data) {
+                        $('.token-cycle').text(data.token);
+                        removeLoading();
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
             });
         </script>
     </div>

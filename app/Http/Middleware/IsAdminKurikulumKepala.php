@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class isPenilaianController
+class IsAdminKurikulumKepala
 {
     /**
      * Handle an incoming request.
@@ -19,12 +19,9 @@ class isPenilaianController
             return redirect('/login');
         } else {
             if (
-                auth()->user()->access === 'admin'
-                || auth()->user()->access === 'kurikulum'
-                || auth()->user()->access === 'kesiswaan'
-                || auth()->user()->access === 'guru'
-                || auth()->user()->access === 'sapras'
-                || auth()->user()->access === 'kepala'
+                auth()->user()->access === 'admin' ||
+                auth()->user()->access === 'kurikulum' ||
+                auth()->user()->access === 'kepala'
             ) {
                 return $next($request);
             } else {

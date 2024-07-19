@@ -25,46 +25,45 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        view()->composer(['layouts.main'], function ($view)
-        {
+        view()->composer(['layouts.main'], function ($view) {
             if (Auth::check()) {
                 $access = Auth::user()->access;
-                if($access == 'siswa') {
+                if ($access == 'siswa') {
                     $account = Siswa::with('users')->where('id_login', Auth::user()->uuid)->first();
                 } elseif ($access == "orangtua") {
-                    $account = Orangtua::with(['users','siswa'])->where('id_login', Auth::user()->uuid)->first();
+                    $account = Orangtua::with(['users', 'siswa'])->where('id_login', Auth::user()->uuid)->first();
                 } else {
                     $account = Guru::with('users')->where('id_login', Auth::user()->uuid)->first();
                 }
 
                 //...with this variable
-                $view->with('account', $account );
+                $view->with('account', $account);
             }
         });
 
-        Gate::define('admin',function(){
+        Gate::define('admin', function () {
             return Auth::user()->access === "admin";
         });
-        Gate::define('kurikulum',function(){
+        Gate::define('kurikulum', function () {
             return Auth::user()->access === "kurikulum";
         });
-        Gate::define('kesiswaan',function(){
+        Gate::define('kesiswaan', function () {
             return Auth::user()->access === "kesiswaan";
         });
-        Gate::define('sapras',function(){
+        Gate::define('sapras', function () {
             return Auth::user()->access === "sapras";
         });
-        Gate::define('guru',function(){
+        Gate::define('guru', function () {
             return Auth::user()->access === "guru";
         });
-        Gate::define('siswa',function(){
+        Gate::define('siswa', function () {
             return Auth::user()->access === "siswa";
         });
-        Gate::define('orangtua',function(){
+        Gate::define('orangtua', function () {
             return Auth::user()->access === "orangtua";
         });
-        Gate::define('kepalasekolah',function(){
-            return Auth::user()->access === "kepalasekolah";
+        Gate::define('kepalasekolah', function () {
+            return Auth::user()->access === "kepala";
         });
     }
 }
