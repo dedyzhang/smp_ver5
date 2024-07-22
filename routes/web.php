@@ -31,7 +31,7 @@ Route::get('/', function () {
 });
 
 //Route Login
-Route::get('/login', function () {
+Route::get('/signin', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
 Route::post('/login', [LoginController::class, 'login']);

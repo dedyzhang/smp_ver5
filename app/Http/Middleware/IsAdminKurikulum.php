@@ -15,11 +15,13 @@ class IsAdminKurikulum
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!auth()->check()) {
-            return redirect('/login');
+        if (!auth()->check()) {
+            return redirect('/signin');
         } else {
-            if(auth()->user()->access === 'admin' ||
-                auth()->user()->access === 'kurikulum') {
+            if (
+                auth()->user()->access === 'admin' ||
+                auth()->user()->access === 'kurikulum'
+            ) {
                 return $next($request);
             } else {
                 abort(403);

@@ -75,7 +75,7 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalPost = date('Y-m-d H:i:s', time());;
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -125,8 +125,8 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
-            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $tanggalPost = date('Y-m-d H:i:s', time());
+            $tanggalSelesai = date('Y-m-d H:i:s', strtotime($request->waktu));
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -213,7 +213,7 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalPost = date('Y-m-d H:i:s', time());
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -294,8 +294,8 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
-            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $tanggalPost = date('Y-m-d H:i:s', time());
+            $tanggalSelesai = date('Y-m-d H:i:s', strtotime($request->waktu));
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";

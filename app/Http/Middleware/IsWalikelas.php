@@ -17,7 +17,7 @@ class IsWalikelas
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            return redirect('/login');
+            return redirect('/signin');
         } else {
             $auth = auth()->user();
             $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();

@@ -107,7 +107,7 @@
                                                 <option value="alpa" ${absensi[index]['absensi'] == "alpa" && "selected"}>Alpa</option>
                                             </select>
                                         </td>
-                                        <td class="waktu">${absensi[index]['waktu'] == null && ""}</td>
+                                        <td class="waktu">${absensi[index]['waktu'] == null ? "" : absensi[index]['waktu']}</td>
                                         <td class="deskripsi" contenteditable="true">${keterangan}</td>
                                     </tr>
                                 `;
