@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Agenda;
+use App\Models\Aturan;
 use App\Models\Classroom;
 use App\Models\Guru;
 use App\Models\Jadwal;
@@ -77,6 +78,15 @@ Breadcrumbs::for('pelajaran-edit', function (BreadcrumbsTrail $trail, Pelajaran 
     $trail->parent('pelajaran');
     $trail->push($pelajaran->pelajaran_singkat, route('pelajaran.edit', $pelajaran));
 });
+
+//Cetak.excel.Breadcrumbs
+Breadcrumbs::for('cetak-siswa', function (BreadcrumbsTrail $trail) {
+    $trail->push('Data Siswa', route('cetak.siswa.index'));
+});
+Breadcrumbs::for('cetak-absensi-guru', function (BreadcrumbsTrail $trail) {
+    $trail->push('Absensi Guru', route('cetak.absensi.guru.index'));
+});
+
 //Penilaian.kktp.Breadcrumbs
 Breadcrumbs::for('penilaian-kktp', function (BreadcrumbsTrail $trail) {
     $trail->push('KKTP', route('penilaian.kktp.index'));
@@ -293,4 +303,53 @@ Breadcrumbs::for('classroom-siswa-show', function (BreadcrumbsTrail $trail, Pela
 Breadcrumbs::for('classroom-siswa-preview', function (BreadcrumbsTrail $trail, Classroom $classroom, Ngajar $ngajar) {
     $trail->parent('classroom-siswa-show', $ngajar->pelajaran, $ngajar->kelas, $ngajar);
     $trail->push("Preview", route('classroom.siswa.preview', ['uuid' => $classroom->uuid, 'uuidClassroom' => $classroom->uuid]));
+});
+//Poin.Breadcrumbs
+Breadcrumbs::for('aturan', function (BreadcrumbsTrail $trail) {
+    $trail->push('Aturan', route('aturan.index'));
+});
+Breadcrumbs::for('aturan-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('aturan');
+    $trail->push('Create', route('aturan.create'));
+});
+Breadcrumbs::for('aturan-edit', function (BreadcrumbsTrail $trail, Aturan $aturan) {
+    $trail->parent('aturan');
+    $trail->push('Edit', route('aturan.edit', $aturan->uuid));
+});
+Breadcrumbs::for('poin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Poin', route('poin.index'));
+});
+Breadcrumbs::for('poin-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('poin');
+    $trail->push($siswa->nama, route('poin.show', $siswa->uuid));
+});
+Breadcrumbs::for('poin-create', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('poin-show', $siswa);
+    $trail->push('Create', route('poin.create', $siswa->uuid));
+});
+//Walikelas.Breadcrumbs
+Breadcrumbs::for('walikelas-siswa', function (BreadcrumbsTrail $trail) {
+    $trail->push('Data Siswa', route('walikelas.siswa'));
+});
+Breadcrumbs::for('walikelas-absensi', function (BreadcrumbsTrail $trail) {
+    $trail->push('Absensi', route('walikelas.absensi'));
+});
+Breadcrumbs::for('walikelas-absensi-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-absensi');
+    $trail->push('Create', route('walikelas.absensi.create'));
+});
+Breadcrumbs::for('walikelas-poin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Poin', route('walikelas.poin'));
+});
+Breadcrumbs::for('walikelas-poin-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('walikelas-poin');
+    $trail->push($siswa->nama, route('walikelas.poin.show', $siswa->uuid));
+});
+Breadcrumbs::for('walikelas-poin-temp', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-poin');
+    $trail->push('Temp', route('walikelas.poin.temp'));
+});
+// Sekretaris.Breadcrumbs
+Breadcrumbs::for('sekretaris-absensi', function (BreadcrumbsTrail $trail) {
+    $trail->push('Absensi', route('sekretaris.absensi'));
 });

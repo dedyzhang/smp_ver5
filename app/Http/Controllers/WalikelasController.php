@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbsensiSiswa;
+use App\Models\Aturan;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Poin;
+use App\Models\Sekretaris;
 use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
@@ -106,8 +109,8 @@ class WalikelasController extends Controller
         $auth = Auth::user();
         $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
         $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
-
-        return View('walikelas.siswa.index', compact('siswa'));
+        $sekretaris = Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->first();
+        return View('walikelas.siswa.index', compact('siswa', 'sekretaris'));
     }
     /**
      * Siswa - Lihat Data Siswa
@@ -162,5 +165,82 @@ class WalikelasController extends Controller
             'success' => true,
             'password' => $rand
         ]);
+    }
+    /**
+     * Siswa - Set Sekretaris
+     */
+    public function setSekretaris(Request $request)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+
+        $sekretaris = Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->first();
+        if ($sekretaris === null) {
+            Sekretaris::create([
+                'id_kelas' => $guru->walikelas->id_kelas,
+                'sekretaris1' => $request->sekretaris1,
+                'sekretaris2' => $request->sekretaris2
+            ]);
+        } else {
+            Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->update([
+                'sekretaris1' => $request->sekretaris1,
+                'sekretaris2' => $request->sekretaris2
+            ]);
+        }
+    }
+    /**
+     * Poin - Index Tampil seluruh data siswa
+     */
+    public function poinIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
+        $siswa_array = $siswa->pluck('uuid')->toArray();
+        $poin = Poin::with('aturan')->whereIn('id_siswa', $siswa_array)->get();
+        $array_poin = array();
+        foreach ($poin as $item) {
+            if (isset($array_poin[$item->id_siswa])) {
+                array_push($array_poin[$item->id_siswa], array(
+                    "jenis" => $item->aturan->jenis,
+                    "poin" => $item->aturan->poin,
+                ));
+            } else {
+                $array_poin[$item->id_siswa] = array();
+                array_push($array_poin[$item->id_siswa], array(
+                    "jenis" => $item->aturan->jenis,
+                    "poin" => $item->aturan->poin,
+                ));
+            }
+        }
+        return view('walikelas.poin.index', compact('siswa', 'array_poin'));
+    }
+    /**
+     * Poin - Show Poin Per Siswa
+     */
+    public function poinShow(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $poin = Poin::with('aturan')->where('id_siswa', $siswa->uuid)->orderBy(Poin::raw("DATE(tanggal)"), 'ASC')->get();
+        return view('walikelas.poin.show', compact('siswa', 'poin'));
+    }
+    public function poinTempIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        return view('walikelas.poin.temp.index');
+    }
+    public function poinTempCreate(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
+        return view('walikelas.poin.temp.create', compact('siswa'));
+    }
+    public function poinGetAturan(Request $request)
+    {
+        $aturan = Aturan::where('jenis', $request->jenis)->orderBy('kode', 'asc')->get();
+
+        return response()->json(["aturan" => $aturan]);
     }
 }

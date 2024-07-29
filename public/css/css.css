@@ -464,6 +464,9 @@ nav .navbar-menu .navbar-menu-list:hover {
     border-radius: 15px;
     font-size: 14px;
 }
+.body-contain-customize:nth-of-type(1) {
+    border-top: 10px solid #fff017;
+}
 .body-contain-customize .body-title {
     margin: 0;
     font-size: 14px;

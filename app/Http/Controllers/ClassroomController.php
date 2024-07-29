@@ -434,7 +434,7 @@ class ClassroomController extends Controller
                 'last_seen' => $item->last_seen
             );
         }
-        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->get();
+        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->orderBy('nama', 'asc')->get();
         if ($classroom->file !== "") {
             $file_array = explode(',', $classroom->file);
         } else {
@@ -632,7 +632,11 @@ class ClassroomController extends Controller
                 ['id_classroom', '=', $classroom->uuid],
                 ['id_siswa', '=', $siswa->uuid],
             ])->first();
-            $jawaban = $getJawaban->jawaban;
+            if ($getJawaban !== null) {
+                $jawaban = $getJawaban->jawaban;
+            } else {
+                $jawaban = "";
+            }
         } else {
             $getJawaban = null;
             $jawaban = "";
