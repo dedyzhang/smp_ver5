@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('cetak-siswa')}}
     <div class="body-contain-customize col-12">
         <h5><b>Cetak Daftar Siswa</b></h5>
         <p>Halaman Admin untuk mencetak data siswa</p>

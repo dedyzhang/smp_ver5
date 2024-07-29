@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('walikelas-absensi')}}
     <div class="body-contain-customize col-12">
         <h5><b>Absensi Kelas</b></h5>
         <p>Halaman Walikelas untuk mengatur absensi siswa</p>

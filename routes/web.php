@@ -10,6 +10,8 @@ use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
 use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\PoinController;
+use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\WalikelasController;
@@ -17,13 +19,16 @@ use Illuminate\Support\Facades\Route;
 
 //Middleware
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsAdminKesiswaan;
 use App\Http\Middleware\IsAdminKurikulum;
 use App\Http\Middleware\IsAdminKurikulumKepala;
 use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
 use App\Http\Middleware\isNgajar;
 use App\Http\Middleware\isPenilaianController;
+use App\Http\Middleware\IsSekretaris;
 use App\Http\Middleware\IsSiswa;
+use App\Http\Middleware\IsWalidanSekre;
 use App\Http\Middleware\IsWalikelas;
 
 Route::get('/', function () {
@@ -288,4 +293,36 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/siswa/{uuid}', 'siswaShow')->name('walikelas.siswa.show');
     Route::post('/walikelas/siswa/{uuid}/reset/', 'resetSiswa')->name('walikelas.siswa.reset');
     Route::post('/walikelas/siswa/{uuid}/resetOrtu/', 'resetOrangtua')->name('walikelas.siswa.resetOrtu');
+    Route::post('/walikelas/siswa/setSekretaris/', 'setSekretaris')->name('walikelas.siswa.sekretaris');
+    Route::get('/walikelas/poin', 'poinIndex')->name('walikelas.poin');
+    Route::get('/walikelas/poin/{uuid}/show', 'poinShow')->name('walikelas.poin.show');
+});
+
+// {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
+Route::middleware(IsSekretaris::class)->controller(SekretarisController::class)->group(function () {
+    Route::get('/sekretaris/absensi', 'absensi')->name('sekretaris.absensi');
+    Route::get('/sekretaris/poin', 'poin')->name('sekretaris.poin');
+});
+
+// {--------------------------------Halaman Proses Walikelas dan Sekretaris-----------------------------------------------------}
+Route::middleware(IsWalidanSekre::class)->controller(WalikelasController::class)->group(function () {
+    Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
+    Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
+    Route::get('/walikelas/poin/temp', 'poinTempIndex')->name('walikelas.poin.temp');
+    Route::get('/walikelas/poin/temp/create', 'poinTempCreate')->name('walikelas.poin.temp.create');
+    Route::get('/walikelas/poin/temp/getaturan', 'poinGetAturan')->name('walikelas.poin.temp.getAturan');
+});
+
+
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {-------------------------------------------Halaman Aturan--------------------------------------------------------------}
+Route::resource('/aturan', \App\Http\Controllers\PoinController::class)->except('show')->middleware(IsAdminKesiswaan::class);
+Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->group(function () {
+    Route::get('/poin', 'poinIndex')->name('poin.index');
+    Route::get('/poin/{uuid}/show', 'poinShow')->name('poin.show');
+    Route::get('/poin/{uuid}/create', 'poinCreate')->name('poin.create');
+    Route::get('/poin/getaturan', 'poinGetAturan')->name('poin.getAturan');
+    Route::post('/poin/{uuid}/store', 'poinStore')->name('poin.store');
+    Route::post('/poin/{uuid}/delete', 'poinDelete')->name('poin.delete');
 });
