@@ -1,6 +1,12 @@
 @extends('layouts.main')
 
 @section('container')
+    @if (\Request::route()->getName() === 'walikelas.absensi.create')
+        {{Breadcrumbs::render('walikelas-absensi-create')}}
+    @else
+        {{Breadcrumbs::render('sekretaris-absensi')}}
+    @endif
+
     <div class="body-contain-customize col-12">
         <h5><b>Tambah Absensi</b></h5>
         <p>Halaman Walikelas untuk mengatur absensi siswa</p>
@@ -8,6 +14,7 @@
     <div class="body-contain-customize col-12 mt-3">
         <div class="row m-0 p-0">
             <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+                <label for="tanggal">Masukkan Tanggal</label>
                 <input type="date" class="form-control" id="tanggal" name="tanggal" />
             </div>
 
@@ -107,7 +114,7 @@
                                                 <option value="alpa" ${absensi[index]['absensi'] == "alpa" && "selected"}>Alpa</option>
                                             </select>
                                         </td>
-                                        <td class="waktu">${absensi[index]['waktu'] == null && ""}</td>
+                                        <td class="waktu">${absensi[index]['waktu'] == null ? "" : absensi[index]['waktu']}</td>
                                         <td class="deskripsi" contenteditable="true">${keterangan}</td>
                                     </tr>
                                 `;

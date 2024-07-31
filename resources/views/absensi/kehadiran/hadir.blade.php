@@ -20,19 +20,14 @@
     <script>
         var hasScan = "no";
         Html5Qrcode.getCameras().then(devices => {
-        /**
-         * devices would be an array of objects of type:
-         * { id: "id", label: "label" }
-         */
-        if (devices && devices.length) {
-            var cameraId = devices[0].id;
             const html5QrCode = new Html5Qrcode(/* element id */ "reader");
             html5QrCode.start(
-            cameraId,
+            {
+                facingMode: "environment"
+            },
             {
                 fps: 10,    // Optional, frame per seconds for qr code scanning
                 qrbox: { width: 200, height: 200 },  // Optional, if you want bounded box UI
-                facingMode: "environment"
             },
             (decodedText, decodedResult) => {
                 if(hasScan == "no") {
@@ -80,10 +75,10 @@
             })
             .catch((err) => {
             // Start failed, handle it.
+                console.log(err);
             });
-        }
         }).catch(err => {
-
+            console.log(err);
         });
     </script>
 @endsection

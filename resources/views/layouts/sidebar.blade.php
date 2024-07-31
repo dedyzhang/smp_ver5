@@ -107,6 +107,22 @@
             </li>
             @endcan
 
+            {{-- Aturan --}}
+            @canany(['admin','kesiswaan'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-aturan" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-scale-balanced"></i>
+                    Aturan
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-aturan">
+                    <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
+                    <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                </ul>
+            </li>
+            @endcan
+
             {{-- Classroom --}}
             @canany(['guru','kesiswaan','sapras','kurikulum'])
             <li class="menu-list"><a href="{{route('classroom.index')}}"> <i class="fa-solid fa-landmark"></i> Classroom</a>
@@ -128,6 +144,22 @@
                 <ul class="submenu collapse" id="menu-walikelas">
                     <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
+                </ul>
+            </li>
+            @endcan
+
+            {{-- Sekretaris --}}
+            @can('sekretaris')
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-aturan" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa fa-keyboard"></i>
+                    Sekretaris
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-aturan">
+                    <li class="submenu-list"><a href="{{ route('sekretaris.absensi') }}"> Absensi</a></li>
+                    <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
                 </ul>
             </li>
             @endcan

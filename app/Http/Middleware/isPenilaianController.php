@@ -16,7 +16,7 @@ class isPenilaianController
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check()) {
-            return redirect('/login');
+            return redirect('/signin');
         } else {
             if (
                 auth()->user()->access === 'admin'

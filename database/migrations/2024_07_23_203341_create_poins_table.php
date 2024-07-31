@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('nilai_rapor_temp', function (Blueprint $table) {
-            $table->string('semester')->nullable()->after('perubahan');
+        Schema::create('poin', function (Blueprint $table) {
+            $table->uuid()->primary();
+            $table->string('tanggal')->nullable();
+            $table->foreignUuid('id_siswa');
+            $table->foreignUuid('id_aturan');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('nilai_rapor_temp', function (Blueprint $table) {
-            $table->dropColumn('semester');
-        });
+        Schema::dropIfExists('poin');
     }
 };

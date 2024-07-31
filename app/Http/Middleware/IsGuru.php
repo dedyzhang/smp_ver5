@@ -15,9 +15,9 @@ class IsGuru
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(!auth()->check() || auth()->user()->access !== 'guru') {
-            if(!auth()->check()) {
-                return redirect('/login');
+        if (!auth()->check() || auth()->user()->access !== 'guru') {
+            if (!auth()->check()) {
+                return redirect('/signin');
             } else {
                 abort(403);
             }

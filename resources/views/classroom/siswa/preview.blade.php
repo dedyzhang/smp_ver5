@@ -60,7 +60,7 @@
 @if($classroom->jenis == "latihan")
     <div class="body-contain-customize col-12 mt-3">
         <p><b>C. Halaman Lembar Jawaban</b></p>
-        @if ($getJawaban === null && $getJawaban->selesai == false || $getJawaban->status == "revisi")
+        @if ($getJawaban === null || $getJawaban->selesai == false || $getJawaban->status == "revisi")
             <label for="deskripsiMateri">Masukkan Jawaban Anda, Gunakan bahasa yang sopan dan benar</label>
             <textarea class="tinymce-select" id="deskripsiMateri">
                 {{$jawaban}}
@@ -89,14 +89,14 @@
         @endif
 
     </div>
-    @if ($getJawaban === null && $getJawaban->selesai == false || $getJawaban->status == "revisi")
+    @if ($getJawaban === null || $getJawaban->selesai == false || $getJawaban->status == "revisi")
         <div class="body-contain-customize col-12 mt-3">
             <p>Setelah Jawaban Sudah Final, Pastikan Jawaban sudah tersimpan baru meng-klik tombol Kumpulkan Jawaban</p>
             <button class="btn btn-sm btn-primary kumpul-jawaban" @if($jawaban === null) disabled @endif>
                 <i class="fa fa-paper-plane"></i> Kumpulkan Jawaban
             </button>
         </div>
-        @if($getJawaban->status == "revisi")
+        @if($getJawaban !== null && $getJawaban->status == "revisi")
         <div class="body-contain-customize col-12 col-sm-12 col-md-10 col-lg-5 col-xl-5 mt-3">
             <table class="table table-striped fs-12">
                 <tbody>
