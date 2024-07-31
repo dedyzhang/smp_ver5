@@ -327,6 +327,17 @@ Breadcrumbs::for('poin-create', function (BreadcrumbsTrail $trail, Siswa $siswa)
     $trail->parent('poin-show', $siswa);
     $trail->push('Create', route('poin.create', $siswa->uuid));
 });
+Breadcrumbs::for('pengajuan-poin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Pengajuan', route('temp.index'));
+});
+Breadcrumbs::for('pengajuan-poin-approve', function (BreadcrumbsTrail $trail) {
+    $trail->parent('pengajuan-poin');
+    $trail->push('Approve', route('temp.approve'));
+});
+Breadcrumbs::for('pengajuan-poin-disapprove', function (BreadcrumbsTrail $trail) {
+    $trail->parent('pengajuan-poin');
+    $trail->push('Disapprove', route('temp.disapprove'));
+});
 //Walikelas.Breadcrumbs
 Breadcrumbs::for('walikelas-siswa', function (BreadcrumbsTrail $trail) {
     $trail->push('Data Siswa', route('walikelas.siswa'));
@@ -348,6 +359,10 @@ Breadcrumbs::for('walikelas-poin-show', function (BreadcrumbsTrail $trail, Siswa
 Breadcrumbs::for('walikelas-poin-temp', function (BreadcrumbsTrail $trail) {
     $trail->parent('walikelas-poin');
     $trail->push('Temp', route('walikelas.poin.temp'));
+});
+Breadcrumbs::for('walikelas-poin-temp-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-poin-temp');
+    $trail->push('Create', route('walikelas.poin.temp.create'));
 });
 // Sekretaris.Breadcrumbs
 Breadcrumbs::for('sekretaris-absensi', function (BreadcrumbsTrail $trail) {

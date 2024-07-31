@@ -118,6 +118,7 @@
                 <ul class="submenu collapse" id="menu-aturan">
                     <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
                     <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
                 </ul>
             </li>
             @endcan
@@ -158,7 +159,7 @@
                 </a>
                 <ul class="submenu collapse" id="menu-aturan">
                     <li class="submenu-list"><a href="{{ route('sekretaris.absensi') }}"> Absensi</a></li>
-                    <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
                 </ul>
             </li>
             @endcan

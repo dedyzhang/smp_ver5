@@ -61,7 +61,7 @@
                 $("#table-aturan").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
             },
         });
-        $('.hapus-file').click(function() {
+        $('#table-aturan').on('click','.hapus-file',function() {
             var uuid = $(this).closest('tr').attr('id').split('.').pop();
             var hapusAturan = () => {
                 loading();

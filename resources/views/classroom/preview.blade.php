@@ -79,6 +79,11 @@
         <div class="tab-pane fade p-3" id="siswa-tab-pane" role="tabpanel" aria-labelledby="siswa-tab" tabindex="0">
             <div class="row m-0 p-0">
                 <div class="col-12">
+                    <div class="button-place mt-2 mb-2">
+                        <button class="btn btn-sm btn-warning reset-semua-siswa">
+                            <i class="fas fa-recycle"></i> Reset Semua Siswa
+                        </button>
+                    </div>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped fs-12">
                             <thead>
@@ -110,8 +115,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if(isset($status_array[$item->uuid]) && $status_array[$item->uuid]['status'] ==
-                                        "out")
+                                        @if(isset($status_array[$item->uuid]))
                                         <button class="btn btn-sm btn-warning text-warning-emphasis reset-siswa"
                                             data-bs-toggle="tooltip" data-bs-title="Reset Siswa"
                                             data-bs-placement="top">
@@ -406,6 +410,28 @@
             }
         })
     });
+    $('.reset-semua-siswa').click(function() {
+        var resetSemua = () => {
+            var url = "{{route('classroom.resetSemuaSiswa',['uuid' => ':id','uuidClassroom' => ':id2'])}}";
+            url = url.replace(':id',"{{$classroom->id_ngajar}}").replace(":id2","{{$classroom->uuid}}");
+            loading();
+            $.ajax({
+                type: "POST",
+                url : url,
+                headers: {"X-CSRF-TOKEN": "{{csrf_token()}}"},
+                success: function(data) {
+                    console.log(data);
+                    cAlert("green","Sukses","Berhasil mereset siswa",true);
+                    removeLoading();
+                },
+                error: function(data) {
+                    console.log(data.responseJSON.message);
+                }
+            })
+        }
+        cConfirm("Perhatian","Apakah Anda Yakin untuk mereset semua siswa",resetSemua);
+    });
+
     $('body').on('click','.simpan-nilai',function() {
         loading();
         var nilai = $('#nilai').val();

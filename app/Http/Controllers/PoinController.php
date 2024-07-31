@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aturan;
+use App\Models\Guru;
 use App\Models\Poin;
+use App\Models\PoinTemp;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -171,5 +173,62 @@ class PoinController extends Controller
     public function poinDelete(String $uuid)
     {
         Poin::findOrFail($uuid)->delete();
+    }
+    /**
+     * Poin Temp - Temporary Poin
+     */
+    public function tempIndex(): View
+    {
+        $temp = PoinTemp::with('siswa')->where('status', 'belum')->orderBy(PoinTemp::raw("DATE(tanggal)"), 'DESC')->get();
+        $siswa = Siswa::with('kelas')->get();
+        $guru_all = Guru::get();
+        $siswa_all_name = $siswa->pluck('nama', 'uuid')->toArray();
+        $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
+        $all_name = array_merge($siswa_all_name, $guru_all_name);
+        return view('poin.temp.index', compact('temp', 'all_name'));
+    }
+    /**
+     * Poin Update - Update Poin
+     */
+    public function tempUpdate(Request $request, String $uuid)
+    {
+        $temp = PoinTemp::findOrFail($uuid);
+        $temp->update([
+            'status' => $request->jenis,
+        ]);
+        if ($request->jenis == "approve") {
+            Poin::create([
+                'tanggal' => $temp->tanggal,
+                'id_aturan' => $temp->id_aturan,
+                'id_siswa' => $temp->id_siswa
+            ]);
+        }
+        return response()->json(['jenis' => $request->jenis]);
+    }
+    /**
+     * Poin - Show Approve Temp Poin
+     */
+    public function tempApprove(): View
+    {
+        $temp = PoinTemp::with('siswa')->where('status', 'approve')->orderBy('updated_at', 'DESC')->get();
+        $siswa = Siswa::with('kelas')->get();
+        $guru_all = Guru::get();
+        $siswa_all_name = $siswa->pluck('nama', 'uuid')->toArray();
+        $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
+        $all_name = array_merge($siswa_all_name, $guru_all_name);
+        return view('poin.temp.approve', compact('temp', 'all_name'));
+    }
+    /**
+     * Poin - Show DisApprove Temp Poin
+     */
+    public function tempDisapprove(): View
+    {
+        $temp = PoinTemp::with('siswa')->where('status', 'disapprove')->orderBy('updated_at', 'DESC')->get();
+        $siswa = Siswa::with('kelas')->get();
+        $guru_all = Guru::get();
+        $siswa_all_name = $siswa->pluck('nama', 'uuid')->toArray();
+        $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
+        $all_name = array_merge($siswa_all_name, $guru_all_name);
+        return view('poin.temp.approve', compact('temp', 'all_name'));
     }
 }

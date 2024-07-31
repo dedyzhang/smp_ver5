@@ -265,6 +265,7 @@ Route::middleware(isNgajar::class)->controller(ClassroomController::class)->grou
     Route::delete('/classroom/{uuid}/delete', 'delete')->name('classroom.delete');
     Route::get('/classroom/{uuid}/preview/{uuidClassroom}', 'preview')->name('classroom.preview');
     Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
+    Route::post('/classroom/{uuid}/resetSemuaSiswa/{uuidClassroom}', 'resetSemuaSiswa')->name('classroom.resetSemuaSiswa');
     Route::get('/classroom/{uuid}/lihatJawaban}', 'lihatJawaban')->name('classroom.lihatJawaban');
     Route::post('/classroom/{uuid}/nilai}', 'nilai')->name('classroom.nilai');
     Route::post('/classroom/{uuid}/reset', 'resetToken')->name('classroom.resetToken');
@@ -296,21 +297,24 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::post('/walikelas/siswa/setSekretaris/', 'setSekretaris')->name('walikelas.siswa.sekretaris');
     Route::get('/walikelas/poin', 'poinIndex')->name('walikelas.poin');
     Route::get('/walikelas/poin/{uuid}/show', 'poinShow')->name('walikelas.poin.show');
+    Route::get('/walikelas/poin/temp', 'poinTempIndex')->name('walikelas.poin.temp');
+    Route::get('/walikelas/poin/temp/create', 'poinTempCreate')->name('walikelas.poin.temp.create');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
 Route::middleware(IsSekretaris::class)->controller(SekretarisController::class)->group(function () {
     Route::get('/sekretaris/absensi', 'absensi')->name('sekretaris.absensi');
     Route::get('/sekretaris/poin', 'poin')->name('sekretaris.poin');
+    Route::get('/sekretaris/poin/create', 'poinCreate')->name('sekretaris.poin.create');
 });
 
 // {--------------------------------Halaman Proses Walikelas dan Sekretaris-----------------------------------------------------}
 Route::middleware(IsWalidanSekre::class)->controller(WalikelasController::class)->group(function () {
     Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
     Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
-    Route::get('/walikelas/poin/temp', 'poinTempIndex')->name('walikelas.poin.temp');
-    Route::get('/walikelas/poin/temp/create', 'poinTempCreate')->name('walikelas.poin.temp.create');
     Route::get('/walikelas/poin/temp/getaturan', 'poinGetAturan')->name('walikelas.poin.temp.getAturan');
+    Route::post('/walikelas/poin/temp/create', 'poinTempStore')->name('walikelas.poin.temp.create');
+    Route::delete('/walikelas/poin/temp/delete', 'poinTempDelete')->name('walikelas.poin.temp.delete');
 });
 
 
@@ -325,4 +329,8 @@ Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->g
     Route::get('/poin/getaturan', 'poinGetAturan')->name('poin.getAturan');
     Route::post('/poin/{uuid}/store', 'poinStore')->name('poin.store');
     Route::post('/poin/{uuid}/delete', 'poinDelete')->name('poin.delete');
+    Route::get('/temp', 'tempIndex')->name('temp.index');
+    Route::post('/temp/{uuid}', 'tempUpdate')->name('temp.update');
+    Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
+    Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
 });

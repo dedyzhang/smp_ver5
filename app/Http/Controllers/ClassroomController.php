@@ -21,7 +21,7 @@ class ClassroomController extends Controller
      */
     public function index(): View
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $guru = Guru::where('id_login', $id)->first();
         $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -472,6 +472,17 @@ class ClassroomController extends Controller
         ]);
     }
     /**
+     * Reset Semua Siswa
+     */
+    public function resetSemuaSiswa(String $uuid, String $uuidClassroom)
+    {
+        $classroomSiswa = ClassroomSiswa::where('id_classroom', $uuidClassroom);
+        // return $classroomSiswa;
+        $classroomSiswa->update([
+            'status' => 'reset'
+        ]);
+    }
+    /**
      * Lihat Jawaban Siswa
      */
     public function lihatJawaban(Request $request, String $uuid)
@@ -549,7 +560,7 @@ class ClassroomController extends Controller
      */
     public function siswaIndex(): View
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -580,7 +591,7 @@ class ClassroomController extends Controller
     {
         $classroom = Classroom::findOrFail($request->uuid);
         if ($classroom->token === $request->token) {
-            $id = auth()->user()->uuid;
+            $id = Auth::user()->uuid;
             $siswa = Siswa::where('id_login', $id)->first();
             $cekSiswa = ClassroomSiswa::where([
                 ['id_classroom', '=', $classroom->uuid],
@@ -615,7 +626,7 @@ class ClassroomController extends Controller
     {
         $ngajar = Ngajar::with('pelajaran', 'kelas')->findOrFail($uuid);
         $classroom = Classroom::findOrFail($uuidClassroom);
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $siswa_aktif = ClassroomSiswa::where([
             ['id_classroom', '=', $classroom->uuid],
@@ -654,7 +665,7 @@ class ClassroomController extends Controller
     }
     public function siswaCreate(Request $request)
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $jawaban = $request->jawaban;
         $id_classroom = $request->idClassroom;
@@ -682,7 +693,7 @@ class ClassroomController extends Controller
     }
     public function siswaSubmit(Request $request)
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $id_classroom = $request->idClassroom;
 
