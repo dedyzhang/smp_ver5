@@ -28,5 +28,5 @@
 <script src="https://cdn.jsdelivr.net/npm/@wiris/mathtype-tinymce6@8.10.0/plugin.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript" charset="utf-8"></script>
 
-<link rel="stylesheet" href="{{asset('css/css.css')}}">
+<link rel="stylesheet" href="{{asset('css/css.css')}}?ver={{date('dmY')}}">
 <title>SMP Maitreyawira</title>

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class IsAdminKesiswaan
+class IsAdminSapras
 {
     /**
      * Handle an incoming request.
@@ -21,7 +21,7 @@ class IsAdminKesiswaan
         } else {
             if (
                 Auth::user()->access === 'admin' ||
-                Auth::user()->access === 'kesiswaan'
+                Auth::user()->access === 'sapras'
             ) {
                 return $next($request);
             } else {

@@ -3,7 +3,7 @@
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.0</i>
+            <i class="app-version">5.0.2</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -119,6 +119,19 @@
                     <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
                     <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                </ul>
+            </li>
+            @endcan
+
+            @canany(['admin','sapras'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                 <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Sapras
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-sapras">
+                    <li class="submenu-list"><a href="{{ route('ruang.index') }}"> Ruangan</a></li>
                 </ul>
             </li>
             @endcan

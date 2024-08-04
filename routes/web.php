@@ -22,6 +22,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAdminKesiswaan;
 use App\Http\Middleware\IsAdminKurikulum;
 use App\Http\Middleware\IsAdminKurikulumKepala;
+use App\Http\Middleware\IsAdminSapras;
 use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
 use App\Http\Middleware\isNgajar;
@@ -334,3 +335,9 @@ Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->g
     Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
     Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
 });
+
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {--------------------------------------------Halaman Sapras---------------------------------------------------------------}
+Route::resource('ruang', \App\Http\Controllers\RuangController::class)->middleware(IsAdminSapras::class);
+Route::resource('ruang/{uuid}', \App\Http\Controllers\BarangController::class)->except('index')->names('barang')->middleware(IsAdminSapras::class);

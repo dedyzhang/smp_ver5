@@ -308,13 +308,13 @@ body {
     color: rgb(37, 37, 37);
     position: relative;
 }
+.sidebar-contain ul.menu li a i {
+    margin-right: 15px;
+}
 .sidebar-contain ul.menu li .indicator-icon {
     position: absolute;
     top: 2px;
-    right: 0;
-}
-.sidebar-contain ul.menu li a i {
-    margin-right: 15px;
+    right: 2px;
 }
 .sidebar-contain ul.menu li .submenu {
     margin: 15px 0 0 0;
