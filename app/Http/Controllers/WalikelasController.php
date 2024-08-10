@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\AbsensiSiswa;
 use App\Models\Aturan;
+use App\Models\Barang;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Poin;
 use App\Models\PoinTemp;
+use App\Models\Ruang;
+use App\Models\RuangKelas;
 use App\Models\Sekretaris;
 use App\Models\Semester;
 use App\Models\Siswa;
@@ -289,5 +292,39 @@ class WalikelasController extends Controller
         $uuid = $request->uuid;
         $poin = PoinTemp::findOrFail($uuid);
         $poin->delete();
+    }
+    /**
+     * Ruangan - Walikelas mengisi data dalam kelas
+     * */
+    public function ruang(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $ruangan = RuangKelas::with('ruang')->where('id_kelas', $idKelas)->first();
+        if ($ruangan !== null) {
+            $id = $ruangan->ruang->uuid;
+            $ruang = $ruangan->ruang;
+        } else {
+            $id = "";
+            $ruang = array();
+        }
+        return view('sapras.barang.index', compact('id', 'ruang'));
+    }
+    /**
+     * Ruangan - Create Barang Walikelas
+     */
+    public function ruangCreate(String $id): View
+    {
+        $ruang = Ruang::findOrFail($id);
+        return view('sapras.barang.create', compact('id', 'ruang'));
+    }
+    /**
+     * Ruangan - Edit Barang Walikelas
+     */
+    public function ruangEdit(String $uuid, String $uuidBarang): View
+    {
+        $barang = Barang::findOrFail($uuidBarang);
+        return view('sapras.barang.edit', compact('barang', 'uuid'));
     }
 }

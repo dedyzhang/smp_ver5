@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable,HasUuids;
+    use HasFactory, Notifiable, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +52,6 @@ class User extends Authenticatable
     }
     public function guru()
     {
-        return $this->belongsTo(Guru::class,'uuid');
+        return $this->belongsTo(Guru::class, 'uuid', 'id_login');
     }
 }

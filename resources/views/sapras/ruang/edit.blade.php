@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('ruang-edit',$ruang)}}
     <div class="body-contain-customize col-12">
         <h5><b>Edit Ruang</b></h5>
         <p>Halaman untuk mengedit data ruangan didalam sekolah</p>

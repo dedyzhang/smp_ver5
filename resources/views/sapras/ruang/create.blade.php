@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('ruang-create')}}
     <div class="body-contain-customize col-12">
         <h5><b>Tambah Ruang</b></h5>
         <p>Halaman untuk menambahkan ruangan didalam sekolah</p>

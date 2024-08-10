@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Ruang;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -21,7 +22,8 @@ class BarangController extends Controller
      */
     public function create(String $id): View
     {
-        return view('sapras.barang.create', compact('id'));
+        $ruang = Ruang::findOrFail($id);
+        return view('sapras.barang.create', compact('id', 'ruang'));
     }
 
     /**
@@ -52,32 +54,46 @@ class BarangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Barang $barang)
+    public function show(String $uuid, String $uuidBarang)
     {
-        //
+        $barang = Barang::with('ruang')->findOrFail($uuidBarang);
+
+        return response()->json(['success' => true, 'barang' => $barang]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Barang $barang)
+    public function edit(String $uuid, String $uuidBarang): View
     {
-        //
+        $barang = Barang::findOrFail($uuidBarang);
+        return view('sapras.barang.edit', compact('barang', 'uuid'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Barang $barang)
+    public function update(Request $request, String $uuid, String $uuidBarang)
     {
-        //
+        $barang = Barang::findOrFail($uuidBarang);
+        $edit = $request->validate([
+            "barang" => "required",
+            "merk" => "required",
+            "penyedia" => "required",
+            "tanggal" => "required",
+            "deskripsi" => "required",
+            "jumlah" => "required",
+        ]);
+        $barang->update($edit);
+        return redirect()->back()->with(['success' => 'Data Berhasil Diupdate']);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Barang $barang)
+    public function destroy(String $uuid, String $uuidBarang)
     {
-        //
+        $barang = Barang::findOrFail($uuidBarang);
+        $barang->delete();
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Guru;
+use App\Models\RuangKelas;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +27,21 @@ class IsAdminSapras
             ) {
                 return $next($request);
             } else {
-                abort(403);
+                $auth = Auth::user();
+                $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+                if (
+                    $guru->walikelas !== null
+                ) {
+                    $ruang = RuangKelas::where('id_kelas', $guru->walikelas->id_kelas)->first();
+
+                    if ($ruang !== null) {
+                        return $next($request);
+                    } else {
+                        abort(403);
+                    }
+                } else {
+                    abort(403);
+                }
             }
         }
     }

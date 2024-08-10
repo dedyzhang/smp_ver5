@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class isPenilaianController
@@ -15,16 +16,16 @@ class isPenilaianController
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect('/signin');
         } else {
             if (
-                auth()->user()->access === 'admin'
-                || auth()->user()->access === 'kurikulum'
-                || auth()->user()->access === 'kesiswaan'
-                || auth()->user()->access === 'guru'
-                || auth()->user()->access === 'sapras'
-                || auth()->user()->access === 'kepala'
+                Auth::user()->access === 'admin'
+                || Auth::user()->access === 'kurikulum'
+                || Auth::user()->access === 'kesiswaan'
+                || Auth::user()->access === 'guru'
+                || Auth::user()->access === 'sapras'
+                || Auth::user()->access === 'kepala'
             ) {
                 return $next($request);
             } else {

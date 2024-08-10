@@ -1,4 +1,4 @@
-<div class="sidebar" ss-container>
+<div class="sidebar">
     <div class="sidebar-contain">
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
@@ -122,7 +122,7 @@
                 </ul>
             </li>
             @endcan
-
+            {{-- Sarana dan Prasarana --}}
             @canany(['admin','sapras'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                  <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
@@ -132,7 +132,12 @@
                 </a>
                 <ul class="submenu collapse" id="menu-sapras">
                     <li class="submenu-list"><a href="{{ route('ruang.index') }}"> Ruangan</a></li>
+                    <li class="submenu-list"><a href="{{ route('penggunaan.index') }}"> Penggunaan</a></li>
                 </ul>
+            </li>
+            @endcan
+            @canany(['guru','kesiswaan','kepalasekolah','kurikulum'])
+                <li class="menu-list"><a href="{{route('penggunaan.index')}}"> <i class="fa-solid fa-screwdriver-wrench"></i> Penggunaan Ruang</a>
             </li>
             @endcan
 
@@ -158,6 +163,7 @@
                     <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
                 </ul>
             </li>
             @endcan
