@@ -71,7 +71,7 @@
                 { className: 'text-center', targets: [0,1,3,4,5] },
              ],
             "initComplete" : function(settings,json) {
-                $('#datatables-siswa').wrap('<div class="overflow:auto; width:100%; position:relative"></div>');
+                $('#datatables-siswa').wrap('<div style="overflow:auto; width:100%; position:relative"></div>');
             }
         });
     </script>

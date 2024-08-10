@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsAdminKesiswaan
@@ -15,12 +16,12 @@ class IsAdminKesiswaan
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect('/signin');
         } else {
             if (
-                auth()->user()->access === 'admin' ||
-                auth()->user()->access === 'kesiswaan'
+                Auth::user()->access === 'admin' ||
+                Auth::user()->access === 'kesiswaan'
             ) {
                 return $next($request);
             } else {

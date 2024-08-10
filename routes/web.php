@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\GuruController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
+use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PoinController;
 use App\Http\Controllers\SekretarisController;
@@ -22,6 +24,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\IsAdminKesiswaan;
 use App\Http\Middleware\IsAdminKurikulum;
 use App\Http\Middleware\IsAdminKurikulumKepala;
+use App\Http\Middleware\IsAdminSapras;
 use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
 use App\Http\Middleware\isNgajar;
@@ -61,6 +64,8 @@ Route::middleware(IsAdmin::class)->controller(KelasController::class)->group(fun
     Route::post('/kelas/{uuid}/saveRombel', 'saveRombel')->name('kelas.saveRombel');
     Route::get('/kelas/setKelas/histori', 'historiRombel')->name('kelas.historiRombel');
     Route::post('/kelas/setKelas/histori/{uuid}/hapus', 'historiHapus')->name('kelas.historiHapus');
+    Route::get('/kelas/{uuid}/ruangan', 'showRuanganKelas')->name('kelas.ruang');
+    Route::post('/kelas/{uuid}/ruangan', 'updateRuanganKelas')->name('kelas.ruang.update');
 });
 
 //Admin - Halaman Data Siswa
@@ -299,6 +304,9 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/poin/{uuid}/show', 'poinShow')->name('walikelas.poin.show');
     Route::get('/walikelas/poin/temp', 'poinTempIndex')->name('walikelas.poin.temp');
     Route::get('/walikelas/poin/temp/create', 'poinTempCreate')->name('walikelas.poin.temp.create');
+    Route::get('/walikelas/ruang', 'ruang')->name('walikelas.ruang');
+    Route::get('/walikelas/ruang/{uuid}/create', 'ruangCreate')->name('walikelas.ruang.create');
+    Route::get('/walikelas/ruang/{uuid}/{uuidBarang}/edit', 'ruangEdit')->name('walikelas.ruang.edit');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
@@ -334,3 +342,18 @@ Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->g
     Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
     Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
 });
+
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {--------------------------------------------Halaman Sapras---------------------------------------------------------------}
+Route::resource('ruang', \App\Http\Controllers\RuangController::class)->middleware(IsAdminSapras::class);
+Route::resource('ruang/{uuid}', \App\Http\Controllers\BarangController::class, ['parameters' => ['{uuid}' => 'uuidBarang']])->except('index')->names('barang')->middleware(IsAdminSapras::class);
+Route::middleware(isPenilaianController::class)->controller(PengRuangController::class)->group(function () {
+    Route::get('/penggunaan', 'index')->name('penggunaan.index');
+    Route::get('/penggunaan/create', 'create')->name('penggunaan.create');
+    Route::get('/penggunaan/create/{uuid}/getJadwal', 'getJadwal')->name('penggunaan.getJadwal');
+    Route::post('/penggunaan/create', 'store')->name('penggunaan.store');
+    Route::delete('/penggunaan/{uuid}/delete', 'destroy')->name('penggunaan.delete');
+});
+
+// {----------------------------------------------------END------------------------------------------------------------------}

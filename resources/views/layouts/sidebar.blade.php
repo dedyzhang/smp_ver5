@@ -1,9 +1,9 @@
-<div class="sidebar" ss-container>
+<div class="sidebar">
     <div class="sidebar-contain">
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.0</i>
+            <i class="app-version">5.0.2</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -122,6 +122,24 @@
                 </ul>
             </li>
             @endcan
+            {{-- Sarana dan Prasarana --}}
+            @canany(['admin','sapras'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                 <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    Sapras
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-sapras">
+                    <li class="submenu-list"><a href="{{ route('ruang.index') }}"> Ruangan</a></li>
+                    <li class="submenu-list"><a href="{{ route('penggunaan.index') }}"> Penggunaan</a></li>
+                </ul>
+            </li>
+            @endcan
+            @canany(['guru','kesiswaan','kepalasekolah','kurikulum'])
+                <li class="menu-list"><a href="{{route('penggunaan.index')}}"> <i class="fa-solid fa-screwdriver-wrench"></i> Penggunaan Ruang</a>
+            </li>
+            @endcan
 
             {{-- Classroom --}}
             @canany(['guru','kesiswaan','sapras','kurikulum'])
@@ -145,6 +163,7 @@
                     <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
                 </ul>
             </li>
             @endcan

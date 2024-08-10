@@ -6,49 +6,38 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Jadwal extends Model
+class PengRuang extends Model
 {
     use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
-    protected $table = 'jadwal';
+    protected $table = 'sapras_penggunaan';
     protected $fillable = [
+        'tanggal',
+        'id_ruang',
         'id_jadwal',
-        'id_hari',
         'id_waktu',
-        'jenis',
-        'id_ngajar',
-        'id_pelajaran',
         'id_guru',
         'id_kelas',
-        'spesial'
+        'id_pelajaran'
     ];
-
-    public function kelas()
-    {
-        return $this->belongsTo(Kelas::class, 'id_kelas');
-    }
     public function guru()
     {
         return $this->belongsTo(Guru::class, 'id_guru');
     }
-    public function ngajar()
+    public function kelas()
     {
-        return $this->belongsTo(Ngajar::class, 'id_ngajar');
+        return $this->belongsTo(Kelas::class, 'id_kelas');
     }
     public function pelajaran()
     {
         return $this->belongsTo(Pelajaran::class, 'id_pelajaran');
     }
-    public function hari()
+    public function ruang()
     {
-        return $this->belongsTo(JadwalHari::class, 'id_hari');
+        return $this->belongsTo(Ruang::class, 'id_ruang');
     }
     public function waktu()
     {
         return $this->belongsTo(JadwalWaktu::class, 'id_waktu');
-    }
-    public function siswa()
-    {
-        return $this->belongsToMany(Siswa::class, 'kelas', 'uuid', 'uuid', 'id_kelas', 'id_kelas');
     }
 }
