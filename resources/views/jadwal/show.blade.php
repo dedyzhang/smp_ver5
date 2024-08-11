@@ -45,7 +45,7 @@
                         @foreach ($waktu as $waktuItem)
                             <tr>
                                 <td>{{$loop->iteration}}</td>
-                                <td>{{$waktuItem->waktu_mulai."-".$waktuItem->waktu_akhir}}</td>
+                                <td>{{date('H:i',strtotime($waktuItem->waktu_mulai))."-".date('H:i',strtotime($waktuItem->waktu_akhir))}}</td>
                                 @foreach ($kelas as $kelasItem)
                                     @if(isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] === "")
                                         @if ($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['jenis'] === "spesial")

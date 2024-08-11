@@ -3,14 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbsensiSiswa;
+use App\Models\Aturan;
+use App\Models\Barang;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Poin;
+use App\Models\PoinTemp;
+use App\Models\Ruang;
+use App\Models\RuangKelas;
+use App\Models\Sekretaris;
 use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 class WalikelasController extends Controller
@@ -106,8 +114,8 @@ class WalikelasController extends Controller
         $auth = Auth::user();
         $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
         $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
-
-        return View('walikelas.siswa.index', compact('siswa'));
+        $sekretaris = Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->first();
+        return View('walikelas.siswa.index', compact('siswa', 'sekretaris'));
     }
     /**
      * Siswa - Lihat Data Siswa
@@ -162,5 +170,161 @@ class WalikelasController extends Controller
             'success' => true,
             'password' => $rand
         ]);
+    }
+    /**
+     * Siswa - Set Sekretaris
+     */
+    public function setSekretaris(Request $request)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+
+        $sekretaris = Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->first();
+        if ($sekretaris === null) {
+            Sekretaris::create([
+                'id_kelas' => $guru->walikelas->id_kelas,
+                'sekretaris1' => $request->sekretaris1,
+                'sekretaris2' => $request->sekretaris2
+            ]);
+        } else {
+            Sekretaris::where('id_kelas', $guru->walikelas->id_kelas)->update([
+                'sekretaris1' => $request->sekretaris1,
+                'sekretaris2' => $request->sekretaris2
+            ]);
+        }
+    }
+    /**
+     * Poin - Index Tampil seluruh data siswa
+     */
+    public function poinIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
+        $siswa_array = $siswa->pluck('uuid')->toArray();
+        $poin = Poin::with('aturan')->whereIn('id_siswa', $siswa_array)->get();
+        $array_poin = array();
+        foreach ($poin as $item) {
+            if (isset($array_poin[$item->id_siswa])) {
+                array_push($array_poin[$item->id_siswa], array(
+                    "jenis" => $item->aturan->jenis,
+                    "poin" => $item->aturan->poin,
+                ));
+            } else {
+                $array_poin[$item->id_siswa] = array();
+                array_push($array_poin[$item->id_siswa], array(
+                    "jenis" => $item->aturan->jenis,
+                    "poin" => $item->aturan->poin,
+                ));
+            }
+        }
+        return view('walikelas.poin.index', compact('siswa', 'array_poin'));
+    }
+    /**
+     * Poin - Show Poin Per Siswa
+     */
+    public function poinShow(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $poin = Poin::with('aturan')->where('id_siswa', $siswa->uuid)->orderBy(Poin::raw("DATE(tanggal)"), 'ASC')->get();
+        return view('walikelas.poin.show', compact('siswa', 'poin'));
+    }
+    public function poinTempIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nama')->get();
+        $guru_all = Guru::get();
+        $siswa_all_name = $siswa->pluck('nama', 'uuid')->toArray();
+        $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
+        $all_name = array_merge($siswa_all_name, $guru_all_name);
+        $siswa_array = $siswa->pluck('uuid')->toArray();
+        $poin_temp = PoinTemp::with('aturan', 'siswa')->whereIn('id_siswa', $siswa_array)->orderBy('created_at', 'DESC')->get();
+        return view('walikelas.poin.temp.index', compact('poin_temp', 'all_name'));
+    }
+    public function poinTempCreate(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::with('kelas')->where('id_kelas', $guru->walikelas->id_kelas)->orderBy('nis', 'ASC')->get();
+        return view('walikelas.poin.temp.create', compact('siswa'));
+    }
+    public function poinGetAturan(Request $request)
+    {
+        $aturan = Aturan::where('jenis', $request->jenis)->orderBy('kode', 'asc')->get();
+
+        return response()->json(["aturan" => $aturan]);
+    }
+    public function poinTempStore(Request $request)
+    {
+        $request->validate([
+            'siswa' => 'required',
+            'tanggal' => 'required',
+            'jenis' => 'required',
+            'aturan' => 'required'
+        ]);
+        $auth = Auth::user();
+        if ($auth->access == "siswa") {
+            $siswa = Siswa::where('id_login', $auth->uuid)->first();
+            $penginput = "sekretaris";
+            $id_penginput = $siswa->uuid;
+        } else {
+            $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+            $penginput = "guru";
+            $id_penginput = $guru->uuid;
+        }
+        PoinTemp::create([
+            'tanggal' => $request->tanggal,
+            'id_aturan' => $request->aturan,
+            'id_siswa' => $request->siswa,
+            'penginput' => $penginput,
+            'id_input' => $id_penginput,
+            'status' => 'belum'
+        ]);
+        if ($auth->access != "siswa") {
+            return redirect()->route('walikelas.poin.temp')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
+        } else {
+            return redirect()->route('sekretaris.poin')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
+        }
+    }
+    public function poinTempDelete(Request $request)
+    {
+        $uuid = $request->uuid;
+        $poin = PoinTemp::findOrFail($uuid);
+        $poin->delete();
+    }
+    /**
+     * Ruangan - Walikelas mengisi data dalam kelas
+     * */
+    public function ruang(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $ruangan = RuangKelas::with('ruang')->where('id_kelas', $idKelas)->first();
+        if ($ruangan !== null) {
+            $id = $ruangan->ruang->uuid;
+            $ruang = $ruangan->ruang;
+        } else {
+            $id = "";
+            $ruang = array();
+        }
+        return view('sapras.barang.index', compact('id', 'ruang'));
+    }
+    /**
+     * Ruangan - Create Barang Walikelas
+     */
+    public function ruangCreate(String $id): View
+    {
+        $ruang = Ruang::findOrFail($id);
+        return view('sapras.barang.create', compact('id', 'ruang'));
+    }
+    /**
+     * Ruangan - Edit Barang Walikelas
+     */
+    public function ruangEdit(String $uuid, String $uuidBarang): View
+    {
+        $barang = Barang::findOrFail($uuidBarang);
+        return view('sapras.barang.edit', compact('barang', 'uuid'));
     }
 }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\GuruController;
@@ -9,7 +10,10 @@ use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
+use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\PoinController;
+use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\WalikelasController;
@@ -17,13 +21,17 @@ use Illuminate\Support\Facades\Route;
 
 //Middleware
 use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsAdminKesiswaan;
 use App\Http\Middleware\IsAdminKurikulum;
 use App\Http\Middleware\IsAdminKurikulumKepala;
+use App\Http\Middleware\IsAdminSapras;
 use App\Http\Middleware\IsGuru;
 use App\Http\Middleware\IsKurikulum;
 use App\Http\Middleware\isNgajar;
 use App\Http\Middleware\isPenilaianController;
+use App\Http\Middleware\IsSekretaris;
 use App\Http\Middleware\IsSiswa;
+use App\Http\Middleware\IsWalidanSekre;
 use App\Http\Middleware\IsWalikelas;
 
 Route::get('/', function () {
@@ -31,9 +39,12 @@ Route::get('/', function () {
 });
 
 //Route Login
-Route::get('/login', function () {
+Route::get('/signin', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
+Route::get('/privacy-policy', function () {
+    return view('privacypolicy');
+});
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
@@ -56,6 +67,8 @@ Route::middleware(IsAdmin::class)->controller(KelasController::class)->group(fun
     Route::post('/kelas/{uuid}/saveRombel', 'saveRombel')->name('kelas.saveRombel');
     Route::get('/kelas/setKelas/histori', 'historiRombel')->name('kelas.historiRombel');
     Route::post('/kelas/setKelas/histori/{uuid}/hapus', 'historiHapus')->name('kelas.historiHapus');
+    Route::get('/kelas/{uuid}/ruangan', 'showRuanganKelas')->name('kelas.ruang');
+    Route::post('/kelas/{uuid}/ruangan', 'updateRuanganKelas')->name('kelas.ruang.update');
 });
 
 //Admin - Halaman Data Siswa
@@ -260,6 +273,7 @@ Route::middleware(isNgajar::class)->controller(ClassroomController::class)->grou
     Route::delete('/classroom/{uuid}/delete', 'delete')->name('classroom.delete');
     Route::get('/classroom/{uuid}/preview/{uuidClassroom}', 'preview')->name('classroom.preview');
     Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
+    Route::post('/classroom/{uuid}/resetSemuaSiswa/{uuidClassroom}', 'resetSemuaSiswa')->name('classroom.resetSemuaSiswa');
     Route::get('/classroom/{uuid}/lihatJawaban}', 'lihatJawaban')->name('classroom.lihatJawaban');
     Route::post('/classroom/{uuid}/nilai}', 'nilai')->name('classroom.nilai');
     Route::post('/classroom/{uuid}/reset', 'resetToken')->name('classroom.resetToken');
@@ -288,4 +302,61 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/siswa/{uuid}', 'siswaShow')->name('walikelas.siswa.show');
     Route::post('/walikelas/siswa/{uuid}/reset/', 'resetSiswa')->name('walikelas.siswa.reset');
     Route::post('/walikelas/siswa/{uuid}/resetOrtu/', 'resetOrangtua')->name('walikelas.siswa.resetOrtu');
+    Route::post('/walikelas/siswa/setSekretaris/', 'setSekretaris')->name('walikelas.siswa.sekretaris');
+    Route::get('/walikelas/poin', 'poinIndex')->name('walikelas.poin');
+    Route::get('/walikelas/poin/{uuid}/show', 'poinShow')->name('walikelas.poin.show');
+    Route::get('/walikelas/poin/temp', 'poinTempIndex')->name('walikelas.poin.temp');
+    Route::get('/walikelas/poin/temp/create', 'poinTempCreate')->name('walikelas.poin.temp.create');
+    Route::get('/walikelas/ruang', 'ruang')->name('walikelas.ruang');
+    Route::get('/walikelas/ruang/{uuid}/create', 'ruangCreate')->name('walikelas.ruang.create');
+    Route::get('/walikelas/ruang/{uuid}/{uuidBarang}/edit', 'ruangEdit')->name('walikelas.ruang.edit');
 });
+
+// {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
+Route::middleware(IsSekretaris::class)->controller(SekretarisController::class)->group(function () {
+    Route::get('/sekretaris/absensi', 'absensi')->name('sekretaris.absensi');
+    Route::get('/sekretaris/poin', 'poin')->name('sekretaris.poin');
+    Route::get('/sekretaris/poin/create', 'poinCreate')->name('sekretaris.poin.create');
+});
+
+// {--------------------------------Halaman Proses Walikelas dan Sekretaris-----------------------------------------------------}
+Route::middleware(IsWalidanSekre::class)->controller(WalikelasController::class)->group(function () {
+    Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
+    Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
+    Route::get('/walikelas/poin/temp/getaturan', 'poinGetAturan')->name('walikelas.poin.temp.getAturan');
+    Route::post('/walikelas/poin/temp/create', 'poinTempStore')->name('walikelas.poin.temp.create');
+    Route::delete('/walikelas/poin/temp/delete', 'poinTempDelete')->name('walikelas.poin.temp.delete');
+});
+
+
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {-------------------------------------------Halaman Aturan--------------------------------------------------------------}
+Route::resource('/aturan', \App\Http\Controllers\PoinController::class)->except('show')->middleware(IsAdminKesiswaan::class);
+Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->group(function () {
+    Route::get('/poin', 'poinIndex')->name('poin.index');
+    Route::get('/poin/{uuid}/show', 'poinShow')->name('poin.show');
+    Route::get('/poin/{uuid}/create', 'poinCreate')->name('poin.create');
+    Route::get('/poin/getaturan', 'poinGetAturan')->name('poin.getAturan');
+    Route::post('/poin/{uuid}/store', 'poinStore')->name('poin.store');
+    Route::post('/poin/{uuid}/delete', 'poinDelete')->name('poin.delete');
+    Route::get('/temp', 'tempIndex')->name('temp.index');
+    Route::post('/temp/{uuid}', 'tempUpdate')->name('temp.update');
+    Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
+    Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
+});
+
+// {----------------------------------------------------END------------------------------------------------------------------}
+
+// {--------------------------------------------Halaman Sapras---------------------------------------------------------------}
+Route::resource('ruang', \App\Http\Controllers\RuangController::class)->middleware(IsAdminSapras::class);
+Route::resource('ruang/{uuid}', \App\Http\Controllers\BarangController::class, ['parameters' => ['{uuid}' => 'uuidBarang']])->except('index')->names('barang')->middleware(IsAdminSapras::class);
+Route::middleware(isPenilaianController::class)->controller(PengRuangController::class)->group(function () {
+    Route::get('/penggunaan', 'index')->name('penggunaan.index');
+    Route::get('/penggunaan/create', 'create')->name('penggunaan.create');
+    Route::get('/penggunaan/create/{uuid}/getJadwal', 'getJadwal')->name('penggunaan.getJadwal');
+    Route::post('/penggunaan/create', 'store')->name('penggunaan.store');
+    Route::delete('/penggunaan/{uuid}/delete', 'destroy')->name('penggunaan.delete');
+});
+
+// {----------------------------------------------------END------------------------------------------------------------------}

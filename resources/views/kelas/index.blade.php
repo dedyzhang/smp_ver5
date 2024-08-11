@@ -36,6 +36,7 @@
                     <p class="m-0 p-0 mt-3 fs-14">Walikelas : {{empty($kelas->walikelas[0]->nama) ? "-" : Str::limit($kelas->walikelas[0]->nama,15)}}</p>
                     <div class="button-place mt-3">
                         <button data-id="{{$kelas->uuid}}" class="btn btn-sm btn-info buka-walikelas"><i class="fa-solid fa-person-chalkboard"></i></button>
+                        <button data-id="{{$kelas->uuid}}" class="btn btn-sm btn-primary set-ruang-kelas"><i class="fa-solid fa-home"></i></button>
                         <a href="{{route('kelas.edit',$kelas->uuid)}}" class="btn btn-sm btn-warning"><i class="fa-solid fa-pencil"></i></a>
                         <a data-id="{{$kelas->uuid}}" class="btn btn-sm btn-danger hapus"><i class="fa-regular fa-trash-can"></i></a>
                     </div>
@@ -60,6 +61,27 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary assign-walikelas">Assign Walikelas</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade in" id="modal-set-kelas">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <p class="modal-title">Edit Ruangan Kelas</p>
+                </div>
+                <div class="modal-body">
+                    <label for="ruangan">Ruangan</label>
+                    <select name="ruangan" id="ruangan" class="form-control">
+                        <option value="">Pilih Salah Satu</option>
+                        @foreach ($ruangan as $item)
+                            <option value="{{$item->uuid}}">{{$item->nama}}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary assign-ruang">Assign Ruangan</button>
                 </div>
             </div>
         </div>
@@ -146,6 +168,62 @@
                 })
             }
             cConfirm("Perhatian","Hapus Data Kelas Ini ?",HapusKelas);
+        });
+        $('.set-ruang-kelas').click(function() {
+            var id = $(this).data('id');
+            var urlGet = "{{route('kelas.ruang', ':id')}}";
+            urlGet = urlGet.replace(':id', id);
+            var token = '{{csrf_token()}}';
+
+            $.ajax({
+                type: "GET",
+                url: urlGet,
+                success: function(data) {
+                    console.log(data);
+                    if(data.success == true) {
+                    $('#ruangan').val(data.data.id_ruang);
+                    $('#modal-set-kelas').modal("show");
+                    } else {
+                        $('#modal-set-kelas').modal("show");
+                    }
+
+                },
+                error: function(data) {
+                    var errors = data.responseJSON;
+                    console.log(errors.message);
+                }
+            })
+
+            $('.assign-ruang').click(function() {
+                var idRuang = $('#ruangan').val();
+                var makeRombel = () => {
+                    loading();
+                    var url = "{{route('kelas.ruang.update', ':id')}}";
+                    url = url.replace(':id', id);
+                    var token = '{{csrf_token()}}';
+                    $.ajax({
+                        type : "POST",
+                        url : url,
+                        headers: {'X-CSRF-TOKEN': token},
+                        data: {ruangan : idRuang ,idKelas : id},
+                        success: function(data) {
+                            setTimeout(() => {
+                                removeLoading();
+                                cAlert('green','Berhasil','Ruangan Berhasil Diubah',true);
+                            }, 500);
+                        },
+                        error: function(data) {
+                            var errors = data.responseJSON;
+                            console.log(errors.message);
+                        }
+                    });
+                }
+                if(idRuang != "") {
+                    cConfirm("Perhatian","Jadikan Ruangan ini sebagai ruang kelas untuk rombel ini",makeRombel);
+                } else {
+                    oAlert("blue","Perhatian","Ruangan Tidak Boleh Kosong");
+                }
+            });
         });
     </script>
 @endsection

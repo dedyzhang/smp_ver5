@@ -63,7 +63,7 @@
         @canany(['admin','kurikulum','kesiswaan','sapras','guru','kepalasekolah'])
         <div class="body-contain-customize col-12 mt-5">
             <div class="row m-0 p-0">
-                <div class="col-4 m-0 form-group">
+                <div class="col-12 col-sm-12 col-md-8 col-lg-5 col-xl-4 m-0 form-group">
                     <label for="guru">Highlight Jadwal Guru</label>
                     <select name="guru" id="guru" class="form-control">
                         <option value="">Pilih Salah Satu</option>
@@ -100,7 +100,7 @@
                                 @foreach ($waktu as $waktuItem)
                                     <tr>
                                         <td>{{$loop->iteration}}</td>
-                                        <td>{{$waktuItem->waktu_mulai."-".$waktuItem->waktu_akhir}}</td>
+                                        <td>{{date('H:i',strtotime($waktuItem->waktu_mulai))."-".date('H:i',strtotime($waktuItem->waktu_akhir))}}</td>
                                         @foreach ($kelas as $kelasItem)
                                             @if(isset($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]) && $array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['id_pelajaran'] === "")
                                                 @if ($array_jadwal[$hariItem->uuid.".".$waktuItem->uuid.".".$kelasItem->uuid]['jenis'] === "spesial")

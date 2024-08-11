@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\Guru;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsWalikelas
@@ -16,10 +17,10 @@ class IsWalikelas
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
-            return redirect('/login');
+        if (!Auth::check()) {
+            return redirect('/signin');
         } else {
-            $auth = auth()->user();
+            $auth = Auth::user();
             $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
             if (
                 $guru->walikelas !== null

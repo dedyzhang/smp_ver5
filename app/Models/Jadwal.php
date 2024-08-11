@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jadwal extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
     protected $table = 'jadwal';
     protected $fillable = [
@@ -23,25 +23,32 @@ class Jadwal extends Model
         'spesial'
     ];
 
-    public function kelas() {
-        return $this->belongsTo(Kelas::class,'id_kelas');
+    public function kelas()
+    {
+        return $this->belongsTo(Kelas::class, 'id_kelas');
     }
-    public function guru() {
-        return $this->belongsTo(Guru::class,'id_guru');
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'id_guru');
     }
-    public function ngajar() {
-        return $this->belongsTo(Ngajar::class,'id_ngajar');
+    public function ngajar()
+    {
+        return $this->belongsTo(Ngajar::class, 'id_ngajar');
     }
-    public function pelajaran() {
-        return $this->belongsTo(Pelajaran::class,'id_pelajaran');
+    public function pelajaran()
+    {
+        return $this->belongsTo(Pelajaran::class, 'id_pelajaran');
     }
-    public function hari() {
-        return $this->belongsTo(JadwalHari::class,'id_hari');
+    public function hari()
+    {
+        return $this->belongsTo(JadwalHari::class, 'id_hari');
     }
-    public function waktu() {
-        return $this->belongsTo(JadwalWaktu::class,'id_waktu');
+    public function waktu()
+    {
+        return $this->belongsTo(JadwalWaktu::class, 'id_waktu');
     }
-    public function siswa() {
-        return $this->belongsToMany(Siswa::class,'kelas','uuid','uuid','id_kelas','id_kelas');
+    public function siswa()
+    {
+        return $this->belongsToMany(Siswa::class, 'kelas', 'uuid', 'uuid', 'id_kelas', 'id_kelas');
     }
 }

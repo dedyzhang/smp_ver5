@@ -1,8 +1,14 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('walikelas-siswa')}}
     <div class="body-contain-customize col-md-12 col-lg-12 col-sm-12 mt-3">
         <h5><b>Data Siswa</b></h5>
+    </div>
+    <div class="body-contain-customize mt-3 col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto d-grid d-sm-flex d-md-flex d-lg-flex d-xl-flex">
+        <button class="btn btn-sm btn-warning text-warning-emphasis tambah-sekretaris">
+            <i class="fas fa-user"></i> Set Sekretaris
+        </button>
     </div>
     <div class="body-contain-customize col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 mt-3">
         <table id="datatable-siswa" class="dataTables table table-striped table-bordered text-center" style="width:100%">
@@ -17,13 +23,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($siswa as $siswa)
-                    <tr data-id="{{$siswa->uuid}}">
+                @foreach ($siswa as $item)
+                    <tr data-id="{{$item->uuid}}">
                         <td class="text-center">{{$loop->iteration}}</td>
-                        <td class="text-center">{{$siswa->nis}}</td>
-                        <td style="text-align:left !important;">{{$siswa->nama}}</td>
-                        <td class="text-center">{{Str::upper($siswa->jk)}}</td>
-                        <td class="text-center">{{$siswa->kelas !== NULL ? $siswa->kelas->tingkat.$siswa->kelas->kelas : "--"}}</td>
+                        <td class="text-center">{{$item->nis}}</td>
+                        <td style="text-align:left !important;">{{$item->nama}}</td>
+                        <td class="text-center">{{Str::upper($item->jk)}}</td>
+                        <td class="text-center">{{$item->kelas !== NULL ? $item->kelas->tingkat.$item->kelas->kelas : "--"}}</td>
                         <td class="text-center">
                             <button class="btn btn-sm btn-success View" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Data"><i class="fa-solid fa-eye"></i></button>
                             <button class="btn btn-sm btn-info reset-siswa" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Reset Siswa"><i class="fa-solid fa-recycle"></i></button>
@@ -189,6 +195,44 @@
                 </div>
             </div>
         </div>
+        {{-- Modal For Tambah Sekretaris --}}
+        <div class="modal fade in" id="modal-tambah-sekretaris">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title"><b>Data Sekretaris</b></h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="row m-0 p-0">
+                            <div class="form-group col-12">
+                                <label for="sekretaris1">Masukkan Nama Sekretaris 1</label>
+                                <select data-toggle="select" class="form-control" name="sekretaris1" id="sekretaris1">
+                                    <option value="">Pilih Salah Satu</option>
+                                    @foreach ($siswa as $item)
+                                        <option {{$sekretaris !== null && $sekretaris->sekretaris1 == $item->uuid ? "selected" : ""}} value="{{$item->uuid}}">{{$item->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group col-12">
+                                <label for="sekretaris2">Masukkan Nama Sekretaris 2</label>
+                                <select data-toggle="select" class="form-control" name="sekretaris2" id="sekretaris2">
+                                    <option value="">Pilih Salah Satu</option>
+                                    @foreach ($siswa as $item)
+                                        <option {{$sekretaris !== null && $sekretaris->sekretaris2 == $item->uuid ? "selected" : ""}} value="{{$item->uuid}}">{{$item->nama}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-sm btn-warning text-warning-emphasis simpan-sekretaris">
+                            <i class="fas fa-save"></i> Simpan
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         var table = new DataTable('#datatable-siswa',{
@@ -300,6 +344,40 @@
                 })
             }
             cConfirm("Perhatian","Reset Password Siswa Bersangkutan ?",resetPasswordOrtu);
+        });
+        $('.tambah-sekretaris').click(function() {
+            $('#modal-tambah-sekretaris').modal("show");
+        });
+        $('.simpan-sekretaris').click(function() {
+            var sekretaris1 = $('#sekretaris1').val();
+            var sekretaris2 = $('#sekretaris2').val();
+
+            if(sekretaris1 == "" || sekretaris2 == "") {
+                oAlert("orange","Perhatian","Sekretaris 1 dan 2 tidak boleh kosong");
+            } else {
+                if(sekretaris1 == sekretaris2) {
+                    oAlert("orange","Perhatian","Sekretaris 1 dan 2 tidak boleh sama");
+                } else {
+                    loading();
+                    var url = "{{route('walikelas.siswa.sekretaris')}}";
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data : {
+                            sekretaris1 : sekretaris1,
+                            sekretaris2 : sekretaris2,
+                        },
+                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                        success: function(data) {
+                            cAlert("green","Sukses","Sekretaris berhasil ditetapkan",true);
+                            removeLoading();
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON.message);
+                        }
+                    })
+                }
+            }
         });
     </script>
 @endsection

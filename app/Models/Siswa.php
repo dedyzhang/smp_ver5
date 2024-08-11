@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Siswa extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
 
     protected $primaryKey = 'uuid';
     protected $table = 'siswa';
@@ -45,15 +45,18 @@ class Siswa extends Model
     ];
     public function users()
     {
-        return $this->belongsTo(User::class,'id_login');
+        return $this->belongsTo(User::class, 'id_login');
     }
-    public function orangtua() : BelongsToMany {
-        return $this->belongsToMany(User::class,'orangtua','id_siswa','id_login');
+    public function orangtua(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'orangtua', 'id_siswa', 'id_login');
     }
-    public function ortu() : BelongsTo {
-        return $this->belongsTo(Orangtua::class,'uuid','id_siswa');
+    public function ortu(): BelongsTo
+    {
+        return $this->belongsTo(Orangtua::class, 'uuid', 'id_siswa');
     }
-    public function kelas() : BelongsTo {
-        return $this->belongsTo(kelas::class,'id_kelas');
+    public function kelas(): BelongsTo
+    {
+        return $this->belongsTo(Kelas::class, 'id_kelas');
     }
 }

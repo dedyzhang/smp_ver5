@@ -7,6 +7,11 @@ $(document).ready(function () {
             $(this).find(".indicator-icon").removeClass("fa-rotate-90");
         }
     });
+    $(".sidebar").mCustomScrollbar({
+        theme: "minimal-dark",
+        scrollbarPosition: "inside",
+        mouseWheel: { scrollAmount: 3000 },
+    });
 
     //Untuk Dropdown Navbar
     $(".has-dropdown").click(function (e) {

@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('cetak-absensi-guru')}}
     <div class="body-contain-customize col-12">
         <h5><b>Download Absensi</b></h5>
         <p>Halaman ini berguna untuk mendownload hasil rekapan absensi guru</p>

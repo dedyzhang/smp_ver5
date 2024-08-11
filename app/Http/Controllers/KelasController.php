@@ -7,6 +7,8 @@ use App\Models\Kelas;
 use App\Models\Siswa;
 use App\Models\Walikelas;
 use App\Models\Rombel;
+use App\Models\Ruang;
+use App\Models\RuangKelas;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -15,17 +17,18 @@ class KelasController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : View
+    public function index(): View
     {
-        $kelas = Kelas::with('walikelas')->orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
-        $guru = Guru::orderBy('nama','ASC')->get();
-        return View('kelas.index',compact('kelas','guru'));
+        $kelas = Kelas::with('walikelas')->orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
+        $guru = Guru::orderBy('nama', 'ASC')->get();
+        $ruangan = Ruang::where('umum', 'tidak')->orderBy('nama', 'ASC')->get();
+        return View('kelas.index', compact('kelas', 'guru', 'ruangan'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() : View
+    public function create(): View
     {
         return View('kelas.create');
     }
@@ -47,10 +50,11 @@ class KelasController extends Controller
     /**
      * Tampilkan Walikelas
      */
-    public function showWalikelas(string $uuid) {
-        $find = Walikelas::with('Guru')->where('id_kelas',$uuid)->first();
+    public function showWalikelas(string $uuid)
+    {
+        $find = Walikelas::with('Guru')->where('id_kelas', $uuid)->first();
 
-        if(!empty($find)) {
+        if (!empty($find)) {
             return response()->json([
                 'success' => true,
                 'data' => $find
@@ -67,9 +71,9 @@ class KelasController extends Controller
      */
     public function walikelas(Request $request)
     {
-        $find = Walikelas::where('id_kelas',$request->idKelas);
+        $find = Walikelas::where('id_kelas', $request->idKelas);
 
-        if($find->exists()) {
+        if ($find->exists()) {
             $find->update([
                 'id_kelas' => $request->idKelas,
                 'id_guru' => $request->idGuru
@@ -86,10 +90,10 @@ class KelasController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id) : View
+    public function edit(string $id): View
     {
         $kelas = Kelas::findOrFail($id);
-        return View('kelas.edit',compact('kelas'));
+        return View('kelas.edit', compact('kelas'));
     }
 
     /**
@@ -112,8 +116,8 @@ class KelasController extends Controller
     public function destroy(string $id)
     {
         $kelas = Kelas::findOrFail($id);
-        $walikelas = Walikelas::where('id_kelas',$id)->first();
-        if($walikelas) {
+        $walikelas = Walikelas::where('id_kelas', $id)->first();
+        if ($walikelas) {
             $walikelas->delete();
         }
         $kelas->delete();
@@ -121,40 +125,40 @@ class KelasController extends Controller
     /**
      * Set Siswa kedalam Rombelnya
      */
-    public function setKelasSiswa() : View
+    public function setKelasSiswa(): View
     {
-        $siswa = Siswa::where('id_kelas',NULL)->orderBy('nis','ASC')->get();
-        $kelas = Kelas::orderBy('tingkat','ASC')->orderBy('kelas','ASC')->get();
+        $siswa = Siswa::where('id_kelas', NULL)->orderBy('nis', 'ASC')->get();
+        $kelas = Kelas::orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
 
-        return View('kelas.setKelas',compact('siswa','kelas'));
+        return View('kelas.setKelas', compact('siswa', 'kelas'));
     }
     /**
      * Save Siswa kedalam Rombel
      */
-    public function saveRombel(Request $request,String $uuid)
+    public function saveRombel(Request $request, String $uuid)
     {
         $siswa = $request->idSiswa;
         $siswa_array = array();
-        foreach($siswa as $item) {
-            array_push($siswa_array,array(
+        foreach ($siswa as $item) {
+            array_push($siswa_array, array(
                 "id_siswa" => $item,
                 "id_kelas" => $uuid
             ));
         }
-        $kelas = Siswa::whereIn('uuid',$siswa)->update([
+        $kelas = Siswa::whereIn('uuid', $siswa)->update([
             'id_kelas' => $uuid
         ]);
-        $histori = Rombel::upsert($siswa_array,['uuid'],['id_kelas','id_siswa']);
+        $histori = Rombel::upsert($siswa_array, ['uuid'], ['id_kelas', 'id_siswa']);
         return response()->json(['success' => true]);
     }
     /**
      * Histori Rombel
      */
-    public function historiRombel() : View
+    public function historiRombel(): View
     {
-        $rombel = Rombel::with('kelas','siswa')->orderBy('created_at','DESC')->get();
+        $rombel = Rombel::with('kelas', 'siswa')->orderBy('created_at', 'DESC')->get();
 
-        return view('kelas.historiRombel',compact('rombel'));
+        return view('kelas.historiRombel', compact('rombel'));
     }
     /**
      * Hapus Histori Rombel
@@ -169,5 +173,39 @@ class KelasController extends Controller
         $rombel->delete();
 
         return response()->json(['success' => true]);
+    }
+    public function showRuanganKelas(string $uuid)
+    {
+        $find = RuangKelas::where('id_kelas', $uuid)->first();
+
+        if (!empty($find)) {
+            return response()->json([
+                'success' => true,
+                'data' => $find
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+            ]);
+        }
+    }
+    /**
+     * Jadikan Guru Bersangkutan Menjadi Walikelas
+     */
+    public function updateRuanganKelas(Request $request)
+    {
+        $find = RuangKelas::where('id_kelas', $request->idKelas);
+
+        if ($find->exists()) {
+            $find->update([
+                'id_kelas' => $request->idKelas,
+                'id_ruang' => $request->ruangan
+            ]);
+        } else {
+            RuangKelas::create([
+                'id_kelas' => $request->idKelas,
+                'id_ruang' => $request->ruangan
+            ]);
+        }
     }
 }

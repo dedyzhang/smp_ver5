@@ -21,7 +21,7 @@ class ClassroomController extends Controller
      */
     public function index(): View
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $guru = Guru::where('id_login', $id)->first();
         $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -75,7 +75,7 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalPost = date('Y-m-d H:i:s', time());;
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -125,8 +125,8 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
-            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $tanggalPost = date('Y-m-d H:i:s', time());
+            $tanggalSelesai = date('Y-m-d H:i:s', strtotime($request->waktu));
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -213,7 +213,7 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
+            $tanggalPost = date('Y-m-d H:i:s', time());
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -294,8 +294,8 @@ class ClassroomController extends Controller
             $link = $request->link;
             $isi = $request->isi;
             $adaToken = $request->token;
-            $tanggalPost = date('m/d/Y h:i:s a', time());
-            $tanggalSelesai = date('m/d/Y h:i:s a', strtotime($request->waktu));
+            $tanggalPost = date('Y-m-d H:i:s', time());
+            $tanggalSelesai = date('Y-m-d H:i:s', strtotime($request->waktu));
             $status = $request->status;
             if ($adaToken == "tidak") {
                 $token = "XXXX";
@@ -434,7 +434,7 @@ class ClassroomController extends Controller
                 'last_seen' => $item->last_seen
             );
         }
-        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->get();
+        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->orderBy('nama', 'asc')->get();
         if ($classroom->file !== "") {
             $file_array = explode(',', $classroom->file);
         } else {
@@ -467,6 +467,17 @@ class ClassroomController extends Controller
 
         $classroomSiswa = ClassroomSiswa::where([['id_classroom', '=', $idClassroom], ['id_siswa', '=', $idSiswa]])->first();
 
+        $classroomSiswa->update([
+            'status' => 'reset'
+        ]);
+    }
+    /**
+     * Reset Semua Siswa
+     */
+    public function resetSemuaSiswa(String $uuid, String $uuidClassroom)
+    {
+        $classroomSiswa = ClassroomSiswa::where('id_classroom', $uuidClassroom);
+        // return $classroomSiswa;
         $classroomSiswa->update([
             'status' => 'reset'
         ]);
@@ -549,7 +560,7 @@ class ClassroomController extends Controller
      */
     public function siswaIndex(): View
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -580,7 +591,7 @@ class ClassroomController extends Controller
     {
         $classroom = Classroom::findOrFail($request->uuid);
         if ($classroom->token === $request->token) {
-            $id = auth()->user()->uuid;
+            $id = Auth::user()->uuid;
             $siswa = Siswa::where('id_login', $id)->first();
             $cekSiswa = ClassroomSiswa::where([
                 ['id_classroom', '=', $classroom->uuid],
@@ -615,7 +626,7 @@ class ClassroomController extends Controller
     {
         $ngajar = Ngajar::with('pelajaran', 'kelas')->findOrFail($uuid);
         $classroom = Classroom::findOrFail($uuidClassroom);
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $siswa_aktif = ClassroomSiswa::where([
             ['id_classroom', '=', $classroom->uuid],
@@ -632,7 +643,11 @@ class ClassroomController extends Controller
                 ['id_classroom', '=', $classroom->uuid],
                 ['id_siswa', '=', $siswa->uuid],
             ])->first();
-            $jawaban = $getJawaban->jawaban;
+            if ($getJawaban !== null) {
+                $jawaban = $getJawaban->jawaban;
+            } else {
+                $jawaban = "";
+            }
         } else {
             $getJawaban = null;
             $jawaban = "";
@@ -650,7 +665,7 @@ class ClassroomController extends Controller
     }
     public function siswaCreate(Request $request)
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $jawaban = $request->jawaban;
         $id_classroom = $request->idClassroom;
@@ -678,7 +693,7 @@ class ClassroomController extends Controller
     }
     public function siswaSubmit(Request $request)
     {
-        $id = auth()->user()->uuid;
+        $id = Auth::user()->uuid;
         $siswa = Siswa::where('id_login', $id)->first();
         $id_classroom = $request->idClassroom;
 

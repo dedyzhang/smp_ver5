@@ -102,7 +102,7 @@ class AbsensiController extends Controller
 
                 if ($auth->access == "kurikulum" || $auth->access == "kesiswaan" || $auth->access == "guru" || $auth->access == "sapras") {
                     $jadwalVer = JadwalVer::where('status', 'active')->first();
-                    $hariKe = date('N', strtotime($tanggal));
+                    $hariKe = date('N', strtotime($tanggal->tanggal));
                     $hari = JadwalHari::where('no_hari', $hariKe)->first();
                     $jadwal = Jadwal::with('pelajaran', 'kelas', 'waktu')->where([
                         ['id_jadwal', '=', $jadwalVer->uuid],
@@ -231,7 +231,7 @@ class AbsensiController extends Controller
         $kehadiran_array = array();
         $jadwal = "";
         $tanggal = TanggalAbsensi::where('tanggal', $today)->first();
-        if ($tanggal !== null) {
+        if ($tanggal !== null && $tanggal->ada_siswa == 1) {
             $adaTanggal = "ada";
             $kehadiran = AbsensiSiswa::where([
                 ['id_tanggal', '=', $tanggal->uuid],
@@ -259,7 +259,7 @@ class AbsensiController extends Controller
 
         if ($tanggal !== null) {
             if ($jenis == "datang") {
-                $token = '42630aad83430ada2c8178afb9720a11';
+                $token = 'f9e2221247d19748b0335821f5d48a1e';
             } else {
                 $token = '2e2dffe1521f8199ff389060f563ad45';
             }
