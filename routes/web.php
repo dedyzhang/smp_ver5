@@ -42,6 +42,9 @@ Route::get('/', function () {
 Route::get('/signin', function () {
     return view('auth.login');
 })->name('login')->middleware('guest');
+Route::get('/privacy-policy', function () {
+    return view('privacypolicy');
+});
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
