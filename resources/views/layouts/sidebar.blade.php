@@ -3,7 +3,7 @@
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.2</i>
+            <i class="app-version">5.0.3</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -66,6 +66,7 @@
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
                 <ul class="submenu collapse" id="menu-guru">
+                    <li class="submenu-list"><a href="{{ route('penilaian.perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.kktp.index') }}"> KKTP</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.materi.index') }}"> Materi</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.formatif.index') }}"> Nilai Formatif</a></li>
@@ -103,6 +104,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pts') }}"> PTS</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                 </ul>
             </li>
             @endcan
@@ -132,7 +134,7 @@
                 </a>
                 <ul class="submenu collapse" id="menu-sapras">
                     <li class="submenu-list"><a href="{{ route('ruang.index') }}"> Ruangan</a></li>
-                    <li class="submenu-list"><a href="{{ route('penggunaan.index') }}"> Penggunaan</a></li>
+                    <li class="submenu-list"><a href="{{ route('penggunaan.index') }}"> Penggunaan Ruang</a></li>
                 </ul>
             </li>
             @endcan
