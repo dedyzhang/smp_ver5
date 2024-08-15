@@ -124,7 +124,9 @@ class PerangkatAjarController extends Controller
         $OriginalName = explode('.', $file->getClientOriginalName())[0];
         $filename = $perangkat->perangkat . "_" . $OriginalName . "." . $ext;
         $path = 'perangkat/' . $guru->nik;
+        $file_path = storage_path('app/public/' . $path);
         $file->storeAs('public/' . $path, $filename);
+        chmod($file_path, 0755);
 
         $realPath = $path . "/" . $filename;
         PerangkatAjarGuru::create([
