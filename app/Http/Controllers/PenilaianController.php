@@ -11,6 +11,8 @@ use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
 use App\Models\Pelajaran;
+use App\Models\PerangkatAjar;
+use App\Models\PerangkatAjarGuru;
 use App\Models\PTS;
 use App\Models\Rapor;
 use App\Models\RaporTemp;
@@ -914,5 +916,31 @@ class PenilaianController extends Controller
             $jabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]]);
         }
         $jabaran->delete();
+    }
+    /**
+     * Perangkat Ajar
+     */
+    public function perangkat()
+    {
+        $id = Auth::user()->uuid;
+        $guru = Guru::where('id_login', $id)->first();
+        $perangkat = PerangkatAjar::orderBy('perangkat')->get();
+        $perangkatGuru = PerangkatAjarGuru::get();
+        $perangkat_array = array();
+        foreach ($perangkatGuru as $item) {
+            if (isset($perangkat_array[$item->id_list . "." . $item->id_guru])) {
+                array_push($perangkat_array[$item->id_list . "." . $item->id_guru], array(
+                    "uuid" => $item->uuid,
+                    "file" => $item->file
+                ));
+            } else {
+                $perangkat_array[$item->id_list . "." . $item->id_guru] = array();
+                array_push($perangkat_array[$item->id_list . "." . $item->id_guru], array(
+                    "uuid" => $item->uuid,
+                    "file" => $item->file
+                ));
+            }
+        }
+        return view('perangkat.guru.index', compact('guru', 'perangkat', 'perangkat_array'));
     }
 }

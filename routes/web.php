@@ -12,6 +12,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PelajaranController;
 use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
+use App\Http\Controllers\PerangkatAjarController;
 use App\Http\Controllers\PoinController;
 use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
@@ -157,6 +158,8 @@ Route::middleware(isNgajar::class)->controller(PenilaianController::class)->grou
     //Rapor
     Route::get('/bukuguru/rapor', 'raporIndex')->name('penilaian.rapor.index');
     Route::get('/bukuguru/rapor/{uuid}/show', 'raporShow')->name('penilaian.rapor.show');
+    //Perangkat Ajar
+    Route::get('/bukuguru/perangkat', 'perangkat')->name('penilaian.perangkat.index');
     //Penjabaran
     Route::get('/bukuguru/penjabaran', 'penjabaranIndex')->name('penilaian.penjabaran.index');
     Route::get('/bukuguru/penjabaran/{uuid}/show', 'penjabaranShow')->name('penilaian.penjabaran.show');
@@ -360,3 +363,20 @@ Route::middleware(isPenilaianController::class)->controller(PengRuangController:
 });
 
 // {----------------------------------------------------END------------------------------------------------------------------}
+
+// {--------------------------------------------Halaman Perangkat Ajar-------------------------------------------------------}
+Route::middleware(IsAdminKurikulumKepala::class)->controller(PerangkatAjarController::class)->group(function () {
+    Route::get('/perangkat-ajar', 'index')->name('perangkat.index');
+    Route::get('/perangkat-ajar/create', 'create')->name('perangkat.create');
+    Route::post('/perangkat-ajar/create', 'store')->name('perangkat.create');
+    Route::get('/perangkat-ajar/{uuid}/edit', 'edit')->name('perangkat.edit');
+    Route::put('/perangkat-ajar/{uuid}/edit', 'update')->name('perangkat.update');
+    Route::delete('/perangkat-ajar/{uuid}/delete', 'delete')->name('perangkat.delete');
+    Route::get('/perangkat-ajar/{uuid}/show', 'show')->name('perangkat.show');
+});
+Route::middleware(isPenilaianController::class)->controller(PerangkatAjarController::class)->group(function () {
+    Route::post('/perangkat-ajar/{uuid}/{uuidPerangkat}/upload', 'upload')->name('perangkat.guru.upload');
+    Route::get('/perangkat-ajar/{uuid}/download', 'download')->name('perangkat.guru.download');
+    Route::delete('/perangkat-ajar/{uuid}/hapus', 'deletePerangkat')->name('perangkat.guru.delete');
+    Route::get('/perangkat-ajar/{uuid}/zip', 'downloadZip')->name('perangkat.guru.zip');
+});
