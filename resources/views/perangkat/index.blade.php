@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('perangkat')}}
     <div class="body-contain-customize col-12">
         <h5><b>Perangkat Pembelajaran</b></h5>
         <p>Halaman ini diperuntukkan admin dan kurikulum untuk memantau perangkat pembelajaran yang diupload oleh guru</p>

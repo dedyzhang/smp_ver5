@@ -1,6 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
+    @if (\Request::route()->getName() === 'penilaian.perangkat.index')
+        {{Breadcrumbs::render('perangkat-guru')}}
+    @else
+        {{Breadcrumbs::render('perangkat-show',$guru)}}
+    @endif
     <div class="col-12 body-contain-customize">
         <h5>Perangkat Guru</h5>
         <p>Halaman Ini untuk menampilkan perangkat guru yang sudah diupload</p>

@@ -12,6 +12,7 @@ use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\Pelajaran;
+use App\Models\PerangkatAjar;
 use App\Models\Ruang;
 use App\Models\Siswa;
 use Diglactic\Breadcrumbs\Breadcrumbs;
@@ -413,4 +414,23 @@ Breadcrumbs::for('walikelas-ruang-create', function (BreadcrumbsTrail $trail, Ru
 Breadcrumbs::for('walikelas-ruang-edit', function (BreadcrumbsTrail $trail, String $uuid, Barang $barang) {
     $trail->parent('walikelas-ruang');
     $trail->push($barang->barang, route('barang.edit', ['uuid' => $uuid, 'uuidBarang' => $barang]));
+});
+//Perangkat Ajar.Breadcrumbs
+Breadcrumbs::for('perangkat', function (BreadcrumbsTrail $trail) {
+    $trail->push('Perangkat', route('perangkat.index'));
+});
+Breadcrumbs::for('perangkat-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('perangkat');
+    $trail->push('Create', route('perangkat.create'));
+});
+Breadcrumbs::for('perangkat-edit', function (BreadcrumbsTrail $trail, PerangkatAjar $perangkatAjar) {
+    $trail->parent('perangkat');
+    $trail->push('Edit', route('perangkat.edit', $perangkatAjar));
+});
+Breadcrumbs::for('perangkat-show', function (BreadcrumbsTrail $trail, Guru $guru) {
+    $trail->parent('perangkat');
+    $trail->push($guru->nama, route('perangkat.show', $guru));
+});
+Breadcrumbs::for('perangkat-guru', function (BreadcrumbsTrail $trail) {
+    $trail->push('Perangkat', route('penilaian.perangkat.index'));
 });
