@@ -109,7 +109,7 @@
                 transform: scale(0.4);
         }
         .one:after, .one:before {
-            content: url("{{asset('img/sekolah/logo-rounded.png')}}");
+            content: url("{{asset('img/Sekolah/logo-rounded.png')}}");
         }
         .one b {
         color: #cfcfcfd8;
@@ -133,7 +133,7 @@
                 transform: scale(0.4);
         }
         .two:after, .two:before {
-        content: url("{{asset('img/sekolah/logo-rounded.png')}}");
+        content: url("{{asset('img/Sekolah/logo-rounded.png')}}");
         }
         .two b {
         color: #cfcfcfd8;
