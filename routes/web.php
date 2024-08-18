@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AppController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -46,6 +48,7 @@ Route::get('/signin', function () {
 Route::get('/privacy-policy', function () {
     return view('privacypolicy');
 });
+Route::get('/redirect', [AppController::class, 'redirect']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
