@@ -210,9 +210,29 @@
         <p>Bright Heart . Bright Mind . Bright Future</p>
     </div>
     <div class='container'>
-        <button class='one'><a href="{{route('login')}}">SMPS Maitreyawira Tanjungpinang</a></button>
-        <button class='two'><a href="https://bincent.smpmaitreyawiratpi.sch.id/signin">SMPS Maitreyawira Bintan Center</a></button>
-        <button class='three'><a href="https://smasmaitreyawira.sch.id/signin">SMAS Maitreyawira Tanjungpinang</a></button>
+        <button class='getLink one' data-sekolah="smpmw"><a href="{{route('login')}}">SMPS Maitreyawira Tanjungpinang</a></button>
+        <button class='getLink two' data-sekolah="smpmwbincen"><a href="https://bincent.smpmaitreyawiratpi.sch.id/signin">SMPS Maitreyawira Bintan Center</a></button>
+        <button class='getLink three' data-sekolah="smamw"><a href="https://smasmaitreyawira.sch.id/signin">SMAS Maitreyawira Tanjungpinang</a></button>
     </div>
+    <script>
+        $('.getLink').click(function() {
+            event.preventDefault();
+            var link = $(this).find('a').attr('href');
+            var url = "{{route('redirect.update')}}";
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {link: link },
+                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                success: function(data) {
+                    console.log(data);
+                    window.location.href=link;
+                },
+                error: function(data) {
+                    console.log(data.responseJSON.message);
+                }
+            })
+        });
+    </script>
 </body>
 </html>

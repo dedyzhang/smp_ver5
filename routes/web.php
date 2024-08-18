@@ -49,6 +49,7 @@ Route::get('/privacy-policy', function () {
     return view('privacypolicy');
 });
 Route::get('/redirect', [AppController::class, 'redirect']);
+Route::post('/redirect', [AppController::class, 'redirectUpdate'])->name('redirect.update');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
