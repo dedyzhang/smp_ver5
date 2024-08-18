@@ -13,6 +13,7 @@ class AppController extends Controller
         if ($request->cookie('link') !== null) {
             return
                 redirect()->to($request->cookie('link'))->send();
+            Cookie::queue('link', $request->cookie('link'), 10080);
         } else {
             return view('redirect');
         }
