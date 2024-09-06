@@ -10,16 +10,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Kelas extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
     protected $fillable = [
         'tingkat',
         'kelas'
     ];
-    public function walikelas() : BelongsToMany {
-        return $this->belongsToMany(Guru::class,'walikelas','id_kelas','id_guru');
+    public function walikelas(): BelongsToMany
+    {
+        return $this->belongsToMany(Guru::class, 'walikelas', 'id_kelas', 'id_guru');
     }
-    public function siswa() : HasMany {
-        return $this->hasMany(Siswa::class,'id_kelas','uuid');
+    public function siswa(): HasMany
+    {
+        return $this->hasMany(Siswa::class, 'id_kelas', 'uuid')->orderBy('nama', 'ASC');
     }
 }

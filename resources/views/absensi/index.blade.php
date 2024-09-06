@@ -17,6 +17,7 @@
             <p class="p-0 m-0"><b>Keterangan Kalendar</b></p>
             <ul class="ms-3">
                 <li>S<i>(1 atau 2) - (Keterangan Semester)</i></li>
+                <li>V (1,2,...) - (Keterangan Versi Jadwal yang digunakan)</li>
                 <li>Keterangan Warna
                     <ul style="margin-left: -13px">
                         <li><i style="background-color:#FFC470 ;padding:0 8px; border-radius:100%; margin-right: 15px"></i> Ada Tanggal, Agenda dan Siswa</li>

@@ -9,7 +9,7 @@
     <div class="blackdrop"></div>
     <div class="main-container">
         @include('layouts.navbar')
-        <div class="body-container container">
+        <div class="body-container">
             <div class="row">
                 @yield('container')
             </div>

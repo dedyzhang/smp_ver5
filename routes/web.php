@@ -264,6 +264,14 @@ Route::middleware(isNgajar::class)->controller(AgendaController::class)->group(f
     Route::post('/agenda/{uuid}/edit/pancasila', 'storePancasila')->name('agenda.store.pancasila');
     Route::delete('/agenda/{uuid}/delete/absensi', 'deleteAbsensi')->name('agenda.delete.absensi');
     Route::delete('/agenda/{uuid}/delete/pancasila', 'deletePancasila')->name('agenda.delete.pancasila');
+    Route::get('/agenda/history', 'history')->name('agenda.history');
+    Route::get('/agenda/history/rekap', 'historyRekapAgenda')->name('agenda.historyRekapAgenda');
+    Route::get('/agenda/create/{uuid}/copy', 'createWithCopy')->name('agenda.createCopy');
+});
+Route::middleware(IsAdminKurikulumKepala::class)->controller(AgendaController::class)->group(function () {
+    Route::get('/agenda/rekap', 'rekap')->name('agenda.rekap');
+    Route::get('/agenda/rekap/tanggal', 'getTanggal')->name('agenda.getTanggal');
+    Route::get('/agenda/rekap/{idGuru}/{idMinggu}', 'rekapGuru')->name('agenda.rekap.guru');
 });
 // {----------------------------------------------------END------------------------------------------------------------------}
 

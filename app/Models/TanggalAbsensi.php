@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TanggalAbsensi extends Model
 {
@@ -15,6 +16,12 @@ class TanggalAbsensi extends Model
         'tanggal',
         'agenda',
         'ada_siswa',
-        'semester'
+        'semester',
+        'id_jadwal'
     ];
+
+    public function jadwal(): BelongsTo
+    {
+        return $this->belongsTo(JadwalVer::class, 'id_jadwal');
+    }
 }

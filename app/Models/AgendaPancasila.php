@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class AgendaPancasila extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'uuid';
     protected $table = 'agenda_pancasila';
     protected $fillable = [
@@ -21,7 +21,8 @@ class AgendaPancasila extends Model
         'semester'
     ];
 
-    public function siswa() {
-        return $this->belongsTo(Siswa::class,'id_siswa');
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa')->orderBy('nama', 'ASC');
     }
 }

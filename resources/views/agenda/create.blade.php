@@ -26,30 +26,30 @@
         <div class="row m-0 p-0">
             <div class="form-group col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 p-2">
                 <label for="pembahasan">Pembahasan</label>
-                <textarea class="form-control need-validasi" name="pembahasan" id="pembahasan" placeholder="masukkan pembahasan dalam pembelajaran" rows="5"></textarea>
+                <textarea class="form-control need-validasi" name="pembahasan" id="pembahasan" placeholder="masukkan pembahasan dalam pembelajaran" rows="5">@if (\Request::route()->getName() === 'agenda.createCopy') {{$agenda->pembahasan}} @endif</textarea>
             </div>
             <div class="form-group col-12 col-sm-12 col-md-12 col-lg-4 col-xl-4 p-2">
                 <label for="metode">Metode Pembelajaran</label>
-                <textarea class="form-control need-validasi" name="metode" id="metode" placeholder="Metode dalam pembelajaran" rows="5"></textarea>
+                <textarea class="form-control need-validasi" name="metode" id="metode" placeholder="Metode dalam pembelajaran" rows="5">@if (\Request::route()->getName() === 'agenda.createCopy') {{$agenda->metode}} @endif</textarea>
             </div>
         </div>
         <div class="row m-0 p-0">
             <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 p-2">
                 <label for="proses">Proses Pembelajaran</label>
                 <select class="form-control need-validasi" data-toggle="select" name="proses" id="proses" data-width="100%">
-                    <option value="belum">Belum</option>
-                    <option value="selesai">Selesai</option>
+                    <option value="belum" @selected(\Request::route()->getName() === 'agenda.createCopy' && $agenda->proses == "belum")>Belum</option>
+                    <option value="selesai" @selected(\Request::route()->getName() === 'agenda.createCopy' && $agenda->proses == "selesai")>Selesai</option>
                 </select>
             </div>
         </div>
         <div class="row m-0 p-0">
             <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 p-2">
                 <label for="kegiatan">Kegiatan</label>
-                <textarea class="form-control need-validasi" name="kegiatan" id="kegiatan" placeholder="masukkan kegiatan dalam pembelajaran" rows="5"></textarea>
+                <textarea class="form-control need-validasi" name="kegiatan" id="kegiatan" placeholder="masukkan kegiatan dalam pembelajaran" rows="5">@if (\Request::route()->getName() === 'agenda.createCopy') {{$agenda->kegiatan}} @endif</textarea>
             </div>
             <div class="form-group col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 p-2">
                 <label for="kendala">kendala</label>
-                <textarea class="form-control need-validasi" name="kendala" id="kendala" placeholder="Kendala dalam pembelajaran" rows="5"></textarea>
+                <textarea class="form-control need-validasi" name="kendala" id="kendala" placeholder="Kendala dalam pembelajaran" rows="5">@if (\Request::route()->getName() === 'agenda.createCopy') {{$agenda->kendala}} @endif</textarea>
             </div>
         </div>
     </div>
