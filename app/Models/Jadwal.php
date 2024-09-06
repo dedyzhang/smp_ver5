@@ -51,4 +51,8 @@ class Jadwal extends Model
     {
         return $this->belongsToMany(Siswa::class, 'kelas', 'uuid', 'uuid', 'id_kelas', 'id_kelas');
     }
+    public function versi()
+    {
+        return $this->belongsTo(JadwalVer::class, 'id_jadwal');
+    }
 }

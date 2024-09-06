@@ -275,7 +275,16 @@ Breadcrumbs::for('agenda-edit', function (BreadcrumbsTrail $trail, Agenda $agend
     $trail->parent('agenda');
     $trail->push($kelas->tingkat . $kelas->kelas . " - " . $pelajaran->pelajaran_singkat . "( " . $waktu->waktu_mulai . " )", route('agenda.edit', $agenda->uuid));
 });
-
+Breadcrumbs::for('agenda-history', function (BreadcrumbsTrail $trail) {
+    $trail->push('Rekap', route('agenda.history'));
+});
+Breadcrumbs::for('agenda-rekap', function (BreadcrumbsTrail $trail) {
+    $trail->push('Rekap', route('agenda.rekap'));
+});
+Breadcrumbs::for('agenda-rekap-guru', function (BreadcrumbsTrail $trail, Guru $guru, String $idMinggu) {
+    $trail->parent('agenda-rekap');
+    $trail->push($guru->nama, route('agenda.rekap.guru', ['idGuru' => $guru->uuid, 'idMinggu' => $idMinggu]));
+});
 //Classroom.Breadcrumbs
 Breadcrumbs::for('classroom', function (BreadcrumbsTrail $trail) {
     $trail->push('Classroom', route('classroom.index'));

@@ -11,6 +11,8 @@ use App\Models\JadwalHari;
 use App\Models\JadwalVer;
 use App\Models\Semester;
 use App\Models\TanggalAbsensi;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -33,12 +35,11 @@ class AgendaController extends Controller
         ])->first();
         $hariKe = date('N', strtotime($tanggal));
         $hari = JadwalHari::where('no_hari', $hariKe)->first();
-
         $jadwal = "";
         $array_agenda = array();
         if ($hariKe <= 5) {
             if ($cekTanggal !== null) {
-                $jadwalVer = JadwalVer::where('status', 'active')->first();
+                $jadwalVer = JadwalVer::findOrFail($cekTanggal->id_jadwal);
                 // $account = Auth::user()->uuid;
                 $guru = Guru::where('id_login', Auth::user()->uuid)->first();
                 $jadwal = Jadwal::with('pelajaran', 'kelas', 'waktu')->where([
@@ -77,6 +78,15 @@ class AgendaController extends Controller
     {
         return view('agenda.create');
     }
+    /**
+     * Create - Buat agenda baru dengan cara copy agenda dari rekap
+     */
+    public function createWithCopy(String $uuid): View
+    {
+        $agenda = Agenda::findOrFail($uuid);
+        return view('agenda.create', compact('agenda'));
+    }
+
     /**
      * Show = Preview agenda by uuid
      */
@@ -121,12 +131,12 @@ class AgendaController extends Controller
             ['tanggal', '=', $tanggal],
             ['agenda', '=', 1],
             ['semester', '=', $sem]
-        ])->get();
+        ])->first();
         $hariKe = date('N', strtotime($tanggal));
         $hari = JadwalHari::where('no_hari', $hariKe)->first();
 
-        if ($cekTanggal->count() >= 1) {
-            $jadwalVer = JadwalVer::where('status', 'active')->first();
+        if ($cekTanggal !== null) {
+            $jadwalVer = JadwalVer::findOrFail($cekTanggal->id_jadwal);
             // $account = Auth::user()->uuid;
             $guru = Guru::where('id_login', Auth::user()->uuid)->first();
             $jadwal = Jadwal::with('pelajaran', 'kelas', 'waktu')->where([
@@ -282,5 +292,141 @@ class AgendaController extends Controller
     {
         $pancasila = AgendaPancasila::findOrFail($uuid);
         $pancasila->delete();
+    }
+
+    public function history(): View
+    {
+        $tanggal = TanggalAbsensi::orderBy('tanggal')->get()->groupBy(function ($date) {
+            return Carbon::parse($date->tanggal)->format('W Y');
+        });
+        return view('agenda.histori', compact('tanggal'));
+    }
+    /**
+     * Guru Melihat Rekap Agenda Per minggunya
+     */
+    public function historyRekapAgenda(Request $request)
+    {
+        $guru = Guru::where('id_login', Auth::user()->uuid)->first();
+        $minggu = explode(',', $request->minggu);
+        $tanggal = TanggalAbsensi::whereIn('uuid', $minggu)->where('agenda', 1)->orderBy('tanggal', 'ASC')->get();
+        $tanggal_array = $tanggal->pluck('tanggal');
+        $tanggal_jadwal_array = $tanggal->pluck('id_jadwal', 'tanggal');
+        $jadwal_array = array();
+        $hari = JadwalHari::all()->pluck('uuid', 'no_hari');
+        foreach ($tanggal_jadwal_array as $key => $value) {
+            $hariKe = date('N', strtotime($key));
+            $noHari = $hari[$hariKe];
+            $jadwal = Jadwal::where([
+                ['id_guru', '=', $guru->uuid],
+                ['id_jadwal', '=', $value],
+                ['id_hari', '=', $noHari]
+            ])->groupBy(['id_kelas', 'id_pelajaran'])->get()->sortBy('waktu.waktu_mulai')->sortBy('hari.no_hari');
+
+            foreach ($jadwal as $item) {
+                array_push($jadwal_array, array(
+                    'tanggal' => $key,
+                    'uuid' => $item->uuid,
+                    'versi' => $item->versi->versi,
+                    'hari' => $item->hari->no_hari,
+                    'waktu' => $item->waktu->waktu_mulai,
+                    'pelajaran' => $item->pelajaran->pelajaran,
+                    'kelas' => $item->kelas->tingkat . $item->kelas->kelas
+                ));
+            }
+        }
+        $agenda_array = Agenda::with('absensi.siswa', 'pancasila.siswa', 'jadwal')->whereIn('tanggal', $tanggal_array)->where('id_guru', $guru->uuid)->get()->sortBy('jadwal.waktu.waktu_mulai')->sortBy('tanggal')->toArray();
+        // dd($agenda_array);
+        return response()->json(['guru' => $guru, 'tanggal' => $tanggal, 'agenda_array' => $agenda_array, 'jadwal_array' => $jadwal_array]);
+    }
+    /**
+     * -----------------------------------------------------
+     * Untuk Admin dan Kurikulum, Kepala Sekolah
+     * -----------------------------------------------------
+     */
+    public function rekap(): View
+    {
+        $tanggal = TanggalAbsensi::orderBy('tanggal')->get()->groupBy(function ($date) {
+            return Carbon::parse($date->tanggal)->format('W Y');
+        });
+        return view('agenda.rekap.index', compact('tanggal'));
+    }
+    public function getTanggal(Request $request)
+    {
+        $minggu = explode(',', $request->minggu);
+        $tanggal = TanggalAbsensi::whereIn('uuid', $minggu)->where('agenda', 1)->orderBy('tanggal', 'ASC')->get();
+        $tanggal_array = $tanggal->pluck('tanggal');
+        $agenda_array = array();
+        $agenda = Agenda::with('jadwal', 'absensi', 'pancasila')->whereIn('tanggal', $tanggal_array)->get();
+        foreach ($agenda as $element) {
+            if (isset($agenda_array[$element->tanggal . "." . $element->id_guru])) {
+                array_push($agenda_array[$element->tanggal . "." . $element->id_guru], array(
+                    "tanggal" => $element->tanggal,
+                    "id_versi" => $element->id_versi,
+                    "id_jadwal" => $element->id_jadwal,
+                    "id_guru" => $element->id_guru,
+                    "pembahasan" => $element->pembahasan,
+                    "metode" => $element->metode,
+                    "proses" => $element->proses,
+                    "kegiatan" => $element->kegiatan,
+                    "kendala" => $element->kendala,
+                    "semester" => $element->semester,
+                    "absensi" => $element->absensi,
+                    "pancasila" => $element->pancasila
+                ));
+            } else {
+                $agenda_array[$element->tanggal . "." . $element->id_guru] = array();
+                array_push($agenda_array[$element->tanggal . "." . $element->id_guru], array(
+                    "tanggal" => $element->tanggal,
+                    "id_versi" => $element->id_versi,
+                    "id_jadwal" => $element->id_jadwal,
+                    "id_guru" => $element->id_guru,
+                    "pembahasan" => $element->pembahasan,
+                    "metode" => $element->metode,
+                    "proses" => $element->proses,
+                    "kegiatan" => $element->kegiatan,
+                    "kendala" => $element->kendala,
+                    "semester" => $element->semester,
+                    "absensi" => $element->absensi,
+                    "pancasila" => $element->pancasila
+                ));
+            }
+        }
+        $access_array = array('guru', 'kurikulum', 'kesiswaan', 'sapras');
+        $guru = User::with('guru')->whereIn('access', $access_array)->orderBy(Guru::select('nama')->whereColumn('gurus.id_login', 'users.uuid'))->get();
+        return response()->json(['guru' => $guru, 'tanggal' => $tanggal, 'agenda' => $agenda_array]);
+    }
+    public function rekapGuru(String $idGuru, String $idMinggu)
+    {
+        $minggu = explode(',', $idMinggu);
+        $tanggal = TanggalAbsensi::whereIn('uuid', $minggu)->where('agenda', 1)->orderBy('tanggal', 'ASC')->get();
+        $tanggal_array = $tanggal->pluck('tanggal');
+        $tanggal_jadwal_array = $tanggal->pluck('id_jadwal', 'tanggal');
+        $guru = Guru::findOrFail($idGuru);
+        $jadwal_array = array();
+        $hari = JadwalHari::all()->pluck('uuid', 'no_hari');
+        foreach ($tanggal_jadwal_array as $key => $value) {
+            $hariKe = date('N', strtotime($key));
+            $noHari = $hari[$hariKe];
+            $jadwal = Jadwal::where([
+                ['id_guru', '=', $guru->uuid],
+                ['id_jadwal', '=', $value],
+                ['id_hari', '=', $noHari]
+            ])->groupBy(['id_kelas', 'id_pelajaran'])->get()->sortBy('waktu.waktu_mulai')->sortBy('hari.no_hari');
+
+            foreach ($jadwal as $item) {
+                $jadwal_array[$item->uuid] = array(
+                    'tanggal' => $key,
+                    'uuid' => $item->uuid,
+                    'versi' => $item->versi->versi,
+                    'hari' => $item->hari->no_hari,
+                    'waktu' => $item->waktu->waktu_mulai,
+                    'pelajaran' => $item->pelajaran->pelajaran,
+                    'kelas' => $item->kelas->tingkat . $item->kelas->kelas
+                );
+            }
+        }
+        $agenda_array = Agenda::with('absensi.siswa', 'pancasila.siswa', 'jadwal')->whereIn('tanggal', $tanggal_array)->where('id_guru', $guru->uuid)->get()->sortBy('jadwal.waktu.waktu_mulai')->sortBy('tanggal')->toArray();
+        // dd($agenda_array);
+        return view('agenda.rekap.guru', compact('guru', 'tanggal', 'agenda_array', 'jadwal_array', 'idMinggu'));
     }
 }

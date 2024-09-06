@@ -67,7 +67,7 @@ class AppServiceProvider extends ServiceProvider
             return Auth::user()->access === "kepala";
         });
         Gate::define('sekretaris', function () {
-            $auth = auth()->user();
+            $auth = Auth::user();
             if ($auth->access === "siswa") {
                 $siswa = Siswa::where('id_login', $auth->uuid)->first();
                 $sekretaris = Sekretaris::where('id_kelas', $siswa->id_kelas)->first();

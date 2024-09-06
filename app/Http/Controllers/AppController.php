@@ -10,13 +10,7 @@ class AppController extends Controller
 {
     public function redirect(Request $request): View
     {
-        if ($request->cookie('link') !== null) {
-            return
-                redirect()->to($request->cookie('link'))->send();
-            Cookie::queue('link', $request->cookie('link'), 10080);
-        } else {
-            return view('redirect');
-        }
+        return view('redirect');
     }
     public function redirectUpdate(Request $request)
     {

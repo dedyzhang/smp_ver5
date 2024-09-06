@@ -108,9 +108,119 @@
         })
     </script>
 @endif
-{{Breadcrumbs::render('home')}}
-<div class="body-contain-customize col-md-12 col-lg-12 col-sm-12">
-    <h6>Home Page</h6>
+ @php
+    if($user->access != "siswa" && $user->access != "orangtua") {
+        $namaGuru = explode(' ',$user->guru->nama);
+        if(strlen($namaGuru[0]) <= 4) {
+            $nama = $user->guru->nama;
+        } else {
+            $nama = $namaGuru[0];
+        }
+        $jk = $user->guru->jk;
+    } else {
+        if($user->access == "orangtua") {
+            $namaSiswa = explode(' ',$account->siswa->nama);
+            $nama = $namaSiswa[0]." Parent";
+            $jk = $account->siswa->jk;
+        } else {
+            $namaSiswa = explode(' ',$account->nama);
+            $nama = $namaSiswa[0];
+            $jk = $account->jk;
+        }
+    }
+@endphp
+<div class="home-page-box {{$jk == "l" ? "boy" : "girl"}} col-md-12 col-lg-12 col-sm-12">
+    <div class="info-box">
+        <h6 class="nama">Hello, <span>{{$nama}}</span></h6>
+        <p class="tanggal">Have a Nice {{date('l')}}</p>
+        <div class="kotak-bantuan">
+            <p>Butuh Bantuan Layanan ?</p>
+            <a href="https://wa.me/6281277464404" class="btn btn-sm btn-success">
+                <i class="fa-brands fa-whatsapp"></i>
+            </a>
+            <a href="https://ig.me/m/smpsmaitreyawiratpi" class="btn btn-sm btn-warning text-warning-emphasis">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://m.me/smpsmaitreyawira.tanjungpinang" class="btn btn-sm btn-primary">
+                <i class="fa-brands fa-facebook"></i>
+            </a>
+        </div>
+    </div>
 </div>
+<div class="row m-0 p-0 mt-3">
+    @if ($user->access != "siswa" && $user->access != "orangtua")
+        @if ($account->walikelas !== null)
+            <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+                <div class="card rounded-4 border-0">
+                    <div class="card-body">
+                        <h5 class="fs-18"><b>Info Kelas</b></h5>
+                        <canvas id="chart-kelas" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
+                <div class="card rounded-4 border-0">
+                    <div class="card-body">
+                        <h5 class="fs-18"><b>Info Siswa</b></h5>
+                        <div class="vertical-align" style="height:300px; overflow-y:auto;">
+                            <table id="table-siswa" class="fs-12 mt-2 table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th width="10%">No</th>
+                                        <th width="40%">Nama</th>
+                                        <th width="15%">Nis</th>
+                                        <th width="10%">Jk</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($siswa as $item)
+                                        <tr>
+                                            <td>{{$loop->iteration}}</td>
+                                            <td>{{$item->nama}}</td>
+                                            <td>{{$item->nis}}</td>
+                                            <td>{{$item->jk}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <script>
+                const ctx = document.getElementById('chart-kelas');
+                new Chart(ctx, {
+                    type: 'pie',
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Data Siswa Per Jenis Kelamin'
+                            },
+                        },
+                    },
+                    data: {
+                        labels: ['Laki-Laki', 'Perempuan'],
+                        responsive : true,
+                        datasets: [{
+                            label: 'Jumlah',
+                            data: [{{$jumlah->laki}},{{$jumlah->perempuan}}],
+                            backgroundColor: [
+                                '#BBE9FF','#FFC6C6'
+                            ],
+                        }]
+                    },
+                });
+
+            </script>
+        @endif
+    @endif
+</div>
+
 @endsection
 

@@ -428,6 +428,7 @@ nav .navbar-menu .navbar-menu-list:hover {
     opacity: 0;
     visibility: hidden;
     font-size: 12px;
+    z-index: 999;
 }
 .c-contain .navbar-submenu {
     margin: 0;
@@ -446,8 +447,13 @@ nav .navbar-menu .navbar-menu-list:hover {
 }
 /* Body Container untuk semua container didalam aplikasi */
 .body-container {
-    width: 100%;
+    width: 98%;
     min-height: 80vh;
+}
+@media screen and (max-width: 800px) {
+    .body-container {
+        margin: 0 auto;
+    }
 }
 @media screen and (min-height: 630px) {
     .body-container {
@@ -468,6 +474,9 @@ nav .navbar-menu .navbar-menu-list:hover {
 }
 .body-contain-customize:nth-of-type(1) {
     border-top: 10px solid #fff017;
+}
+.body-contain-customize.nostrip:nth-of-type(1) {
+    border-top: none;
 }
 .body-contain-customize .body-title {
     margin: 0;
@@ -677,4 +686,60 @@ table.dataTables tbody td {
 }
 .hidden {
     display: none;
+}
+/* Home Page Picture */
+.home-page-box {
+    height: 150px;
+    background: #fff;
+    padding: 15px;
+    margin-top: 50px;
+    border-radius: 15px;
+    font-size: 14px;
+    position: relative;
+}
+.home-page-box.boy::before {
+    content: url("../img/student-boy-home.svg");
+    transform: scale(1.09);
+    position: absolute;
+    top: -59px;
+    right: 10px;
+}
+.home-page-box.girl::before {
+    content: url("../img/student-girl-home.svg");
+    transform: scale(1.09);
+    position: absolute;
+    top: -59px;
+    right: 10px;
+}
+.home-page-box .info-box {
+    z-index: 2;
+}
+@media screen and (max-width: 571px) {
+    .home-page-box {
+        margin-top: 20px;
+    }
+    .home-page-box.boy::before,
+    .home-page-box.girl::before {
+        content: url("../img/small-home-box.svg");
+        transform: scale(0.7);
+        top: -24px;
+        right: -27px;
+        opacity: 0.8;
+    }
+}
+.home-page-box .nama {
+    font-size: 24px;
+}
+.home-page-box .nama span {
+    color: #d89d1c;
+    font-weight: bold;
+}
+.home-page-box h6 {
+    margin: 0;
+}
+.home-page-box p {
+    margin: 0;
+}
+.home-page-box .kotak-bantuan {
+    margin-top: 10px;
 }

@@ -35,6 +35,18 @@
                 <button class="btn btn-sm btn-warning text-warning-emphasis atur-tanggal"><i class="fas fa-calendar"></i> Tampilkan</button>
             </div>
         </div>
+        <p>Atur Jenis Jadwal yang digunakan</p>
+        <div class="row m-0 mt-3">
+            <div class="col-12 m-0 p-0 form-group">
+                <label for="jadwal">Versi Jadwal</label>
+                <select name="jadwal" id="jadwal" class="form-control">
+                    <option value="">Pilih Salah Satu</option>
+                    @foreach ($jadwalVersi as $versi)
+                        <option value="{{$versi->uuid}}">Versi {{$versi->versi}} (Status : {{$versi->status}} )</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
     </div>
     <div class="body-contain-customize col-12 mt-3 absensi-tambah">
         <div class="calendar">
@@ -137,7 +149,7 @@
                             div.innerHTML += content;
                             days.appendChild(div);
                         }
-                        $('.button-place.input').html('<button class="btn btn-s;m btn-warning text-warning-emphasis tambah-tanggal"><i class="fas fa-plus"></i> Simpan Tanggal</button>')
+                        $('.button-place.input').html('<button class="btn btn-sm btn-warning text-warning-emphasis tambah-tanggal"><i class="fas fa-plus"></i> Simpan Tanggal</button>')
                     },error: function(data) {
                         console.log(data.responseJSON.message);
                     }
@@ -146,45 +158,51 @@
         });
         $('.button-place.input').on('click','.tambah-tanggal',function() {
             var tambahTanggal = () => {
-                BigLoading("Aplikasi sedang menambahkan tanggal. Mohon untuk tidak menutup aplikasi sebelum proses selesai");
-                var tanggalArray = [];
-                var bulan = $('#bulan').val();
-                var tahun = $('#tahun').val();
-                $('.form-check-input[name="tanggal"]:checked').each(function() {
-                    var tanggal = $(this).val();
-                    if($('#agenda-'+tanggal).is(':checked')) {
-                        var agenda = 1;
-                    } else {
-                        var agenda = 0;
-                    }
-                    if($('#siswa-'+tanggal).is(':checked')) {
-                        var siswa = 1;
-                    } else {
-                        var siswa = 0;
-                    }
-                    var formatTanggal = tahun+"-"+bulan.padStart(2,"0")+"-"+tanggal.padStart(2,"0");
-                    tanggalArray.push({
-                        tanggal : formatTanggal,
-                        agenda : agenda,
-                        ada_siswa : siswa,
-                        semester : "{{$semester}}"
+                var jadwal = $('#jadwal').val();
+                if(jadwal == "") {
+                    oAlert("orange","Perhatian","Versi Jadwal tidak boleh kosong")
+                } else {
+                    BigLoading("Aplikasi sedang menambahkan tanggal. Mohon untuk tidak menutup aplikasi sebelum proses selesai");
+                    var tanggalArray = [];
+                    var bulan = $('#bulan').val();
+                    var tahun = $('#tahun').val();
+                    $('.form-check-input[name="tanggal"]:checked').each(function() {
+                        var tanggal = $(this).val();
+                        if($('#agenda-'+tanggal).is(':checked')) {
+                            var agenda = 1;
+                        } else {
+                            var agenda = 0;
+                        }
+                        if($('#siswa-'+tanggal).is(':checked')) {
+                            var siswa = 1;
+                        } else {
+                            var siswa = 0;
+                        }
+                        var formatTanggal = tahun+"-"+bulan.padStart(2,"0")+"-"+tanggal.padStart(2,"0");
+                        tanggalArray.push({
+                            tanggal : formatTanggal,
+                            agenda : agenda,
+                            ada_siswa : siswa,
+                            id_jadwal : jadwal,
+                            semester : "{{$semester}}"
+                        });
                     });
-                });
-                console.log(tanggalArray);
-                var url = "{{route('absensi.store')}}";
-                $.ajax({
-                    type: "POST",
-                    url: url,
-                    data: {tanggal : tanggalArray},
-                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
-                    success: function(data) {
-                        removeLoadingBig();
-                        cAlert('green',"Berhasil","Tanggal Berhasil Ditambahkan",true);
-                    },
-                    error: function(data) {
-                        console.log(data.responseJSON.message);
-                    }
-                })
+                    console.log(tanggalArray);
+                    var url = "{{route('absensi.store')}}";
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {tanggal : tanggalArray,jadwal : jadwal},
+                        headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                        success: function(data) {
+                            removeLoadingBig();
+                            cAlert('green',"Berhasil","Tanggal Berhasil Ditambahkan",true);
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON.message);
+                        }
+                    })
+                }
             }
             cConfirm("Perhatian","Yakin untuk menambahkan tanggal ?",tambahTanggal);
         });

@@ -23,7 +23,7 @@ class AbsensiController extends Controller
     {
         $sem = Semester::first();
         $semester = $sem->semester;
-        $tanggal = TanggalAbsensi::get();
+        $tanggal = TanggalAbsensi::with('jadwal')->get();
         $event = [];
 
         foreach ($tanggal as $tgl) {
@@ -42,7 +42,7 @@ class AbsensiController extends Controller
             }
 
             $event[] = [
-                'title' => "S" . $semester . $agenda . $siswa,
+                'title' => "S" . $tgl->semester . "- V" . $tgl->jadwal->versi . $agenda . $siswa,
                 'start' => $tgl->tanggal,
                 'end' => $tgl->tanggal,
                 'color' => $colors,
@@ -64,7 +64,8 @@ class AbsensiController extends Controller
     {
         $sem = Semester::first();
         $semester = $sem->semester;
-        return View('absensi.create', compact('semester'));
+        $jadwalVersi = JadwalVer::orderBy('versi')->get();
+        return View('absensi.create', compact('semester', 'jadwalVersi'));
     }
     public function store(Request $request)
     {
@@ -99,25 +100,26 @@ class AbsensiController extends Controller
                 foreach ($kehadiran as $element) {
                     $kehadiran_array[$element->jenis] = $element->waktu;
                 }
+                if ($tanggal->agenda == 1) {
+                    if ($auth->access == "kurikulum" || $auth->access == "kesiswaan" || $auth->access == "guru" || $auth->access == "sapras") {
+                        $jadwalVer = JadwalVer::where('status', 'active')->first();
+                        $hariKe = date('N', strtotime($tanggal->tanggal));
+                        $hari = JadwalHari::where('no_hari', $hariKe)->first();
+                        $jadwal = Jadwal::with('pelajaran', 'kelas', 'waktu')->where([
+                            ['id_jadwal', '=', $jadwalVer->uuid],
+                            ['id_guru', '=', $account->uuid],
+                            ['id_hari', '=', $hari->uuid]
+                        ])->groupBy(['id_kelas', 'id_pelajaran'])->get();
 
-                if ($auth->access == "kurikulum" || $auth->access == "kesiswaan" || $auth->access == "guru" || $auth->access == "sapras") {
-                    $jadwalVer = JadwalVer::where('status', 'active')->first();
-                    $hariKe = date('N', strtotime($tanggal->tanggal));
-                    $hari = JadwalHari::where('no_hari', $hariKe)->first();
-                    $jadwal = Jadwal::with('pelajaran', 'kelas', 'waktu')->where([
-                        ['id_jadwal', '=', $jadwalVer->uuid],
-                        ['id_guru', '=', $account->uuid],
-                        ['id_hari', '=', $hari->uuid]
-                    ])->groupBy(['id_kelas', 'id_pelajaran'])->get();
+                        $cekAgenda = Agenda::where([
+                            ['id_versi', '=', $jadwalVer->uuid],
+                            ['tanggal', '=', $today],
+                            ['id_guru', '=', $account->uuid]
+                        ])->get();
 
-                    $cekAgenda = Agenda::where([
-                        ['id_versi', '=', $jadwalVer->uuid],
-                        ['tanggal', '=', $today],
-                        ['id_guru', '=', $account->uuid]
-                    ])->get();
-
-                    foreach ($cekAgenda as $agenda) {
-                        $array_agenda[$agenda->uuid] = $agenda->id_jadwal;
+                        foreach ($cekAgenda as $agenda) {
+                            $array_agenda[$agenda->uuid] = $agenda->id_jadwal;
+                        }
                     }
                 }
             } else {
