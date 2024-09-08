@@ -30,5 +30,5 @@
 <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<link rel="stylesheet" href="{{asset('css/css.css')}}?ver={{date('dmY')}}">
+<link rel="stylesheet" href="{{asset('css/css.css')}}?ver={{date('dmYHms')}}">
 <title>SMP Maitreyawira</title>

@@ -19,7 +19,7 @@
                 </div>
                 <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
                     <label for="kelas">Kelas Yang Dituju</label>
-                    <select class="form-control validate" data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
+                    <select class="form-control validate" {{$classroom->status == 'assign' ? "disabled" : ""}}  data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
                         <option value="">Pilih Kelas Yang Dituju</option>
                         @foreach ($list_ngajar as $element)
                             @php
@@ -135,7 +135,7 @@
                 </div>
                 <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
                     <label for="kelas">Kelas Yang Dituju</label>
-                    <select class="form-control validate" data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
+                    <select class="form-control validate" {{$classroom->status == 'assign' ? "disabled" : ""}} data-toggle="select" name="kelas" id="kelas" multiple placeholder="Masukkan Kelas Yang Dituju">
                         <option value="">Pilih Kelas Yang Dituju</option>
                         @foreach ($list_ngajar as $element)
                             @php

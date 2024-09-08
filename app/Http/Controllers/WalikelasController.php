@@ -5,8 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\AbsensiSiswa;
 use App\Models\Aturan;
 use App\Models\Barang;
+use App\Models\Classroom;
+use App\Models\ClassroomJawaban;
+use App\Models\ClassroomSiswa;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Ngajar;
 use App\Models\Poin;
 use App\Models\PoinTemp;
 use App\Models\Ruang;
@@ -326,5 +330,77 @@ class WalikelasController extends Controller
     {
         $barang = Barang::findOrFail($uuidBarang);
         return view('sapras.barang.edit', compact('barang', 'uuid'));
+    }
+    /**
+     * Classroom - Tampilkan Classroom Walikelas
+     */
+    public function classroom(): View
+    {
+        $id = Auth::user()->uuid;
+        $guru = Guru::with('walikelas')->where('id_login', $id)->first();
+        $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
+            ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
+            ->join('kelas', 'id_kelas', '=', 'kelas.uuid')
+            ->where('id_kelas', $guru->walikelas->id_kelas)
+            ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+            ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+            ->orderByRaw('length(kelas.kelas), kelas.kelas')
+            ->get();
+        return view('walikelas.classroom.index', compact('ngajar'));
+    }
+    /**
+     * Classroom - Tampilkan Materi dan Latihan dalam Ngajar
+     */
+    public function classroomShow(String $uuid): View
+    {
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'assign']])->orderBy('created_at', 'desc')->get();
+        return View('walikelas.classroom.show', compact('classroom', 'ngajar'));
+    }
+    /**
+     * Classroom - Tampilkan Materi dan Latihan yang sudah di archived
+     */
+    public function classroomArchived(String $uuid): View
+    {
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'arsip']])->orderBy('created_at', 'desc')->get();
+        return View('walikelas.classroom.archived', compact('classroom', 'ngajar'));
+    }
+    /**
+     * Classroom - Tampilkan Data Materi dan Latihan
+     */
+    public function classroomPreview(String $uuid, String $uuidClassroom): View
+    {
+        $classroom = Classroom::with('ngajar')->findOrFail($uuidClassroom);
+        $classroomSiswa = ClassroomSiswa::where('id_classroom', $classroom->uuid)->get();
+        $status_array = array();
+        foreach ($classroomSiswa as $item) {
+            $status_array[$item->id_siswa] = array(
+                'status' => $item->status,
+                'last_seen' => $item->last_seen
+            );
+        }
+        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->orderBy('nama', 'asc')->get();
+        if ($classroom->file !== "") {
+            $file_array = explode(',', $classroom->file);
+        } else {
+            $file_array = array();
+        }
+
+        if ($classroom->jenis == "latihan") {
+            $jawabanAll = ClassroomJawaban::where('id_classroom', $classroom->uuid)->get();
+            $jawaban_array = array();
+            foreach ($jawabanAll as $item) {
+                if ($item->selesai == 1) {
+                    $jawaban_array[$item->id_siswa] = array(
+                        'nilai' => $item->nilai,
+                        'status' => $item->status
+                    );
+                }
+            }
+        } else {
+            $jawaban_array = array();
+        }
+        return View('walikelas.classroom.preview', compact('classroom', 'file_array', 'status_array', 'jawaban_array', 'siswa', 'uuid'));
     }
 }

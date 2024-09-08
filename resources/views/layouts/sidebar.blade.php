@@ -3,7 +3,7 @@
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.4</i>
+            <i class="app-version">5.0.5</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -171,6 +171,7 @@
                     <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.classroom') }}">Classroom</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
                 </ul>
             </li>

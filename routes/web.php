@@ -286,6 +286,8 @@ Route::middleware(isNgajar::class)->controller(ClassroomController::class)->grou
     Route::post('/classroom/delete', 'deleteFile')->name('classroom.delete.file');
     Route::post('/classroom/{uuid}/assign', 'assign')->name('classroom.assign');
     Route::delete('/classroom/{uuid}/delete', 'delete')->name('classroom.delete');
+    Route::post('/calssroom/{uuid}/arsip', 'arsip')->name('classroom.arsip');
+    Route::get('/calssroom/{uuid}/archived', 'archived')->name('classroom.archived');
     Route::get('/classroom/{uuid}/preview/{uuidClassroom}', 'preview')->name('classroom.preview');
     Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
     Route::post('/classroom/{uuid}/resetSemuaSiswa/{uuidClassroom}', 'resetSemuaSiswa')->name('classroom.resetSemuaSiswa');
@@ -325,6 +327,11 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/ruang', 'ruang')->name('walikelas.ruang');
     Route::get('/walikelas/ruang/{uuid}/create', 'ruangCreate')->name('walikelas.ruang.create');
     Route::get('/walikelas/ruang/{uuid}/{uuidBarang}/edit', 'ruangEdit')->name('walikelas.ruang.edit');
+    Route::get('/walikelas/classroom', 'classroom')->name('walikelas.classroom');
+    Route::get('/walikelas/classroom/{uuid}', 'classroomShow')->name('walikelas.classroom.show');
+    Route::get('/walikelas/classroom/{uuid}', 'classroomShow')->name('walikelas.classroom.show');
+    Route::get('/walikelas/classroom/{uuid}/archived', 'classroomArchived')->name('walikelas.classroom.archived');
+    Route::get('/walikelas/classroom/{uuid}/preview/{uuidClassroom}', 'classroomPreview')->name('walikelas.classroom.preview');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
