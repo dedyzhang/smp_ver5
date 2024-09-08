@@ -11,10 +11,17 @@
     @endif
 </div>
 <div class="body-contain-customize col-12 mt-3">
-    <button class="btn btn-sm btn-warning text-warning-emphasis float-end" data-bs-toggle="tooltip"
-        data-bs-placement="top" data-bs-title="Edit Classroom">
-        <i class="fas fa-pencil"></i>
-    </button>
+    @if($classroom->status != "arsip")
+        <button class="btn btn-sm btn-danger float-end arsip-classroom" data-bs-toggle="tooltip"
+            data-bs-placement="top" data-bs-title="Arsip Classroom">
+            <i class="fas fa-box-archive"></i>
+        </button>
+        <a href="{{route('classroom.edit',['uuid' => $classroom->ngajar->uuid,'uuidClassroom' => $classroom->uuid])}}" class="btn btn-sm btn-warning text-warning-emphasis float-end me-2" data-bs-toggle="tooltip"
+            data-bs-placement="top" data-bs-title="Edit Classroom">
+            <i class="fas fa-pencil"></i>
+        </a>
+    @endif
+
 </div>
 <div class="body-contain-customize col-12 mt-3">
     <ul class="nav nav-tabs" id="classroom-tab" role="tablist">
@@ -431,7 +438,6 @@
         }
         cConfirm("Perhatian","Apakah Anda Yakin untuk mereset semua siswa",resetSemua);
     });
-
     $('body').on('click','.simpan-nilai',function() {
         loading();
         var nilai = $('#nilai').val();
@@ -462,5 +468,25 @@
             }
         })
     })
+    $('.arsip-classroom').click(function() {
+        var arsipClassroom = () => {
+            loading();
+            var route = "{{route('classroom.arsip',':id')}}";
+            route = route.replace(':id',"{{$classroom->uuid}}");
+            $.ajax({
+                type: "POST",
+                url: route,
+                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                success: function(data) {
+                    if(data.success == true) {
+                        var url = "{{route('classroom.show',':id')}}";
+                        url = url.replace(':id','{{$classroom->ngajar->uuid}}');
+                        cAlert("green","Sukses","Materi/Latihan berhasil diarsip",false,url);
+                    }
+                }
+            })
+        }
+        cConfirm("Perhatian","Apakah anda Yakin untuk mengarsip Materi / Latihan ini, Materi yang sudah diarsip tidak bisa diakses oleh siswa lagi",arsipClassroom);
+    });
 </script>
 @endsection

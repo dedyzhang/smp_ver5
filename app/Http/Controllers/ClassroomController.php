@@ -40,7 +40,7 @@ class ClassroomController extends Controller
     public function show(String $uuid): View
     {
         $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
-        $classroom = Classroom::where('id_ngajar', $uuid)->orderBy('created_at', 'desc')->get();
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '!=', 'arsip']])->orderBy('created_at', 'desc')->get();
         return View('classroom.show', compact('classroom', 'ngajar'));
     }
     /**
@@ -549,6 +549,28 @@ class ClassroomController extends Controller
         Classroom::findOrFail($uuid)->update([
             'show_nilai' => $show_nilai
         ]);
+    }
+    /**
+     * Arsip - Arsip Classroom
+     */
+    public function arsip(String $uuid)
+    {
+        $idClassroom = $uuid;
+        $classroom = Classroom::findOrFail($idClassroom);
+        $classroom->update([
+            'status' => 'arsip'
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Archived - Lihat Classroom yang sudah di archived
+     */
+    public function archived(String $uuid)
+    {
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'arsip']])->orderBy('created_at', 'desc')->get();
+        return View('classroom.archived', compact('classroom', 'ngajar'));
     }
 
     /**

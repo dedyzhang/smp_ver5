@@ -34,6 +34,7 @@
         <div class="body-contain-customize mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex col-xl-auto d-xl-flex gap-2">
             <a href="{{route('classroom.create',['uuid' => $ngajar->uuid,'jenis' => 'materi'])}}" class="btn btn-sm btn-warning text-warning-emphasis"><i class="fas fa-plus"></i> Tambah Materi Pembelajaran</a>
             <a href="{{route('classroom.create',['uuid' => $ngajar->uuid,'jenis' => 'latihan'])}}" class="btn btn-sm btn-primary"><i class="fas fa-plus"></i> Tambah Latihan</a>
+            <a href="{{route('classroom.archived',$ngajar->uuid)}}" class="btn btn-sm btn-danger"><i class="fas fa-box-archive"></i> Lihat Arsip</a>
         </div>
     </div>
     <div id="aspect-content">
