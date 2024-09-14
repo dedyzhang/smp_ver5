@@ -70,7 +70,14 @@ class LoginController extends Controller
                 COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
                 COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
             ')->where('id_siswa', $siswa->uuid)->whereIn('id_tanggal', $tanggalArray)->first();
-            return view('auth.home', compact('user', 'account', 'siswa', 'jadwal', 'jumlah', 'absensi'));
+
+            //Poin Siswa
+            $poin = Poin::with('aturan')->where('id_siswa', $siswa->uuid)->orderBy(Poin::raw("DATE(tanggal)"), 'ASC')->get();
+            $sisa = 100;
+            foreach ($poin as $item) {
+                $item->aturan->jenis == "kurang" ? $sisa -= $item->aturan->poin : $sisa += $item->aturan->poin;
+            }
+            return view('auth.home', compact('user', 'account', 'siswa', 'jadwal', 'jumlah', 'absensi','sisa'));
         }
     }
 

@@ -220,6 +220,14 @@
             </script>
         @endif
     @else
+        <div class="p-0 col-12">
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Peringatan!</h4>
+                <p>Ananda, kami ingin mengingatkan bahwa saat ini Anda telah menerima peringatan pertama terkait pelanggaran aturan sekolah. Mohon untuk memperhatikan dan mematuhi aturan yang berlaku demi kenyamanan dan keberhasilan bersama!</p>
+                <hr>
+                <a class="mb-0">Klik disini untuk</a>
+            </div>
+        </div>
         <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
             <div class="card rounded-4 border-0">
                 <div class="card-body">
