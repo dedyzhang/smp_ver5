@@ -6,8 +6,10 @@ use App\Models\Classroom;
 use App\Models\ClassroomJawaban;
 use App\Models\ClassroomSiswa;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\Siswa;
+use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -389,9 +391,11 @@ class ClassroomController extends Controller
      */
     public function assign(String $uuid)
     {
+        $tanggalPost = date('Y-m-d H:i:s', time());
         $classroom = Classroom::findOrFail($uuid);
         Classroom::where('id_bahan', $classroom->id_bahan)->update([
             'status' => 'assign',
+            'tanggal_post' => $tanggalPost
         ]);
         return response()->json(["success" => true]);
     }
@@ -733,5 +737,88 @@ class ClassroomController extends Controller
             'selesai' => 1,
             'status' => $status
         ]);
+    }
+    /**
+     * -----------Admin----------------
+     */
+
+    /**
+     * Tampilkan Classroom dimulai dari pemilihan kelas
+     */
+    public function adminClassroomIndex(): View
+    {
+        $kelas = Kelas::orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
+        return view('classroom.admin.index', compact('kelas'));
+    }
+    /**
+     * Tampilkan Classroom dimulai dari pemilihan Mata pelajaran
+     */
+    public function adminClassroomShow(String $uuid): View
+    {
+
+        $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
+            ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
+            ->join('kelas', 'id_kelas', '=', 'kelas.uuid')
+            ->where('id_kelas', $uuid)
+            ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
+            ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
+            ->orderByRaw('length(kelas.kelas), kelas.kelas')
+            ->get();
+        return view('classroom.admin.show', compact('ngajar'));
+    }
+    /**
+     * Tampilkan Classroom berdasarkan data ngajar
+     */
+    public function adminClassroom(String $uuid): View
+    {
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'assign']])->orderBy('created_at', 'desc')->get();
+        return view('classroom.admin.classroom', compact('classroom', 'ngajar'));
+    }
+    /**
+     * Tampilkan Preview dari Classroom
+     */
+    public function adminClassroomPreview(String $uuid, String $uuidClassroom): View
+    {
+        $classroom = Classroom::with('ngajar')->findOrFail($uuidClassroom);
+        $classroomSiswa = ClassroomSiswa::where('id_classroom', $classroom->uuid)->get();
+        $status_array = array();
+        foreach ($classroomSiswa as $item) {
+            $status_array[$item->id_siswa] = array(
+                'status' => $item->status,
+                'last_seen' => $item->last_seen
+            );
+        }
+        $siswa = Siswa::where('id_kelas', $classroom->ngajar->id_kelas)->orderBy('nama', 'asc')->get();
+        if ($classroom->file !== "") {
+            $file_array = explode(',', $classroom->file);
+        } else {
+            $file_array = array();
+        }
+
+        if ($classroom->jenis == "latihan") {
+            $jawabanAll = ClassroomJawaban::where('id_classroom', $classroom->uuid)->get();
+            $jawaban_array = array();
+            foreach ($jawabanAll as $item) {
+                if ($item->selesai == 1) {
+                    $jawaban_array[$item->id_siswa] = array(
+                        'nilai' => $item->nilai,
+                        'status' => $item->status
+                    );
+                }
+            }
+        } else {
+            $jawaban_array = array();
+        }
+        return View('classroom.admin.preview', compact('classroom', 'file_array', 'status_array', 'jawaban_array', 'siswa', 'uuid'));
+    }
+    /**
+     * Tampilkan Classroom Yang sudah diarsip
+     */
+    public function adminClassroomArchived(String $uuid): View
+    {
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
+        $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'arsip']])->orderBy('created_at', 'desc')->get();
+        return View('penilaian.classroom.archived', compact('classroom', 'ngajar'));
     }
 }

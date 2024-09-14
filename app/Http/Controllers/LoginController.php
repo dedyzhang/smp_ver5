@@ -2,9 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbsensiSiswa;
 use App\Models\Guru;
+use App\Models\Jadwal;
+use App\Models\JadwalHari;
+use App\Models\JadwalVer;
+use App\Models\JadwalWaktu;
+use App\Models\Kelas;
 use App\Models\Orangtua;
 use App\Models\Siswa;
+use App\Models\TanggalAbsensi;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -27,21 +34,44 @@ class LoginController extends Controller
                     COUNT(*) as "all"
                 ')->where('id_kelas', $id_kelas)->first();
                 $siswa = Siswa::where('id_kelas', $id_kelas)->get();
+                return view('auth.home', compact('user', 'account', 'jumlah', 'siswa'));
             } else {
-                $jumlah = "";
-                $siswa = "";
+                return view('auth.home', compact('user', 'account'));
             }
         } else {
-            $jumlah = "";
-            $siswa = "";
             if ($user->access == "orangtua") {
                 $account = Orangtua::with(['users', 'siswa'])->where('id_login', $user->uuid)->first();
+                $siswa = $account->siswa;
             } else {
                 $account = Siswa::with('users')->where('id_login', $user->uuid)->first();
+                $siswa = $account;
             }
+            $versi = JadwalVer::where('status', 'active')->first();
+            $today = date('N');
+            $hari = JadwalHari::where('no_hari', $today)->first();
+            if (isset($hari)) {
+                $jadwal = Jadwal::with('kelas', 'pelajaran', 'guru', 'ngajar', 'waktu')->where([
+                    ['id_jadwal', '=', $versi->uuid],
+                    ['id_kelas', '=', $siswa->id_kelas],
+                    ['id_hari', '=', $hari->uuid],
+                ])->get()->sortBy('waktu.waktu_mulai');
+            } else {
+                $jadwal = array();
+            }
+            $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', 1]])->get();
+            if (isset($jumlahHari)) {
+                $jumlah = $jumlahHari->count();
+            } else {
+                $jumlah = 0;
+            }
+            $tanggalArray = $jumlahHari->pluck('uuid');
+            $absensi = AbsensiSiswa::selectRaw('
+                COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
+                COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
+                COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
+            ')->where('id_siswa', $siswa->uuid)->whereIn('id_tanggal', $tanggalArray)->first();
+            return view('auth.home', compact('user', 'account', 'siswa', 'jadwal', 'jumlah', 'absensi'));
         }
-        // $account = Guru::with('users')->where('id_login',"=",$id)->first();
-        return view('auth.home', compact('user', 'account', 'jumlah', 'siswa'));
     }
 
     public function login(Request $request): RedirectResponse

@@ -219,8 +219,90 @@
 
             </script>
         @endif
+    @else
+        <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+            <div class="card rounded-4 border-0">
+                <div class="card-body">
+                    <h5 class="fs-18"><b>Jadwal Hari ini</b></h5>
+                    <ol class="list-group jadwal fs-12" style="max-height:300px">
+
+                        @forelse ($jadwal as $jadwalElemen)
+                            @if ($jadwalElemen->jenis != "spesial")
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
+                                        {{$jadwalElemen->pelajaran->pelajaran}} <br />( {{$jadwalElemen->guru->nama}} )
+                                    </div>
+                                </li>
+                            @else
+                                <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
+                                        {{$jadwalElemen->spesial}}
+                                    </div>
+                                </li>
+                            @endif
+                        @empty
+                            <li class="list-group-item list-group-item-warning d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Tidak Ada Jadwal</div>
+                                    Tidak ada pembelajaran untuk hari ini
+                                </div>
+                            </li>
+                        @endforelse
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
+            <div class="card rounded-4 border-0">
+                <div class="card-body" style="height:300px">
+                    <h5 class="fs-18"><b>Rekap Absensi</b></h5>
+                    <canvas id="chartRekap"></canvas>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(".list-group.jadwal").mCustomScrollbar({
+                theme: "minimal-dark",
+                scrollbarPosition: "outside"
+            });
+            const ctx = document.getElementById('chartRekap');
+            @php
+                if($jumlah != 0) {
+                    $hadir = $jumlah - ($absensi->sakit + $absensi->izin + $absensi->alpa);
+                } else {
+                    $hadir = 0;
+                }
+            @endphp
+            new Chart(ctx, {
+                type: 'bar',
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Graphic Kehadiran Siswa'
+                        },
+                    },
+                },
+                data: {
+                    labels: ['Hadir', 'Sakit','Izin','Alpa'],
+                    responsive : true,
+                    datasets: [{
+                        label: "Kehadiran Siswa",
+                        data: [{{$hadir}},{{$absensi->sakit}},{{$absensi->izin}},{{$absensi->alpa}}],
+                        backgroundColor: [
+                            '#a0e1ff','#fd9494','#a1ff8e','#f9fd7a'
+                        ],
+                    }]
+                },
+            });
+        </script>
     @endif
 </div>
-
 @endsection
 

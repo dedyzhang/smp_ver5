@@ -7,6 +7,7 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DetailController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -34,6 +35,7 @@ use App\Http\Middleware\isNgajar;
 use App\Http\Middleware\isPenilaianController;
 use App\Http\Middleware\IsSekretaris;
 use App\Http\Middleware\IsSiswa;
+use App\Http\Middleware\IsSiswaOrangtua;
 use App\Http\Middleware\IsWalidanSekre;
 use App\Http\Middleware\IsWalikelas;
 
@@ -289,11 +291,7 @@ Route::middleware(isNgajar::class)->controller(ClassroomController::class)->grou
     Route::post('/calssroom/{uuid}/arsip', 'arsip')->name('classroom.arsip');
     Route::get('/calssroom/{uuid}/archived', 'archived')->name('classroom.archived');
     Route::get('/classroom/{uuid}/preview/{uuidClassroom}', 'preview')->name('classroom.preview');
-    Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
-    Route::post('/classroom/{uuid}/resetSemuaSiswa/{uuidClassroom}', 'resetSemuaSiswa')->name('classroom.resetSemuaSiswa');
-    Route::get('/classroom/{uuid}/lihatJawaban}', 'lihatJawaban')->name('classroom.lihatJawaban');
     Route::post('/classroom/{uuid}/nilai}', 'nilai')->name('classroom.nilai');
-    Route::post('/classroom/{uuid}/reset', 'resetToken')->name('classroom.resetToken');
     Route::post('/classroom/{uuid}/showNilai', 'showNilai')->name('classroom.showNilai');
 });
 // {-------------------------------------------Halaman Classroom Siswa---------------------------------------------------------}
@@ -306,7 +304,19 @@ Route::middleware(IsSiswa::class)->controller(ClassroomController::class)->group
     Route::post('/classroom/siswa/create', 'siswaCreate')->name('classroom.siswa.create');
     Route::post('/classroom/siswa/submit', 'siswaSubmit')->name('classroom.siswa.submit');
 });
-
+Route::middleware(IsAdminKurikulumKepala::class)->controller(ClassroomController::class)->group(function () {
+    Route::get('/penilaian/classroom', 'adminClassroomIndex')->name('penilaian.classroom.index');
+    Route::get('/penilaian/classroom/{uuid}', 'adminClassroomShow')->name('penilaian.classroom.show');
+    Route::get('/penilaian/classroom/{uuid}/show', 'adminClassroom')->name('penilaian.classroom.class');
+    Route::get('/penilaian/classroom/{uuid}/archived', 'adminClassroomArchived')->name('penilaian.classroom.archived');
+    Route::get('/penilaian/classroom/{uuid}/preview/{uuidClassroom}', 'adminClassroomPreview')->name('penilaian.classroom.preview');
+});
+Route::middleware(isPenilaianController::class)->controller(ClassroomController::class)->group(function () {
+    Route::post('/classroom/{uuid}/resetSiswa/{uuidClassroom}', 'resetSiswa')->name('classroom.resetSiswa');
+    Route::post('/classroom/{uuid}/resetSemuaSiswa/{uuidClassroom}', 'resetSemuaSiswa')->name('classroom.resetSemuaSiswa');
+    Route::get('/classroom/{uuid}/lihatJawaban}', 'lihatJawaban')->name('classroom.lihatJawaban');
+    Route::post('/classroom/{uuid}/reset', 'resetToken')->name('classroom.resetToken');
+});
 // {----------------------------------------------------END------------------------------------------------------------------}
 
 // {-------------------------------------------Halaman Walikelas---------------------------------------------------------------}
@@ -398,4 +408,12 @@ Route::middleware(isPenilaianController::class)->controller(PerangkatAjarControl
     Route::get('/perangkat-ajar/{uuid}/download', 'download')->name('perangkat.guru.download');
     Route::delete('/perangkat-ajar/{uuid}/hapus', 'deletePerangkat')->name('perangkat.guru.delete');
     Route::get('/perangkat-ajar/{uuid}/zip', 'downloadZip')->name('perangkat.guru.zip');
+});
+
+// {----------------------------------------Halaman Detail Informasi Siswa----------------------------------------------------}
+Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->group(function () {
+    Route::get('/detail/absensi', 'absensi')->name('detail.absensi.index');
+    Route::get('/detail/poin', 'poin')->name('detail.poin.index');
+    Route::get('/detail/nilai', 'nilai')->name('detail.nilai.index');
+    Route::get('/detail/nilai/{uuid}/show', 'nilaiShow')->name('detail.nilai.show');
 });

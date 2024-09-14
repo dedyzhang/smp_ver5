@@ -105,11 +105,13 @@
                         <td>:</td>
                         <td>{{$getJawaban->status == "belum" ? "Belum Dinilai" : "Sudah Dinilai"}}</td>
                     </tr>
+                    @if ($classroom->show_nilai == 1)
                     <tr>
                         <td>Nilai</td>
                         <td>:</td>
                         <td>{{$getJawaban->status == "belum" ? "-" : $getJawaban->nilai}}</td>
                     </tr>
+                    @endif
                     <tr>
                         <td>Komentar</td>
                         <td>:</td>
@@ -128,11 +130,13 @@
                         <td>:</td>
                         <td>{{$getJawaban->status == "belum" ? "Belum Dinilai" : "Sudah Dinilai"}}</td>
                     </tr>
+                    @if ($classroom->show_nilai == 1)
                     <tr>
                         <td>Nilai</td>
                         <td>:</td>
                         <td>{{$getJawaban->status == "belum" ? "-" : $getJawaban->nilai}}</td>
                     </tr>
+                    @endif
                     <tr>
                         <td>Komentar</td>
                         <td>:</td>

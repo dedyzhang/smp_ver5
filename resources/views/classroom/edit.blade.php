@@ -155,7 +155,7 @@
                 </div>
                 <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
                     <label for="waktu">Tanggal & Jam Harus Selesai</label>
-                    <input type="datetime-local" class="form-control validate" name="waktu" id="waktu" value="{{date('Y-m-d\Th:i',strtotime($classroom->tanggal_due))}}">
+                    <input type="datetime-local" class="form-control validate" name="waktu" id="waktu" value="{{date('Y-m-d\TH:i',strtotime($classroom->tanggal_due))}}">
                 </div>
                 <div class="form-group col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
                     <label for="token">Kunci Layar</label>
