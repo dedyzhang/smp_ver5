@@ -13,6 +13,7 @@ use App\Models\Orangtua;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
 use App\Models\User;
+use App\Models\Poin;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;

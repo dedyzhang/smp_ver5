@@ -220,14 +220,65 @@
             </script>
         @endif
     @else
-        <div class="p-0 col-12">
-            <div class="alert alert-warning" role="alert">
-                <h4 class="alert-heading">Peringatan!</h4>
-                <p>Ananda, kami ingin mengingatkan bahwa saat ini Anda telah menerima peringatan pertama terkait pelanggaran aturan sekolah. Mohon untuk memperhatikan dan mematuhi aturan yang berlaku demi kenyamanan dan keberhasilan bersama!</p>
-                <hr>
-                <a class="mb-0">Klik disini untuk</a>
-            </div>
-        </div>
+        @if($user->access == "siswa")
+            @if($sisa < 75 && $sisa >= 50)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Ananda, kami ingin mengingatkan bahwa saat ini Anda telah menerima peringatan pertama terkait pelanggaran aturan sekolah. Mohon untuk memperhatikan dan mematuhi aturan yang berlaku demi kenyamanan dan keberhasilan bersama!</p>
+                        <hr>
+                        <a class="mb-0 text-warning" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 50 && $sisa >= 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Tolong diperhatikan, Ananda, bahwa Anda sudah menerima peringatan kedua terkait pelanggaran aturan sekolah. Harap mematuhi aturan yang berlaku agar tidak mendapatkan peringatan lebih lanjut !</p>
+                        <hr>
+                        <a class="mb-0 text-warning" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 25) 
+                <div class="p-0 col-12">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Ananda, ini adalah peringatan terakhir mengenai pelanggaran aturan sekolah. Harap mematuhi aturan dengan baik untuk menghindari konsekuensi lebih lanjut !</p>
+                        <hr>
+                        <a class="mb-0 text-danger link-underline-opacity-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @endif
+        @else
+            @if($sisa < 75 && $sisa >= 50)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu, telah menerima peringatan pertama terkait pelanggaran aturan sekolah.Terima kasih atas perhatian dan kerjasamanya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 50 && $sisa >= 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu telah menerima peringatan kedua terkait pelanggaran aturan sekolah. Kami mohon kerjasama Bapak/Ibu untuk mendiskusikan hal ini dengan anak dan memastikan bahwa dia mematuhi aturan sekolah dengan lebih baik ke depannya. Terima kasih atas perhatian dan dukungannya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 25) 
+                <div class="p-0 col-12">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu, telah menerima peringatan terakhir terkait pelanggaran aturan sekolah. Kami sangat berharap Bapak/Ibu dapat membimbing anak untuk mematuhi aturan yang ada agar tidak menghadapi tindakan lebih lanjut. Terima kasih atas perhatian dan kerjasamanya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @endif
+        @endif
         <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
             <div class="card rounded-4 border-0">
                 <div class="card-body">
