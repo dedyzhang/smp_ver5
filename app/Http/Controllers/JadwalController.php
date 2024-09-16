@@ -11,9 +11,11 @@ use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\Pelajaran;
 use App\Models\Ruang;
+use App\Models\Event;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class JadwalController extends Controller
 {
@@ -389,7 +391,18 @@ class JadwalController extends Controller
      */
     public function eventIndex(): View
     {
-        return view('jadwal.event.index');
+        $event = Event::all();
+        $kegiatan = [];
+        foreach($event as $item) {
+            $kegiatan[] = [
+                'id' => $item->uuid,
+                'title' => $item->judul,
+                'start' => $item->waktu_mulai,
+                'end' => $item->waktu_akhir,
+                'color' => '#86D293',
+            ];
+        }
+        return view('jadwal.event.index',compact('kegiatan'));
     }
     public function eventCreate(): View
     {
@@ -398,8 +411,65 @@ class JadwalController extends Controller
     }
     public function eventStore(Request $request)
     {
+        $auth = Auth::user();
+        $guru = Guru::where('id_login',$auth->uuid)->first();
         $request->validate([
             'judul' => 'required',
+            'tanggal_mulai' => 'required',
+            'tanggal_akhir' => 'required',
+            'deskripsi' => 'required',
+            'ruangan' => 'required'
         ]);
+        $ruangan = implode(',',$request->ruangan);
+        $create = Event::create([
+            'judul' => $request->judul,
+            'id_pengajuan' => $guru->uuid,
+            'waktu_mulai' => $request->tanggal_mulai,
+            'waktu_akhir' => $request->tanggal_akhir,
+            'deskripsi' => $request->deskripsi,
+            'id_ruang' => $ruangan
+        ]);
+        return redirect()->route('event.index')->with(['success' => 'Event Berhasil ditambahkan' ]);
+    }
+    public function eventShow(String $uuid) : View {
+        $event = Event::with('guru')->findOrFail($uuid);
+        $ruang = Ruang::all();
+
+        $auth = Auth::user();
+        $guru = Guru::where('id_login',$auth->uuid)->first();
+        $ruang_array = $ruang->pluck('nama','uuid')->toArray();
+
+        return view('jadwal.event.show',compact('event','ruang_array','guru'));
+    }
+    public function eventEdit(String $uuid) : View {
+        $event = Event::with('guru')->findOrFail($uuid);
+        $ruang = Ruang::all();
+        $ruangan = explode(',',$event->id_ruang);
+        return view('jadwal.event.edit',compact('event','ruangan','ruang'));
+    }
+    public function eventUpdate(String $uuid,Request $request) {
+        $event = Event::with('guru')->findOrFail($uuid);
+        $request->validate([
+            'judul' => 'required',
+            'tanggal_mulai' => 'required',
+            'tanggal_akhir' => 'required',
+            'deskripsi' => 'required',
+            'ruangan' => 'required'
+        ]);
+
+        $ruangan = implode(',',$request->ruangan);
+        $event->update([
+            'judul' => $request->judul,
+            'waktu_mulai' => $request->tanggal_mulai,
+            'waktu_akhir' => $request->tanggal_akhir,
+            'deskripsi' => $request->deskripsi,
+            'id_ruang' => $ruangan
+        ]);
+        return redirect()->route('event.show',$event->uuid)->with(['success' => 'Event Berhasil diupdate' ]);
+    }
+    public function eventDelete(String $uuid) {
+        $event = Event::findOrFail($uuid);
+
+        $event->delete();
     }
 }

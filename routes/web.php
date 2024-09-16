@@ -253,6 +253,10 @@ Route::middleware(isPenilaianController::class)->controller(JadwalController::cl
     Route::get('/event', 'eventIndex')->name('event.index');
     Route::get('/event/create', 'eventCreate')->name('event.create');
     Route::post('/event/store', 'eventStore')->name('event.store');
+    Route::get('/event/{uuid}/show','eventShow')->name('event.show');
+    Route::get('/event/{uuid}/edit','eventEdit')->name('event.edit');
+    Route::put('/event/{uuid}/update','eventUpdate')->name('event.update');
+    Route::delete('/event/{uuid}/delete','eventDelete')->name('event.delete');
 });
 // {----------------------------------------------------END------------------------------------------------------------------}
 

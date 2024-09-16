@@ -14,8 +14,13 @@ class Event extends Model
     protected $fillable = [
         'judul',
         'id_ruang',
+        'id_pengajuan',
         'waktu_mulai',
         'waktu_akhir',
         'deskripsi'
     ];
+
+    public function guru() {
+        return $this->belongsTo(Guru::class,'id_pengajuan');
+    }
 }

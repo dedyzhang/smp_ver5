@@ -19,19 +19,28 @@
                 </div>
                 <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8 form-group">
                     <label for="ruangan">Ruangan</label>
-                    <select class="form-control" name="ruangan" id="ruangan" data-toggle="select" multiple>
+                    <select class="form-control @error('ruangan') is-invalid @enderror" name="ruangan[]" id="ruangan" data-toggle="select" multiple value="{{old('ruangan')}}">
                         @foreach ($ruang as $item)
                             <option value="{{$item->uuid}}">{{$item->nama}}</option>
                         @endforeach
                     </select>
+                    @error('ruangan')
+                        <div class="invalid-feedback">Tidak Boleh Kosong</div>
+                    @enderror
                 </div>
                 <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8 form-group">
                     <label for="tanggal_mulai">Tanggal Mulai</label>
-                    <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai" class="form-control" placeholder="Masukkan Judul Event" value="{{old('tanggal_mulai')}}">
+                    <input type="datetime-local" id="tanggal_mulai" name="tanggal_mulai" class="form-control @error('tanggal_mulai') is-invalid @enderror" placeholder="Masukkan Judul Event" value="{{old('tanggal_mulai')}}">
+                    @error('tanggal_mulai')
+                        <div class="invalid-feedback">Tidak Boleh Kosong</div>
+                    @enderror
                 </div>
                 <div class="col-12 col-sm-12 col-md-10 col-lg-8 col-xl-8 form-group">
                     <label for="tanggal_akhir">Tanggal Akhir</label>
-                    <input type="datetime-local" id="tanggal_akhir" name="tanggal_akhir" class="form-control" placeholder="Masukkan Judul Event" value="{{old('tanggal_akhir')}}">
+                    <input type="datetime-local" id="tanggal_akhir" name="tanggal_akhir" class="form-control @error('tanggal_akhir') is-invalid @enderror" placeholder="Masukkan Judul Event" value="{{old('tanggal_akhir')}}">
+                    @error('tanggal_akhir')
+                        <div class='invalid-feedback'>Tidak Boleh Kosong</div>
+                    @enderror
                 </div>
                 <div class="col-12 mt-2">
                     <label for="deskripsi">Deskripsi Event</label>
@@ -42,6 +51,5 @@
                 </div>
             </div>
         </form>
-
     </div>
 @endsection

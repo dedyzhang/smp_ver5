@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('event', function (Blueprint $table) {
             $table->uuid()->primary();
             $table->string('judul')->nullable();
-            $table->foreignUuid('id_ruang');
+            $table->text('id_ruang');
+            $table->foreignUuid('id_pengajuan');
             $table->string('waktu_mulai')->nullable();
             $table->string('waktu_akhir')->nullable();
             $table->text('deskripsi')->nullable();

@@ -10,6 +10,19 @@
             <i class="fas fa-calendar-plus"></i> Tambah Event
         </a>
     </div>
+    @if(session('success'))
+        <div class="body-contain-customize col-12 mt-3">
+            <div class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3" role="alert">
+                <i class="bi flex-shrink-0 me-2 fa-solid fa-check" aria-label="Success:"></i>
+                <div>
+                    <strong>Sukses !</strong> {{session('success')}}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @elseif (session('error'))
+
+    @endif
     <div class="body-contain-customize col-12 mt-3">
         <p>Kalender Event Sekolah</p>
         <div id="eventsekolah"></div>
@@ -19,6 +32,14 @@
             var calendarEl = document.getElementById('eventsekolah');
             var calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
+                events: @json($kegiatan),
+                eventClick: function(info) {
+                    var id = info.event.id;
+                    var route = "{{route('event.show',':id')}}";
+                    route = route.replace(':id',id);
+
+                    window.location.href=route;
+                },
             });
             calendar.render();
         });
