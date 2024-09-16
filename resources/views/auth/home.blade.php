@@ -149,7 +149,7 @@
 </div>
 <div class="row m-0 p-0 mt-3">
     @if ($user->access != "siswa" && $user->access != "orangtua")
-        @if ($user->access == "admin" || $user->access == "kepalasekolah")
+        @if ($user->access == "admin" || $user->access == "kepala")
             <div class="row m-0 p-0">
                 <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
                     <div class="card bg-primary-subtle rounded-3 border-0">

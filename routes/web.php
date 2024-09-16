@@ -249,6 +249,11 @@ Route::middleware(IsAdminKurikulum::class)->controller(JadwalController::class)-
     Route::put('/jadwal/{uuid}/show/waktu/{waktuUUID}/edit', 'waktuUpdate')->name('jadwal.waktu.update');
     Route::delete('/jadwal/{uuid}/show/waktu/{waktuUUID}/delete', 'waktuDelete')->name('jadwal.waktu.delete');
 });
+Route::middleware(isPenilaianController::class)->controller(JadwalController::class)->group(function () {
+    Route::get('/event', 'eventIndex')->name('event.index');
+    Route::get('/event/create', 'eventCreate')->name('event.create');
+    Route::post('/event/store', 'eventStore')->name('event.store');
+});
 // {----------------------------------------------------END------------------------------------------------------------------}
 
 // {----------------------------------------------Halaman Agenda-------------------------------------------------------------}

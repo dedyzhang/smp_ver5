@@ -10,6 +10,7 @@ use App\Models\JadwalWaktu;
 use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\Pelajaran;
+use App\Models\Ruang;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -378,6 +379,27 @@ class JadwalController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Berhasil detele"
+        ]);
+    }
+
+    /**
+     * ---------------------------------------------
+     * Event Kegiatan sekolah
+     * ---------------------------------------------
+     */
+    public function eventIndex(): View
+    {
+        return view('jadwal.event.index');
+    }
+    public function eventCreate(): View
+    {
+        $ruang = Ruang::orderBy('nama')->get();
+        return view('jadwal.event.create', compact('ruang'));
+    }
+    public function eventStore(Request $request)
+    {
+        $request->validate([
+            'judul' => 'required',
         ]);
     }
 }

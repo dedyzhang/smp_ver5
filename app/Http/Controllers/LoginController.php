@@ -30,7 +30,7 @@ class LoginController extends Controller
         $user = Auth::user();
         if ($user->access != "siswa" && $user->access != "orangtua") {
             $account = Guru::with('users', 'walikelas')->where('id_login', $user->uuid)->first();
-            if ($user->access == "admin" || $user->access == "kepalasekolah") {
+            if ($user->access == "admin" || $user->access == "kepala") {
                 //TotalSiswa
                 $siswa = Siswa::selectRaw('
                     COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",

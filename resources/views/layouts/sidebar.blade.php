@@ -218,6 +218,9 @@
                 </a>
                 <ul class="submenu collapse" id="menu-jadwal">
                     <li class="submenu-list"><a href="{{ route('jadwal.index') }}"> Jadwal Pelajaran</a></li>
+                    @canany(['admin','guru','kepalasekolah','kesiswaan','kurikulum','sapras'])
+                        <li class="submenu-list"><a href="{{route('event.index')}}"> Event Sekolah</a></li>
+                    @endcan
                     {{-- <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Jadwal Akademik</a>
                     </li> --}}
                 </ul>
