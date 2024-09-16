@@ -320,6 +320,26 @@ Breadcrumbs::for('classroom-siswa-preview', function (BreadcrumbsTrail $trail, C
     $trail->parent('classroom-siswa-show', $ngajar->pelajaran, $ngajar->kelas, $ngajar);
     $trail->push("Preview", route('classroom.siswa.preview', ['uuid' => $classroom->uuid, 'uuidClassroom' => $classroom->uuid]));
 });
+//Classroom.admin.Breadcrumbs
+Breadcrumbs::for('classroom-admin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Classroom', route('penilaian.classroom.index'));
+});
+Breadcrumbs::for('classroom-admin-show', function (BreadcrumbsTrail $trail, Kelas $kelas) {
+    $trail->parent('classroom-admin');
+    $trail->push($kelas->tingkat . $kelas->kelas, route('penilaian.classroom.show', $kelas->uuid));
+});
+Breadcrumbs::for('classroom-admin-class', function (BreadcrumbsTrail $trail, Ngajar $ngajar) {
+    $trail->parent('classroom-admin-show', $ngajar->kelas);
+    $trail->push($ngajar->pelajaran->pelajaran_singkat, route('penilaian.classroom.class', $ngajar->uuid));
+});
+Breadcrumbs::for('classroom-admin-preview', function (BreadcrumbsTrail $trail, String $uuid, Ngajar $ngajar, Classroom $classroom) {
+    $trail->parent('classroom-admin-class', $ngajar);
+    $trail->push('Preview', route('penilaian.classroom.preview', ['uuid' => $uuid, 'uuidClassroom' => $classroom->uuid]));
+});
+Breadcrumbs::for('classroom-admin-archived', function (BreadcrumbsTrail $trail, Ngajar $ngajar) {
+    $trail->parent('classroom-admin-show', $ngajar->kelas);
+    $trail->push('Archived', route('penilaian.classroom.archived', $ngajar->uuid));
+});
 //Poin.Breadcrumbs
 Breadcrumbs::for('aturan', function (BreadcrumbsTrail $trail) {
     $trail->push('Aturan', route('aturan.index'));
@@ -461,4 +481,18 @@ Breadcrumbs::for('perangkat-show', function (BreadcrumbsTrail $trail, Guru $guru
 });
 Breadcrumbs::for('perangkat-guru', function (BreadcrumbsTrail $trail) {
     $trail->push('Perangkat', route('penilaian.perangkat.index'));
+});
+//Detail.Breadcrumbs
+Breadcrumbs::for('detail-absensi', function (BreadcrumbsTrail $trail) {
+    $trail->push('Info Absensi', route('detail.absensi.index'));
+});
+Breadcrumbs::for('detail-poin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Info Poin', route('detail.poin.index'));
+});
+Breadcrumbs::for('detail-nilai', function (BreadcrumbsTrail $trail) {
+    $trail->push('Info Nilai', route('detail.nilai.index'));
+});
+Breadcrumbs::for('detail-nilai-show', function (BreadcrumbsTrail $trail, Ngajar $ngajar) {
+    $trail->parent('detail-nilai');
+    $trail->push($ngajar->pelajaran->pelajaran_singkat, route('detail.nilai.show', $ngajar->uuid));
 });

@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-{{-- {{Breadcrumbs::render('walikelas-classroom-preview',$uuid, $classroom,$classroom->ngajar)}} --}}
+{{Breadcrumbs::render('classroom-admin-preview',$uuid, $classroom->ngajar,$classroom)}}
 <div class="body-contain-customize col-12">
     <h5><b>{{$classroom->judul}}</b></h5>
     <p class="mb-2">{{$classroom->deskripsi}}</p>

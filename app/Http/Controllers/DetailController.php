@@ -39,7 +39,7 @@ class DetailController extends Controller
         $absensi = AbsensiSiswa::selectRaw('
             COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
             COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
-            COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa",
+            COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
         ')->where('id_siswa', $siswa->uuid)->whereIn('id_tanggal', $tanggalArray)->first();
         $absensiSemua = AbsensiSiswa::with('tanggal')->whereIn('id_tanggal', $tanggalArray)->where('id_siswa', $siswa->uuid)->get()->sortBy('tanggal.tanggal');
         return view('detail.absensi.index', compact('siswa', 'absensi', 'jumlah', 'absensiSemua'));

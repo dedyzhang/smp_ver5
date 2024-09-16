@@ -10,10 +10,13 @@ use App\Models\JadwalVer;
 use App\Models\JadwalWaktu;
 use App\Models\Kelas;
 use App\Models\Orangtua;
+use App\Models\PerangkatAjar;
+use App\Models\PerangkatAjarGuru;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
 use App\Models\User;
 use App\Models\Poin;
+use App\Models\Ruang;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -27,17 +30,57 @@ class LoginController extends Controller
         $user = Auth::user();
         if ($user->access != "siswa" && $user->access != "orangtua") {
             $account = Guru::with('users', 'walikelas')->where('id_login', $user->uuid)->first();
-            if ($account->walikelas !== null) {
-                $id_kelas = $account->walikelas->id_kelas;
-                $jumlah = Siswa::selectRaw('
+            if ($user->access == "admin" || $user->access == "kepalasekolah") {
+                //TotalSiswa
+                $siswa = Siswa::selectRaw('
                     COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",
                     COUNT(CASE WHEN jk = "p" THEN 1 ELSE null END) as "perempuan",
                     COUNT(*) as "all"
-                ')->where('id_kelas', $id_kelas)->first();
-                $siswa = Siswa::where('id_kelas', $id_kelas)->get();
-                return view('auth.home', compact('user', 'account', 'jumlah', 'siswa'));
+                ')->first();
+                //Siswa Per Kelas
+                $siswaPKelas = Siswa::selectRaw('
+                    COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",
+                    COUNT(CASE WHEN jk = "p" THEN 1 ELSE null END) as "perempuan",
+                    COUNT(*) as "all",
+                    id_kelas
+                ')->groupBy('id_kelas')->get();
+                //TotalGuru
+                $guru = Guru::selectRaw('
+                    COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",
+                    COUNT(CASE WHEN jk = "p" THEN 1 ELSE null END) as "perempuan",
+                    COUNT(*) as "all"
+                ')->first();
+                //TotalKelas
+                $kelas = Kelas::orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
+                if (isset($kelas)) {
+                    $jumlahRombel = $kelas->count();
+                } else {
+                    $jumlahRombel = 0;
+                }
+                //TotalRuang
+                $ruang = Ruang::all();
+                if (isset($ruang)) {
+                    $jumlahRuang = $ruang->count();
+                } else {
+                    $jumlahRuang = 0;
+                }
+                return view('auth.home', compact('user', 'account', 'siswa', 'siswaPKelas', 'guru', 'kelas', 'jumlahRombel', 'jumlahRuang'));
             } else {
-                return view('auth.home', compact('user', 'account'));
+                $listPerangkat = PerangkatAjar::orderBy('perangkat')->get();
+                $UploadPerangkat = PerangkatAjarGuru::where('id_guru', $user->guru->uuid)->get();
+                $arrayUpload = $UploadPerangkat->pluck('id_list')->toArray();
+                if ($account->walikelas !== null) {
+                    $id_kelas = $account->walikelas->id_kelas;
+                    $jumlah = Siswa::selectRaw('
+                        COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",
+                        COUNT(CASE WHEN jk = "p" THEN 1 ELSE null END) as "perempuan",
+                        COUNT(*) as "all"
+                    ')->where('id_kelas', $id_kelas)->first();
+                    $siswa = Siswa::where('id_kelas', $id_kelas)->get();
+                    return view('auth.home', compact('user', 'account', 'jumlah', 'siswa', 'listPerangkat', 'arrayUpload'));
+                } else {
+                    return view('auth.home', compact('user', 'account', 'listPerangkat', 'arrayUpload'));
+                }
             }
         } else {
             if ($user->access == "orangtua") {
@@ -78,7 +121,7 @@ class LoginController extends Controller
             foreach ($poin as $item) {
                 $item->aturan->jenis == "kurang" ? $sisa -= $item->aturan->poin : $sisa += $item->aturan->poin;
             }
-            return view('auth.home', compact('user', 'account', 'siswa', 'jadwal', 'jumlah', 'absensi','sisa'));
+            return view('auth.home', compact('user', 'account', 'siswa', 'jadwal', 'jumlah', 'absensi', 'sisa'));
         }
     }
 

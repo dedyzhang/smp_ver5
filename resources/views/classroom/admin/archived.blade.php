@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('walikelas-classroom-arsip',$ngajar)}}
+    {{Breadcrumbs::render('classroom-admin-archived',$ngajar)}}
     <div class="body-contain-customize col-12">
         <h5><b>Archived</b></h5>
         <p>Halaman ini diperunttukan walikelas untuk melihat Materi / Latihan Classroom guru Yang sudah di Arsip</p>

@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('classroom-admin-class',$ngajar)}}
     <div class="body-contain-customize col-12">
         <h5><b>Classroom</b></h5>
          <p>Classroom adalah halaman bagi admin untuk mengecek data classroom yang sudah diassign oleh guru dan jawaban yang sudah dijawab oleh siswa.</p>
@@ -31,7 +32,7 @@
     </div>
     <div class="row m-0 p-0">
         <div class="body-contain-customize mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex col-xl-auto d-xl-flex gap-2">
-            <a href="{{route('walikelas.classroom.archived',$ngajar->uuid)}}" class="btn btn-sm btn-danger"><i class="fas fa-box-archive"></i> Lihat Arsip</a>
+            <a href="{{route('penilaian.classroom.archived',$ngajar->uuid)}}" class="btn btn-sm btn-danger"><i class="fas fa-box-archive"></i> Lihat Arsip</a>
         </div>
     </div>
     <div id="aspect-content">

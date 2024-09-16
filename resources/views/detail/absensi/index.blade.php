@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('detail-absensi')}}
     <div class="body-contain-customize col-12">
         <h5><b>Informasi Absensi Siswa</b></h5>
         <p>Halaman ini diperuntukkan siswa melihat rekap absensi siswa selama proses pembelajaran berlangsung</p>

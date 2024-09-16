@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('detail-poin')}}
     <div class="body-contain-customize col-12">
         <h5>Informasi Poin Siswa</h5>
         <p>Halaman ini diperunttukan siswa untuk memantau poin aturan selama tahun pelajaran berlangsung</p>

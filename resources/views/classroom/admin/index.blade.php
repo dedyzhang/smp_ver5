@@ -1,5 +1,5 @@
 @extends('layouts.main') @section('container')
-{{-- {{Breadcrumbs::render('penilaian-pts')}} --}}
+{{Breadcrumbs::render('classroom-admin')}}
 <div class="body-contain-customize col-12">
     <h5 class="m-0 mb-1"><b>Classroom</b></h5>
     <p>

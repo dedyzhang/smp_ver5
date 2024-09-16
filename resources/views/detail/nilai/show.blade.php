@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('detail-nilai-show',$ngajar)}}
     <div class="body-contain-customize col-12">
         <h5>Informasi Penilaian</h5>
         <p>Halaman ini merupakan halaman informasi penilaian yang diberikan oleh guru</p>

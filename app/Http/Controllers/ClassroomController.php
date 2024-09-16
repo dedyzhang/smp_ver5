@@ -755,7 +755,7 @@ class ClassroomController extends Controller
      */
     public function adminClassroomShow(String $uuid): View
     {
-
+        $kelas = Kelas::findOrFail($uuid);
         $ngajar = Ngajar::select(['ngajar.*', 'pelajaran', 'pelajaran_singkat', 'kelas', 'tingkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
             ->join('kelas', 'id_kelas', '=', 'kelas.uuid')
@@ -764,7 +764,7 @@ class ClassroomController extends Controller
             ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
             ->orderByRaw('length(kelas.kelas), kelas.kelas')
             ->get();
-        return view('classroom.admin.show', compact('ngajar'));
+        return view('classroom.admin.show', compact('ngajar', 'kelas'));
     }
     /**
      * Tampilkan Classroom berdasarkan data ngajar
@@ -819,6 +819,6 @@ class ClassroomController extends Controller
     {
         $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->findOrFail($uuid);
         $classroom = Classroom::where([['id_ngajar', '=', $uuid], ['status', '=', 'arsip']])->orderBy('created_at', 'desc')->get();
-        return View('penilaian.classroom.archived', compact('classroom', 'ngajar'));
+        return View('classroom.admin.archived', compact('classroom', 'ngajar'));
     }
 }

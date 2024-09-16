@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-{{Breadcrumbs::render('walikelas-classroom')}}
+{{Breadcrumbs::render('classroom-admin-show',$kelas)}}
 <div class="body-contain-customize col-12">
     <h5><b>Classroom</b></h5>
     <p>Classroom adalah halaman bagi admin untuk mengecek data classroom yang sudah diassign oleh guru dan jawaban yang sudah dijawab oleh siswa.</p>
