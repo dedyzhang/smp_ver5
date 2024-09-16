@@ -392,6 +392,8 @@ class JadwalController extends Controller
     public function eventIndex(): View
     {
         $event = Event::all();
+        $auth = Auth::user();
+        $guru = Guru::where('id_login',$auth->uuid)->first();
         $kegiatan = [];
         foreach($event as $item) {
             $kegiatan[] = [
@@ -402,7 +404,7 @@ class JadwalController extends Controller
                 'color' => '#86D293',
             ];
         }
-        return view('jadwal.event.index',compact('kegiatan'));
+        return view('jadwal.event.index',compact('kegiatan','event','guru'));
     }
     public function eventCreate(): View
     {

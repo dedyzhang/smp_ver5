@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('event-show',$event)}}
     <div class='body-contain-customize col-12'>
         <h5><b>Event Sekolah</b></h5>
         <p>Halaman ini diperuntukkan bagi warga sekolah dan berguna untuk melihat serta mengatur berbagai event di dalam sekolah, sehingga memudahkan pengelolaan kegiatan secara terorganisir.</p>

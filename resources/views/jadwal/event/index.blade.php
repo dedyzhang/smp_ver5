@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('event-index')}}
     <div class="body-contain-customize col-12">
         <h5><b>Event Sekolah</b></h5>
         <p>Halaman ini diperuntukkan bagi warga sekolah dan berguna untuk melihat serta mengatur berbagai event di dalam sekolah, sehingga memudahkan pengelolaan kegiatan secara terorganisir.</p>
@@ -27,7 +28,44 @@
         <p>Kalender Event Sekolah</p>
         <div id="eventsekolah"></div>
     </div>
+    <div class="body-contain-customize col-12 mt-3">
+        <p><b>Event yang saya ajukan</b></p>
+        <table class="table table-bordered fs-12" id="table-event">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Judul Event</th>
+                    <th>Tanggal Mulai</th>
+                    <th>Tanggal Berakhir</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $eventSaya = $event->filter(function($item) use ($guru) {
+                        if($item->id_pengajuan == $guru->uuid) {
+                            return $item;
+                        }
+                    });
+                @endphp
+                @foreach ($eventSaya as $element)
+                    <tr>
+                        <td>{{$loop->iteration}}</td>
+                        <td><a href="{{route('event.show',$element->uuid)}}">{{$element->judul}}</a></td>
+                        <td>{{date('d M Y, H:i',strtotime($element->waktu_mulai))}}</td>
+                        <td>{{date('d M Y, H:i',strtotime($element->waktu_akhir))}}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
     <script>
+        var table = new DataTable('#table-event',{
+            // scrollX : true,
+            columns: [{ width: '10%' },{ width: '40%' },{ width: '25%' },{ width: '25%' }],
+            "initComplete": function (settings, json) {
+                $("#table-event").wrap("<div style='overflow:auto; width:100%;position:relative;'></div>");
+            },
+        });
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('eventsekolah');
             var calendar = new FullCalendar.Calendar(calendarEl, {
