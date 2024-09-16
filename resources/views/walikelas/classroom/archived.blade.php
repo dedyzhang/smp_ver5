@@ -39,12 +39,8 @@
                 <label for="item-{{$item->uuid}}" class="aspect-label"></label>
                 <div class="aspect-content">
                     <div class="aspect-info">
-                        <div class="chart-pie negative over50">
-                            <span class="chart-pie-count">0</span>
-                            <div>
-                                <div class="first-fill"></div>
-                                <div class="second-fill" style="transform: rotate(249deg)"></div>
-                            </div>
+                        <div class="chart-pie">
+                            <span class="chart-pie-count text-primary-emphasis fs-25"><i class="fa-solid fa-book"></i></span>
                         </div>
                         <div class="aspect-name">
                             <p class="m-0 text-secondary"><b>{{ucwords($item->jenis)}}</b></p>

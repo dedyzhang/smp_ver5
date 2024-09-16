@@ -149,78 +149,438 @@
 </div>
 <div class="row m-0 p-0 mt-3">
     @if ($user->access != "siswa" && $user->access != "orangtua")
-        @if ($account->walikelas !== null)
-            <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
-                <div class="card rounded-4 border-0">
-                    <div class="card-body">
-                        <h5 class="fs-18"><b>Info Kelas</b></h5>
-                        <canvas id="chart-kelas" height="300"></canvas>
+        @if ($user->access == "admin" || $user->access == "kepalasekolah")
+            <div class="row m-0 p-0">
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card bg-primary-subtle rounded-3 border-0">
+                        <div class="card-body d-inline-flex align-items-center">
+                            <img src="{{asset('img/admin-siswa.svg')}}" width="90" alt="">
+                            <div class="ms-2">
+                                <p class="fs-14 m-0">Peserta Didik</p>
+                                <p class="m-0 fs-30"><b>{{$siswa->all}}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card bg-warning-subtle rounded-3 border-0">
+                        <div class="card-body d-inline-flex align-items-center">
+                            <img src="{{asset('img/admin-guru.svg')}}" width="90" alt="">
+                            <div class="ms-2">
+                                <p class="fs-14 m-0">Guru & Staf</p>
+                                <p class="m-0 fs-30"><b>{{$guru->all}}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card bg-success-subtle rounded-3 border-0">
+                        <div class="card-body d-inline-flex align-items-center">
+                            <img src="{{asset('img/admin-rombel.svg')}}" width="90" alt="">
+                            <div class="ms-2">
+                                <p class="fs-14 m-0">Rombel</p>
+                                <p class="m-0 fs-30"><b>{{$jumlahRombel}}</b></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+                    <div class="card bg-danger-subtle rounded-3 border-0">
+                        <div class="card-body d-inline-flex align-items-center">
+                            <img src="{{asset('img/admin-ruang.svg')}}" width="90" alt="">
+                            <div class="ms-2">
+                                <p class="fs-14 m-0">Ruang</p>
+                                <p class="m-0 fs-30"><b>{{$jumlahRuang}}</b></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
-                <div class="card rounded-4 border-0">
-                    <div class="card-body">
-                        <h5 class="fs-18"><b>Info Siswa</b></h5>
-                        <div class="vertical-align" style="height:300px; overflow-y:auto;">
-                            <table id="table-siswa" class="fs-12 mt-2 table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th width="10%">No</th>
-                                        <th width="40%">Nama</th>
-                                        <th width="15%">Nis</th>
-                                        <th width="10%">Jk</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($siswa as $item)
+            <div class="row m-0 p-0 mt-3">
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-5">
+                    <div class="card rounded-3 border-0">
+                        <div class="card-body">
+                            <p>Data Siswa Berdasarkan Jenis Kelamin</p>
+                            <div class="scroll-enable" style="max-height:300px">
+                                <table class="table table-bordered mt-3 fs-12">
+                                    <thead>
                                         <tr>
-                                            <td>{{$loop->iteration}}</td>
-                                            <td>{{$item->nama}}</td>
-                                            <td>{{$item->nis}}</td>
-                                            <td>{{$item->jk}}</td>
+                                            <th width="15%">Kelas</th>
+                                            <th width="70%">Jenis Kelamin</th>
+                                            <th width="15%">Jumlah</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $array_tingkat = array();
+                                        @endphp
+                                        @foreach ($kelas as $item)
+                                            @php
+                                                if(!isset($array_tingkat[$item->tingkat])) {
+                                                    $array_tingkat[$item->tingkat] = array(
+                                                        "laki" => 0,
+                                                        "perempuan" => 0,
+                                                        "all" => 0
+                                                    );
+                                                }
+                                                $jumlahPerKelas = $siswaPKelas->first(function($element) use($item) {
+                                                    if($element->id_kelas == $item->uuid) {
+                                                        return $element;
+                                                    }
+                                                });
+                                                if(isset($array_tingkat[$item->tingkat])) {
+
+                                                    isset($jumlahPerKelas->laki) ? $array_tingkat[$item->tingkat]['laki'] += $jumlahPerKelas->laki : $array_tingkat[$item->tingkat]['laki'] += 0;
+                                                    isset($jumlahPerKelas->perempuan) ? $array_tingkat[$item->tingkat]['perempuan'] += $jumlahPerKelas->perempuan : $array_tingkat[$item->tingkat]['perempuan'] += 0;
+                                                    isset($jumlahPerKelas->all) ? $array_tingkat[$item->tingkat]['all'] += $jumlahPerKelas->all : $array_tingkat[$item->tingkat]['all'] += 0;
+                                                }
+                                            @endphp
+                                            <tr>
+                                                <td rowspan="3" class="align-middle text-center">{{$item->tingkat.$item->kelas}}</td>
+                                                <td class="table-primary">Laki-laki</td>
+                                                <td class="text-center table-primary">{{isset($jumlahPerKelas->laki) ? $jumlahPerKelas->laki : 0 }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="table-danger">Perempuan</td>
+                                                <td class="text-center table-danger">{{isset($jumlahPerKelas->perempuan) ? $jumlahPerKelas->perempuan : 0}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>Total</b></td>
+                                                <td class="text-center"><b>{{isset($jumlahPerKelas->all) ? $jumlahPerKelas->all : 0}}</b></td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
                 </div>
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-7">
+                    <div class="card rounded-3 border-0">
+                        <div class="card-body">
+                            <p>Data Jenis Kelamin Siswa Per Tingkat</p>
+                            <canvas style="height:300px" id="rekapTingkat"></canvas>
+                        </div>
+                    </div>
+                </div>
             </div>
             <script>
-                const ctx = document.getElementById('chart-kelas');
+                $(".scroll-enable").mCustomScrollbar({
+                    theme: "minimal-dark",
+                    scrollbarPosition: "outside"
+                });
+                const ctx = document.getElementById('rekapTingkat');
                 new Chart(ctx, {
-                    type: 'pie',
+                    type: 'bar',
                     options: {
                         responsive: true,
                         plugins: {
                             legend: {
                                 position: 'top'
                             },
-                            title: {
-                                display: true,
-                                text: 'Data Siswa Per Jenis Kelamin'
-                            },
                         },
                     },
                     data: {
-                        labels: ['Laki-Laki', 'Perempuan'],
                         responsive : true,
                         datasets: [{
-                            label: 'Jumlah',
-                            data: [{{$jumlah->laki}},{{$jumlah->perempuan}}],
+                            label: "Laki-laki",
+                            data: [
+                                {x: "tingkat 7",y: {{isset($array_tingkat[7]['laki']) ? $array_tingkat[7]['laki'] : 0}}},
+                                {x: "tingkat 8",y: {{isset($array_tingkat[8]['laki']) ? $array_tingkat[8]['laki'] : 0}}},
+                                {x: "tingkat 9",y: {{isset($array_tingkat[9]['laki']) ? $array_tingkat[9]['laki'] : 0}}},
+                            ],
                             backgroundColor: [
-                                '#BBE9FF','#FFC6C6'
+                                '#cfe2ff'
+                            ],
+                        },{
+                            label: "Perempuan",
+                            data: [
+                                {x: "tingkat 7",y: {{isset($array_tingkat[7]['perempuan']) ? $array_tingkat[7]['perempuan'] : 0}}},
+                                {x: "tingkat 8",y: {{isset($array_tingkat[8]['perempuan']) ? $array_tingkat[8]['perempuan'] : 0}}},
+                                {x: "tingkat 9",y: {{isset($array_tingkat[9]['perempuan']) ? $array_tingkat[9]['perempuan'] : 0}}},
+                            ],
+                            backgroundColor: [
+                                '#f8d7da'
                             ],
                         }]
                     },
                 });
-
             </script>
+        @else
+            @if ($account->walikelas !== null)
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+                    <div class="card rounded-4 border-0">
+                        <div class="card-body">
+                            <h5 class="fs-18"><b>Info Kelas</b></h5>
+                            <canvas id="chart-kelas" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
+                    <div class="card rounded-4 border-0">
+                        <div class="card-body">
+                            <h5 class="fs-18"><b>Info Siswa</b></h5>
+                            <div class="vertical-align" style="height:300px; overflow-y:auto;">
+                                <table id="table-siswa" class="fs-12 mt-2 table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th width="10%">No</th>
+                                            <th width="40%">Nama</th>
+                                            <th width="15%">Nis</th>
+                                            <th width="10%">Jk</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($siswa as $item)
+                                            <tr>
+                                                <td>{{$loop->iteration}}</td>
+                                                <td>{{$item->nama}}</td>
+                                                <td>{{$item->nis}}</td>
+                                                <td>{{$item->jk}}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <script>
+                    const ctx = document.getElementById('chart-kelas');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Data Siswa Per Jenis Kelamin'
+                                },
+                            },
+                        },
+                        data: {
+                            labels: ['Laki-Laki', 'Perempuan'],
+                            responsive : true,
+                            datasets: [{
+                                label: 'Jumlah',
+                                data: [{{$jumlah->laki}},{{$jumlah->perempuan}}],
+                                backgroundColor: [
+                                    '#BBE9FF','#FFC6C6'
+                                ],
+                            }]
+                        },
+                    });
+
+                </script>
+            @endif
+            <div class="row m-0 p-0 mt-3">
+                <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+                    <div class="card rounded-4 border-0">
+                        <div class="card-body d-grid">
+                            <h5 class="fs-18"><b>Perangkat</b></h5>
+                            <p class="fs-12">Perangkat yang harus diupload oleh guru meliputi :</p>
+                            <ol class="list-group list-group-numbered fs-12">
+                                @foreach ($listPerangkat as $list)
+                                    @php
+                                        if(in_array($list->uuid,$arrayUpload)) {
+                                            $upload = "sudah";
+                                        } else {
+                                            $upload = "belum";
+                                        }
+                                    @endphp
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{$list->perangkat}}</div>
+                                        </div>
+                                        <span class="badge @if ($upload == "sudah") text-bg-success @else text-bg-danger @endif rounded-pill"><i class="fas {{$upload == "sudah" ? "fa-check" : "fa-xmark"}}"></i></span>
+                                    </li>
+                                @endforeach
+                            </ol>
+                            <a href="{{route('penilaian.perangkat.index')}}" class="btn btn-sm mt-3 btn-light">Buka Halaman Perangkat</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
+                    <div class="card rounded-4 border-0">
+                        <div class="card-body">
+                            <h5 class="fs-18"><b>Alur Kerja Penginputan Nilai</b></h5>
+                            <p class="fs-12">Dengan ini kami sampaikan demi kelancaran dalam proses penginputan nilai siswa untuk semester ini. Mohon untuk memperhatikan langkah-langkah berikut</p>
+                            <div class="wrapper">
+                                <ul class="StepProgress">
+                                    <li class="StepProgress-item"><strong>Pendidik memasukkan rentang nilai ketuntasan pada Kriteria Ketercapaian Tujuan Pembelajaran (KKTP)</strong>
+                                        Rentang nilai ketuntasan yang diinput adalah rentang nilai yang sudah disepakati bersama sebelum proses pembelajaran dimulai.
+                                    </li>
+                                    <li class="StepProgress-item"><strong>Memasukkan Materi ke dalam sistem</strong>
+                                        Pastikan semua materi yang diajarkan selama periode penilaian telah diinput ke dalam sistem. Materi harus sesuai dengan Capaian Pembelajaran (CP) dan fase kurikulum yang berlaku untuk kelas dan mata pelajaran yang diajarkan.
+                                    </li>
+                                    <li class="StepProgress-item"><strong>Memasukkan Tujuan Pembelajaran</strong>
+                                        Setiap materi pembelajaran harus disertai dengan tujuan pembelajaran yang jelas dan terukur. untuk mengoptimalisasikan sistem dalam menghasilkan deskripsi rapor, maka tujuan pembelajaran yang diinput <b>Tidak diawali dengan huruf kapital.</b> dan <b>tidak diakhiri dengan tanda titik</b>
+                                    </li>
+                                    <li class="StepProgress-item"><strong>Menginput Nilai Formatif dan Nilai Sumatif</strong>
+                                        Lakukan penginputan nilai formatif dan sumatif Setelah proses penilaian Capaian Pembelajaran (CP) selesai dilaksanakan. <b>Dihimbau untuk tidak diinput bersamaan pada akhir Semester</b>
+                                    </li>
+                                    <li class="StepProgress-item"><strong>Menginput Nilai Sumatif Akhir Semester / Sumatif Akhir Tahun</strong></li>
+                                    <li class="StepProgress-item"><strong>Melakukan Pengelolaan Nilai rapor</strong>
+                                        melakukan pengelolaan nilai rapor dengan memerhatikan nilai yang dibawah rentang nilai ketuntasan dan deskripsi yang ganda ataupun format penulisan yang salah.
+                                    </li>
+                                    <li class="StepProgress-item"><strong>Melakuakn Konfirmasi Nilai Rapor</strong>
+                                        Nilai Rapor yang sudah dikonfirmasi <b>tidak bisa diubah lagi</b>.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         @endif
+    @else
+        @if($user->access == "siswa")
+            @if($sisa < 75 && $sisa >= 50)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Ananda, kami ingin mengingatkan bahwa saat ini Anda telah menerima peringatan pertama terkait pelanggaran aturan sekolah. Mohon untuk memperhatikan dan mematuhi aturan yang berlaku demi kenyamanan dan keberhasilan bersama!</p>
+                        <hr>
+                        <a class="mb-0 text-warning" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 50 && $sisa >= 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Tolong diperhatikan, Ananda, bahwa Anda sudah menerima peringatan kedua terkait pelanggaran aturan sekolah. Harap mematuhi aturan yang berlaku agar tidak mendapatkan peringatan lebih lanjut !</p>
+                        <hr>
+                        <a class="mb-0 text-warning" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Ananda, ini adalah peringatan terakhir mengenai pelanggaran aturan sekolah. Harap mematuhi aturan dengan baik untuk menghindari konsekuensi lebih lanjut !</p>
+                        <hr>
+                        <a class="mb-0 text-danger" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @endif
+        @else
+            @if($sisa < 75 && $sisa >= 50)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu, telah menerima peringatan pertama terkait pelanggaran aturan sekolah.Terima kasih atas perhatian dan kerjasamanya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 50 && $sisa >= 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-warning" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu telah menerima peringatan kedua terkait pelanggaran aturan sekolah. Kami mohon kerjasama Bapak/Ibu untuk mendiskusikan hal ini dengan anak dan memastikan bahwa dia mematuhi aturan sekolah dengan lebih baik ke depannya. Terima kasih atas perhatian dan dukungannya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @elseif($sisa < 25)
+                <div class="p-0 col-12">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Peringatan!</h4>
+                        <p>Kami ingin memberitahukan bahwa anak Bapak/Ibu, telah menerima peringatan terakhir terkait pelanggaran aturan sekolah. Kami sangat berharap Bapak/Ibu dapat membimbing anak untuk mematuhi aturan yang ada agar tidak menghadapi tindakan lebih lanjut. Terima kasih atas perhatian dan kerjasamanya</p>
+                        <hr>
+                        <a class="mb-0" href="{{route('detail.poin.index')}}">Klik disini untuk menuju halaman poin</a>
+                    </div>
+                </div>
+            @endif
+        @endif
+        <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 col-12 col-sm-6 col-md-6 col-lg-5 col-xl-4">
+            <div class="card rounded-4 border-0">
+                <div class="card-body">
+                    <h5 class="fs-18"><b>Jadwal Hari ini</b></h5>
+                    <ol class="list-group jadwal fs-12" style="max-height:300px">
+
+                        @forelse ($jadwal as $jadwalElemen)
+                            @if ($jadwalElemen->jenis != "spesial")
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
+                                        {{$jadwalElemen->pelajaran->pelajaran}} <br />( {{$jadwalElemen->guru->nama}} )
+                                    </div>
+                                </li>
+                            @else
+                                <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
+                                        {{$jadwalElemen->spesial}}
+                                    </div>
+                                </li>
+                            @endif
+                        @empty
+                            <li class="list-group-item list-group-item-warning d-flex justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">Tidak Ada Jadwal</div>
+                                    Tidak ada pembelajaran untuk hari ini
+                                </div>
+                            </li>
+                        @endforelse
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <div class="p-0 mt-3 mt-sm-0 mt-md-0 mt-lg-0 mt-xl-0 col-12 col-sm-6 col-md-6 col-lg-7 col-xl-8">
+            <div class="card rounded-4 border-0">
+                <div class="card-body" style="height:300px">
+                    <h5 class="fs-18"><b>Rekap Absensi</b></h5>
+                    <canvas id="chartRekap"></canvas>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(".list-group.jadwal").mCustomScrollbar({
+                theme: "minimal-dark",
+                scrollbarPosition: "outside"
+            });
+            const ctx = document.getElementById('chartRekap');
+            @php
+                if($jumlah != 0) {
+                    $hadir = $jumlah - ($absensi->sakit + $absensi->izin + $absensi->alpa);
+                } else {
+                    $hadir = 0;
+                }
+            @endphp
+            new Chart(ctx, {
+                type: 'bar',
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Graphic Kehadiran Siswa'
+                        },
+                    },
+                },
+                data: {
+                    labels: ['Hadir', 'Sakit','Izin','Alpa'],
+                    responsive : true,
+                    datasets: [{
+                        label: "Kehadiran Siswa",
+                        data: [{{$hadir}},{{$absensi->sakit}},{{$absensi->izin}},{{$absensi->alpa}}],
+                        backgroundColor: [
+                            '#a0e1ff','#fd9494','#a1ff8e','#f9fd7a'
+                        ],
+                    }]
+                },
+            });
+        </script>
     @endif
 </div>
-
 @endsection
 

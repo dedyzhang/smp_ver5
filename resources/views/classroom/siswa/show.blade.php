@@ -47,10 +47,8 @@
             <div class="sentiment-wrapper">
                 <div>
                     <div>
-                        <div class="opinion-header fs-10 text-danger">TANGGAL POST : {{date('d F Y,
-                            H:i:s',strtotime($item->tanggal_post))}}</div>
                         <div>
-                            <div>{{$item->deskripsi}}</div>
+                            <div class="fs-12">{{$item->deskripsi}}</div>
                             <div class="button-place mt-3 gap-2 d-grid d-sm-grid d-md-flex d-xl-flex d-lg-flex">
                                 @if ($item->token === "XXXX")
                                 <a href="{{route('classroom.siswa.preview',['uuid' => $ngajar->uuid,'uuidClassroom' => $item->uuid])}}"

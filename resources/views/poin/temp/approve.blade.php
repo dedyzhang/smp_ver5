@@ -14,7 +14,7 @@
                     <td>Tanggal</td>
                     <td>Siswa</td>
                     <td>Kelas</td>
-                    <td>Jenis</td>
+                    <td>Aturan</td>
                     <td>Poin</td>
                     <td>Diajukan Oleh</td>
                     <td>Status</td>
@@ -27,7 +27,7 @@
                         <td>{{date('d M Y',strtotime($item->tanggal))}}</td>
                         <td>{{$item->siswa->nama}}</td>
                         <td>{{$item->siswa->kelas->tingkat.$item->siswa->kelas->kelas}}</td>
-                        <td>{{$item->aturan->jenis}}</td>
+                        <td class="{{$item->aturan->jenis == "kurang" ? "text-danger" : "text-success"}}">{{$item->aturan->kode."-".$item->aturan->aturan}}</td>
                         <td>{{$item->aturan->poin}}</td>
                         <td>{{isset($all_name[$item->id_input]) ? $all_name[$item->id_input] : "" }}</td>
                         <td class="status-place">
@@ -49,11 +49,11 @@
             columns: [
                 {width: '5%'},
                 {width: '10%'},
-                {width: '25%'},
-                {width: '5%'},
-                {width: '10%'},
+                {width: '15%'},
                 {width: '5%'},
                 {width: '25%'},
+                {width: '5%'},
+                {width: '15%'},
                 {width: '5%'},
             ],
             columnDefs: [

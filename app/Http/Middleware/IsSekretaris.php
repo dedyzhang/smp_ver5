@@ -6,6 +6,7 @@ use App\Models\Sekretaris;
 use App\Models\Siswa;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsSekretaris
@@ -17,10 +18,10 @@ class IsSekretaris
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check()) {
+        if (!Auth::check()) {
             return redirect('/signin');
         } else {
-            $auth = auth()->user();
+            $auth = Auth::user();
             $siswa = Siswa::where('id_login', $auth->uuid)->first();
             $sekretaris = Sekretaris::where('id_kelas', $siswa->id_kelas)->first();
             if (

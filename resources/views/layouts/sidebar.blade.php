@@ -111,6 +111,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
                 </ul>
             </li>
             @endcan
@@ -146,6 +147,22 @@
             @endcan
             @canany(['guru','kesiswaan','kepalasekolah','kurikulum'])
                 <li class="menu-list"><a href="{{route('penggunaan.index')}}"> <i class="fa-solid fa-screwdriver-wrench"></i> Penggunaan Ruang</a>
+            </li>
+            @endcan
+
+            {{-- Detail Informasi Siswa --}}
+            @canany(['siswa','orangtua'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                 <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Informasi Sekolah
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-sapras">
+                    <li class="submenu-list"><a href="{{ route('detail.absensi.index') }}"> Absensi Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('detail.poin.index') }}"> Poin Siswa</a></li>
+                    <li class="submenu-list"><a href="{{ route('detail.nilai.index') }}"> Penilaian</a></li>
+                </ul>
             </li>
             @endcan
 

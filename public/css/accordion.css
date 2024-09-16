@@ -9,7 +9,6 @@
 .aspect-tab {
     position: relative;
     width: 100%;
-    max-width: 1000px;
     margin: 0 auto 10px;
     border-radius: 4px;
     background-color: #fff;
@@ -171,19 +170,7 @@
     height: 44px;
     width: 44px;
     border-radius: 50%;
-    background-color: #e4e4e4;
     vertical-align: middle;
-}
-.chart-pie:after {
-    content: "";
-    display: block;
-    position: absolute;
-    height: 40px;
-    width: 40px;
-    top: 2px;
-    left: 2px;
-    border-radius: 50%;
-    background-color: #fff;
 }
 
 .chart-pie-count {
