@@ -149,6 +149,16 @@
 </div>
 <div class="row m-0 p-0 mt-3">
     @if ($user->access != "siswa" && $user->access != "orangtua")
+        @if ($event->count() > 0)
+            <div class="p-0 col-12 mt-3">
+                <div class="alert alert-primary" role="alert">
+                    <h4 class="alert-heading">INFORMASI KEGIATAN</h4>
+                    <p>Kami menginformasikan akan diadakan kegiatan sekolah dalam waktu dekat ini, Kami memohon kepada Bapak/Ibu Guru untuk dapat mempersiapkan diri bagi yang namanya tertera didalam kegiatan dan turut menyukseskan kegiatan ini. </p>
+                    <hr>
+                    <a href="{{route('event.index')}}" class="mb-0 text-primary">Klik disini untuk menuju ke halaman kegiatan.</a>
+                </div>
+            </div>
+        @endif
         @if ($user->access == "admin" || $user->access == "kepala")
             <div class="row m-0 p-0">
                 <div class="p-0 pe-sm-2 pe-md-2 pe-lg-3 pe-xl-3 mt-2 col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
@@ -401,7 +411,7 @@
                                     </li>
                                 @endforeach
                             </ol>
-                            <a href="{{route('penilaian.perangkat.index')}}" class="btn btn-sm mt-3 btn-light">Buka Halaman Perangkat</a>
+                            <a href="{{route('penilaian.perangkat.index')}}" class="btn btn-sm mt-3 btn-warning text-warning-emphasis">Buka Halaman Perangkat</a>
                         </div>
                     </div>
                 </div>
