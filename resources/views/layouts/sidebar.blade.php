@@ -3,7 +3,7 @@
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.5</i>
+            <i class="app-version">5.0.6</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -218,6 +218,9 @@
                 </a>
                 <ul class="submenu collapse" id="menu-jadwal">
                     <li class="submenu-list"><a href="{{ route('jadwal.index') }}"> Jadwal Pelajaran</a></li>
+                    @canany(['admin','guru','kepalasekolah','kesiswaan','kurikulum','sapras'])
+                        <li class="submenu-list"><a href="{{route('event.index')}}"> Event Sekolah</a></li>
+                    @endcan
                     {{-- <li class="submenu-list"><a href="{{ route('penilaian.admin.index') }}"> Jadwal Akademik</a>
                     </li> --}}
                 </ul>

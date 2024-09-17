@@ -134,7 +134,7 @@
                 <div class="row m-0 p-0">
                     <div class="col-12 col-sm-12 col-md-4 col-lg-3 col-xl-3">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-striped fs-10">
+                            <table class="table table-bordered fs-10">
                                 <thead>
                                     <tr>
                                         <td width="5%">No</td>

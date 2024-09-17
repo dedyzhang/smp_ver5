@@ -4,6 +4,7 @@ use App\Models\Agenda;
 use App\Models\Aturan;
 use App\Models\Barang;
 use App\Models\Classroom;
+use App\Models\Event;
 use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalVer;
@@ -495,4 +496,20 @@ Breadcrumbs::for('detail-nilai', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('detail-nilai-show', function (BreadcrumbsTrail $trail, Ngajar $ngajar) {
     $trail->parent('detail-nilai');
     $trail->push($ngajar->pelajaran->pelajaran_singkat, route('detail.nilai.show', $ngajar->uuid));
+});
+//event.Breadcrumbs
+Breadcrumbs::for('event-index', function (BreadcrumbsTrail $trail) {
+    $trail->push('Event', route('event.index'));
+});
+Breadcrumbs::for('event-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('event-index');
+    $trail->push('Create', route('event.create'));
+});
+Breadcrumbs::for('event-show', function (BreadcrumbsTrail $trail,Event $event) {
+    $trail->parent('event-index');
+    $trail->push(Str::limit($event->judul,15, '...'), route('event.show',$event->uuid));
+});
+Breadcrumbs::for('event-edit', function (BreadcrumbsTrail $trail,Event $event) {
+    $trail->parent('event-show',$event);
+    $trail->push('Edit', route('event.edit',$event->uuid));
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AbsensiSiswa;
+use App\Models\Event;
 use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalHari;
@@ -17,6 +18,8 @@ use App\Models\TanggalAbsensi;
 use App\Models\User;
 use App\Models\Poin;
 use App\Models\Ruang;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +33,11 @@ class LoginController extends Controller
         $user = Auth::user();
         if ($user->access != "siswa" && $user->access != "orangtua") {
             $account = Guru::with('users', 'walikelas')->where('id_login', $user->uuid)->first();
-            if ($user->access == "admin" || $user->access == "kepalasekolah") {
+            $now = date('Y-m-d');
+            $futureDate = Carbon::parse($now)->addWeek()->format('Y-m-d');
+            $event = Event::whereBetween('waktu_mulai', [$now, $futureDate])->get();
+
+            if ($user->access == "admin" || $user->access == "kepala") {
                 //TotalSiswa
                 $siswa = Siswa::selectRaw('
                     COUNT(CASE WHEN jk = "l" THEN 1 ELSE null END) as "laki",
@@ -64,7 +71,7 @@ class LoginController extends Controller
                 } else {
                     $jumlahRuang = 0;
                 }
-                return view('auth.home', compact('user', 'account', 'siswa', 'siswaPKelas', 'guru', 'kelas', 'jumlahRombel', 'jumlahRuang'));
+                return view('auth.home', compact('user', 'account', 'event', 'siswa', 'siswaPKelas', 'guru', 'kelas', 'jumlahRombel', 'jumlahRuang'));
             } else {
                 $listPerangkat = PerangkatAjar::orderBy('perangkat')->get();
                 $UploadPerangkat = PerangkatAjarGuru::where('id_guru', $user->guru->uuid)->get();
@@ -77,9 +84,9 @@ class LoginController extends Controller
                         COUNT(*) as "all"
                     ')->where('id_kelas', $id_kelas)->first();
                     $siswa = Siswa::where('id_kelas', $id_kelas)->get();
-                    return view('auth.home', compact('user', 'account', 'jumlah', 'siswa', 'listPerangkat', 'arrayUpload'));
+                    return view('auth.home', compact('user', 'event', 'account', 'jumlah', 'siswa', 'listPerangkat', 'arrayUpload'));
                 } else {
-                    return view('auth.home', compact('user', 'account', 'listPerangkat', 'arrayUpload'));
+                    return view('auth.home', compact('user', 'event', 'account', 'listPerangkat', 'arrayUpload'));
                 }
             }
         } else {
