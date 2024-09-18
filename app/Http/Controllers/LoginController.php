@@ -160,6 +160,10 @@ class LoginController extends Controller
         // return redirect('/login');
 
     }
+    public function changePassword(): View
+    {
+        return view('auth.password');
+    }
     public function gantiPassword(Request $request)
     {
         $authId = Auth::user()->uuid;
@@ -173,5 +177,25 @@ class LoginController extends Controller
         return response()->json([
             'success' => true,
         ]);
+    }
+    public function gantiPasswordRequest(Request $request)
+    {
+        $authId = Auth::user()->uuid;
+        $user = User::findOrFail($authId);
+        if (Hash::check($request->passwordLama, $user->password)) {
+            $password = Hash::make($request->password);
+            $user->update([
+                'password' => $password,
+                'token' => 0,
+            ]);
+            return response()->json([
+                'success' => true,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Password Lama Yang dimasukkan tidak sesuai'
+            ]);
+        }
     }
 }

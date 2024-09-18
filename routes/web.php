@@ -54,7 +54,9 @@ Route::get('/redirect', [AppController::class, 'redirect']);
 Route::post('/redirect', [AppController::class, 'redirectUpdate'])->name('redirect.update');
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
+Route::get('/ganti-password', [LoginController::class, 'changePassword'])->name('ganti.password')->middleware('auth');
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
+Route::post('/ganti-password-request', [LoginController::class, 'gantiPasswordRequest']);
 Route::get('/home', [LoginController::class, 'index'])->name('auth.home')->middleware('auth');
 
 //Admin - Halaman Data Guru
@@ -99,6 +101,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::get('/settings', 'index')->name('setting.index');
     Route::post('/settings/semester', 'updateSemester')->name('setting.semester');
     Route::post('/settings/nis', 'updatenis')->name('setting.nis');
+    Route::post('/settings/setPoinTerlambat', 'setPoinTerlambat')->name('setting.poinTerlambat');
 });
 
 //Admin - Halaman Cetak Excel
@@ -253,10 +256,10 @@ Route::middleware(isPenilaianController::class)->controller(JadwalController::cl
     Route::get('/event', 'eventIndex')->name('event.index');
     Route::get('/event/create', 'eventCreate')->name('event.create');
     Route::post('/event/store', 'eventStore')->name('event.store');
-    Route::get('/event/{uuid}/show','eventShow')->name('event.show');
-    Route::get('/event/{uuid}/edit','eventEdit')->name('event.edit');
-    Route::put('/event/{uuid}/update','eventUpdate')->name('event.update');
-    Route::delete('/event/{uuid}/delete','eventDelete')->name('event.delete');
+    Route::get('/event/{uuid}/show', 'eventShow')->name('event.show');
+    Route::get('/event/{uuid}/edit', 'eventEdit')->name('event.edit');
+    Route::put('/event/{uuid}/update', 'eventUpdate')->name('event.update');
+    Route::delete('/event/{uuid}/delete', 'eventDelete')->name('event.delete');
 });
 // {----------------------------------------------------END------------------------------------------------------------------}
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aturan;
 use App\Models\Nis;
 use App\Models\Semester;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -13,7 +15,9 @@ class SettingController extends Controller
     {
         $semester = Semester::first();
         $nis = Nis::first();
-        return view('setting.index', compact('semester', 'nis'));
+        $aturan = Aturan::where('jenis', 'kurang')->orderBy('kode')->get();
+        $setting = Setting::all();
+        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting'));
     }
     public function updateSemester(Request $request)
     {
@@ -37,5 +41,21 @@ class SettingController extends Controller
             'second_nis' => $second_nis,
             'third_nis' => $third_nis
         ]);
+    }
+    public function setPoinTerlambat(Request $request)
+    {
+        $poin = $request->poin;
+        $settingPoin = Setting::where('jenis', 'poin_terlambat')->first();
+
+        if ($settingPoin !== null) {
+            $settingPoin->update([
+                'nilai' => $poin
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'poin_terlambat',
+                'nilai' => $poin
+            ]);
+        }
     }
 }
