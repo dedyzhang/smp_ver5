@@ -5,12 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\AbsensiGuru;
 use App\Models\AbsensiSiswa;
 use App\Models\Agenda;
+use App\Models\Aturan;
 use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalHari;
 use App\Models\JadwalVer;
+use App\Models\Poin;
+use App\Models\PoinTemp;
 use App\Models\Semester;
 use App\Models\Siswa;
+use App\Models\Setting;
 use App\Models\TanggalAbsensi;
 use DateTime;
 use Illuminate\Http\Request;
@@ -278,6 +282,25 @@ class AbsensiController extends Controller
                         'waktu' => $waktu,
                         'absensi' => 'hadir',
                     ]);
+                    //Kenakan Poin jika terlambat
+                    $waktuTerlambat = Setting::where('jenis', 'waktu_terlambat_siswa')->first();
+                    if ($waktuTerlambat && strtotime($waktu) >= strtotime($waktuTerlambat->nilai)) {
+                        $poinTerlambat = Setting::where('jenis', 'poin_terlambat')->first();
+                        if ($poinTerlambat != null && $poinTerlambat->nilai != null) {
+                            $poin = Aturan::findOrFail($poinTerlambat->nilai);
+                            $auth = Auth::user();
+                            $siswa = Siswa::where('id_login', $auth->uuid)->first();
+                            $tanggal = date('Y-m-d');
+                            PoinTemp::create([
+                                'tanggal' => $tanggal,
+                                'id_aturan' => $poin->uuid,
+                                'id_siswa' => $siswa->uuid,
+                                'penginput' => 'sistem',
+                                'id_input' => $siswa->uuid,
+                                'status' => 'belum'
+                            ]);
+                        }
+                    }
                     return response()->json(["success" => true, "data" => $siswa->nama]);
                 } else {
                     return response()->json(["success" => false, "message" => "Sudah melakukan absensi hari ini"]);

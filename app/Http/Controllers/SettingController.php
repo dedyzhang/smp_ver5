@@ -58,4 +58,20 @@ class SettingController extends Controller
             ]);
         }
     }
+    public function setWaktuTerlambat(Request $request)
+    {
+        $waktu = $request->waktu;
+        $settingWaktu = Setting::where('jenis', 'waktu_terlambat_siswa')->first();
+
+        if ($settingWaktu !== null) {
+            $settingWaktu->update([
+                'nilai' => $waktu
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'waktu_terlambat_siswa',
+                'nilai' => $waktu
+            ]);
+        }
+    }
 }

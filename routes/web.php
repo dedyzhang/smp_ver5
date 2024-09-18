@@ -102,6 +102,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/semester', 'updateSemester')->name('setting.semester');
     Route::post('/settings/nis', 'updatenis')->name('setting.nis');
     Route::post('/settings/setPoinTerlambat', 'setPoinTerlambat')->name('setting.poinTerlambat');
+    Route::post('/settings/setWaktuTerlambat', 'setWaktuTerlambat')->name('setting.waktuTerlambat');
 });
 
 //Admin - Halaman Cetak Excel
