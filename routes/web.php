@@ -53,6 +53,7 @@ Route::get('/privacy-policy', function () {
 });
 Route::get('/redirect', [AppController::class, 'redirect']);
 Route::post('/redirect', [AppController::class, 'redirectUpdate'])->name('redirect.update');
+Route::get('/qrcode', [AppController::class, 'qrcode']);
 Route::post('/login', [LoginController::class, 'login']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/ganti-password', [LoginController::class, 'changePassword'])->name('ganti.password')->middleware('auth');
