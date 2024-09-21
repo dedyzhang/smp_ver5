@@ -262,13 +262,16 @@ class AbsensiController extends Controller
         $today = date('Y-m-d');
         $tanggal = TanggalAbsensi::where('tanggal', $today)->first();
 
+        $tanggalqrcode = date('d/m/Y');
+        $generatemd5 = md5($tanggalqrcode);
+
         if ($tanggal !== null) {
-            if ($jenis == "datang") {
-                $token = 'f9e2221247d19748b0335821f5d48a1e';
-            } else {
-                $token = '2e2dffe1521f8199ff389060f563ad45';
-            }
-            if ($request->message == $token) {
+            // if ($jenis == "datang") {
+            //     $token = 'f9e2221247d19748b0335821f5d48a1e';
+            // } else {
+            //     $token = '2e2dffe1521f8199ff389060f563ad45';
+            // }
+            if ($request->message == $generatemd5) {
                 $kehadiran = AbsensiSiswa::where([
                     ['id_tanggal', '=', $tanggal->uuid],
                     ['id_siswa', '=', $siswa->uuid]

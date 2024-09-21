@@ -11,42 +11,46 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment-with-locales.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery.md5@1.0.2/index.min.js"></script>
     <style>
-        /* #qrcode img {
+        html,body {
+            background-color: #F3FDFE;
+        }
+        .main-body::before {
+            content: 'a';
             width: 100%;
-        } */
-        .box {
-            display: flex;
-            flex-wrap: wrap;
-            width: 100%;
-            justify-content: center;
-            align-items: center;
+            height: 100%;
+            opacity: 0.3;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-image: url('{{asset('img/qrcode-object.svg')}}');
+            background-repeat:no-repeat;
+            background-size: 300px;
+            background-position: bottom 0 right 0;
         }
-        .left {
-            width: 50%;
-        }
-        .right {
-            width: 50%;
-        }
-        .left .left-box {
-            padding: 20px;
+        #qrcode {
+            width:100%;
             display: flex;
             justify-content: center;
         }
-        .right .right-box {
-            padding: 20px;
+        #qrcode canvas {
+            width:70%;
         }
     </style>
 </head>
 <body>
-    <h1 class="mb-5" style="font-size: 100px; text-align: center;">Absensi Kehadiran Siswa</h1>
-    <div class="box">
-        <div class="left">
-            <div class="left-box">
-                <div id="qrcode"></div>
-            </div>
+    <h1 class="mt-3 mb-5" style="text-align: center;"><b>Absensi Kehadiran Siswa</b></h1>
+    <div class="row m-0 p-0 main-body">
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center">
+            <div id="qrcode"></div>
         </div>
-        <div class="right">
-            <div class="right-box"></div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <p><b>Tata Cara Absensi Siswa</b></p>
+            <ol>
+                <li>Buka Aplikasi website ataupun kunjungi website "https://smpmaitreyawiratpi.sch.id"</li>
+                <li>Setelah itu login menggunakan NIS dan Password Masing-masing</li>
+                <li>Masuk ke menu absensi siswa > Absen Kehadiran dan klik tombol hijau bertulisan "Absen Kehadiran"</li>
+                <li>Scan Barcode Diatas, pastikan sudah mengizinkan permission pada kamera</li>
+            </ol>
         </div>
     </div>
 </body>
@@ -58,8 +62,6 @@
     var qrcode = new QRCode(document.getElementById("qrcode"), {
         text: md,
         colorDark : "#000000",
-        width: 1000,
-        height:1000,
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
     });
