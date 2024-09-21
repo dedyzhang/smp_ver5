@@ -14,7 +14,7 @@
             <div class="c-contain" id="navbar-profile-menu">
                 <ul class="navbar-submenu">
                     <li class="navbar-submenu-list">
-                        <a href="#">Manage Profile</a>
+                        <a href="#" class="profile">Manage Profile</a>
                     </li>
                     <li class="navbar-submenu-list">
                         <a href="#" class="ganti-password">Change Password</a>
@@ -54,5 +54,8 @@
     });
     $('.ganti-password').click(function() {
         window.location.href="{{route('ganti.password')}}";
+    });
+     $('.profile').click(function() {
+        window.location.href="{{route('profile.index')}}";
     });
 </script>

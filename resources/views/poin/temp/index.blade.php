@@ -31,7 +31,7 @@
             </thead>
             <tbody>
                 @foreach ($temp as $item)
-                    <tr class="fs-12 @if ($item->penginput == "sistem") table-primary @endif">
+                    <tr class="fs-12">
                         <td>{{$loop->iteration}}</td>
                         <td>{{date('d M Y',strtotime($item->tanggal))}}</td>
                         <td>{{$item->siswa->nama}}</td>
@@ -60,9 +60,6 @@
                 @endforeach
             </tbody>
         </table>
-        <div>
-            <p><span class="badge text-bg-info text-info">C</span> Tabel dengan warna biru adalah poin yang diajukan oleh sistem</p>
-        </div>
     </div>
     <script>
         var table = new DataTable('#table-temp-poin',{

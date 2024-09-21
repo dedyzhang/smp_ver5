@@ -11,7 +11,6 @@ use App\Models\Jadwal;
 use App\Models\JadwalHari;
 use App\Models\JadwalVer;
 use App\Models\Poin;
-use App\Models\PoinTemp;
 use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\Setting;
@@ -291,13 +290,10 @@ class AbsensiController extends Controller
                             $auth = Auth::user();
                             $siswa = Siswa::where('id_login', $auth->uuid)->first();
                             $tanggal = date('Y-m-d');
-                            PoinTemp::create([
+                            Poin::create([
                                 'tanggal' => $tanggal,
                                 'id_aturan' => $poin->uuid,
-                                'id_siswa' => $siswa->uuid,
-                                'penginput' => 'sistem',
-                                'id_input' => $siswa->uuid,
-                                'status' => 'belum'
+                                'id_siswa' => $siswa->uuid
                             ]);
                         }
                     }

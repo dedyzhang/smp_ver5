@@ -17,6 +17,7 @@ use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PerangkatAjarController;
 use App\Http\Controllers\PoinController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
@@ -58,6 +59,10 @@ Route::get('/ganti-password', [LoginController::class, 'changePassword'])->name(
 Route::post('/ganti-password', [LoginController::class, 'gantiPassword']);
 Route::post('/ganti-password-request', [LoginController::class, 'gantiPasswordRequest']);
 Route::get('/home', [LoginController::class, 'index'])->name('auth.home')->middleware('auth');
+Route::middleware('auth')->controller(ProfileController::class)->group(function () {
+    Route::get('/profile', 'index')->name('profile.index');
+    Route::get('/profile/edit', 'edit')->name('profile.edit');
+});
 
 //Admin - Halaman Data Guru
 Route::resource('/guru', \App\Http\Controllers\GuruController::class)->middleware(IsAdmin::class);

@@ -150,12 +150,22 @@
 <div class="row m-0 p-0 mt-3">
     @if ($user->access != "siswa" && $user->access != "orangtua")
         @if ($event->count() > 0)
-            <div class="p-0 col-12 mt-3">
-                <div class="alert alert-primary" role="alert">
-                    <h4 class="alert-heading">INFORMASI KEGIATAN</h4>
-                    <p>Kami menginformasikan akan diadakan kegiatan sekolah dalam waktu dekat ini, Kami memohon kepada Bapak/Ibu Guru untuk dapat mempersiapkan diri bagi yang namanya tertera didalam kegiatan dan turut menyukseskan kegiatan ini. </p>
-                    <hr>
-                    <a href="{{route('event.index')}}" class="mb-0 text-primary">Klik disini untuk menuju ke halaman kegiatan.</a>
+            <div class="p-0 col-12 mt-3 mb-3">
+                <div class="card card-waning border-0 rounded-3" role="alert">
+                    <div class="card-body">
+                        <p class="m-0"><b>Kegiatan Mendatang</b></p>
+                        <ul class="list-group mt-3 list-group-numbered">
+                            @foreach ($event as $item)
+                                <li class="list-group-item d-flex justify-content-between align-items-center list-group-item-warning fs-13">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">{{$item->judul}}</div>
+                                        Tanggal Mulai : {{date('d M Y, H:i',strtotime($item->waktu_mulai))}}
+                                    </div>
+                                    <a href="{{route('event.show',$item->uuid)}}" class="fs-18 text-warning-emphasis"><i class="fa-solid fa-arrow-right"></i></a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
             </div>
         @endif
@@ -516,12 +526,14 @@
 
                         @forelse ($jadwal as $jadwalElemen)
                             @if ($jadwalElemen->jenis != "spesial")
-                                <li class="list-group-item d-flex justify-content-between align-items-start">
-                                    <div class="ms-2 me-auto">
-                                        <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
-                                        {{$jadwalElemen->pelajaran->pelajaran}} <br />( {{$jadwalElemen->guru->nama}} )
-                                    </div>
-                                </li>
+                                @if ($jadwalElemen->pelajaran != null || $jadwalElemen->guru != null)
+                                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">{{date('H:i',strtotime($jadwalElemen->waktu->waktu_mulai))}} - {{date('H:i',strtotime($jadwalElemen->waktu->waktu_akhir))}}</div>
+                                            {{$jadwalElemen->pelajaran->pelajaran}} <br />( {{$jadwalElemen->guru->nama}} )
+                                        </div>
+                                    </li>
+                                @endif
                             @else
                                 <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-start">
                                     <div class="ms-2 me-auto">
