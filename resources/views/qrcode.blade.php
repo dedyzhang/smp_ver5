@@ -14,6 +14,9 @@
         html,body {
             background-color: #F3FDFE;
         }
+        .main-body {
+            min-height:70vh;
+        }
         .main-body::before {
             content: 'a';
             width: 100%;
@@ -33,7 +36,12 @@
             justify-content: center;
         }
         #qrcode canvas {
-            width:70%;
+            width:50%;
+        }
+        @media screen and (max-width:900px) {
+            #qrcode canvas {
+                display:none;
+            }
         }
     </style>
 </head>
