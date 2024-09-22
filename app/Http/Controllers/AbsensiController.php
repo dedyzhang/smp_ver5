@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\AbsensiGuru;
 use App\Models\AbsensiSiswa;
 use App\Models\Agenda;
+use App\Models\Aturan;
 use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalHari;
 use App\Models\JadwalVer;
+use App\Models\Poin;
 use App\Models\Semester;
 use App\Models\Siswa;
+use App\Models\Setting;
 use App\Models\TanggalAbsensi;
 use DateTime;
 use Illuminate\Http\Request;
@@ -259,13 +262,16 @@ class AbsensiController extends Controller
         $today = date('Y-m-d');
         $tanggal = TanggalAbsensi::where('tanggal', $today)->first();
 
+        $tanggalqrcode = date('d/m/Y');
+        $generatemd5 = md5($tanggalqrcode);
+
         if ($tanggal !== null) {
-            if ($jenis == "datang") {
-                $token = 'f9e2221247d19748b0335821f5d48a1e';
-            } else {
-                $token = '2e2dffe1521f8199ff389060f563ad45';
-            }
-            if ($request->message == $token) {
+            // if ($jenis == "datang") {
+            //     $token = 'f9e2221247d19748b0335821f5d48a1e';
+            // } else {
+            //     $token = '2e2dffe1521f8199ff389060f563ad45';
+            // }
+            if ($request->message == $generatemd5) {
                 $kehadiran = AbsensiSiswa::where([
                     ['id_tanggal', '=', $tanggal->uuid],
                     ['id_siswa', '=', $siswa->uuid]
@@ -278,6 +284,22 @@ class AbsensiController extends Controller
                         'waktu' => $waktu,
                         'absensi' => 'hadir',
                     ]);
+                    //Kenakan Poin jika terlambat
+                    $waktuTerlambat = Setting::where('jenis', 'waktu_terlambat_siswa')->first();
+                    if ($waktuTerlambat && strtotime($waktu) >= strtotime($waktuTerlambat->nilai)) {
+                        $poinTerlambat = Setting::where('jenis', 'poin_terlambat')->first();
+                        if ($poinTerlambat != null && $poinTerlambat->nilai != null) {
+                            $poin = Aturan::findOrFail($poinTerlambat->nilai);
+                            $auth = Auth::user();
+                            $siswa = Siswa::where('id_login', $auth->uuid)->first();
+                            $tanggal = date('Y-m-d');
+                            Poin::create([
+                                'tanggal' => $tanggal,
+                                'id_aturan' => $poin->uuid,
+                                'id_siswa' => $siswa->uuid
+                            ]);
+                        }
+                    }
                     return response()->json(["success" => true, "data" => $siswa->nama]);
                 } else {
                     return response()->json(["success" => false, "message" => "Sudah melakukan absensi hari ini"]);

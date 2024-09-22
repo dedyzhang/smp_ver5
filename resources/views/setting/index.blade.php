@@ -19,7 +19,21 @@
                     aria-controls="main"
                     aria-selected="true"
                 >
-                    Main
+                    Utama
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="sekolah-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#sekolah"
+                    type="button"
+                    role="tab"
+                    aria-controls="sekolah"
+                    aria-selected="false"
+                >
+                    Sekolah
                 </button>
             </li>
             <li class="nav-item" role="presentation">
@@ -137,6 +151,106 @@
                             }
                         });
                     </script>
+                </div>
+            </div>
+            <div
+                class="tab-pane p-2"
+                id="sekolah"
+                role="tabpanel"
+                aria-labelledby="sekolah-tab"
+            >
+                <div class="row m-0 p-0 pt-2">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0">
+                        <div class="card">
+                            <div class="card-header">
+                                Poin & Waktu Terlambat Siswa
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Setting ini untuk mengatur poin yang akan dikenakan siswa jika terlambat melakukan absensi</p>
+                                <div class="col-12 form-group">
+                                    <label for="poinTerlambat">poin</label>
+                                    @php
+                                        $settingTerlambat = $setting->first(function($item) {
+                                            if($item->jenis == "poin_terlambat") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <select name="poinTerlambat" id="poinTerlambat" data-toggle="select">
+                                        <option value="">Tidak Ada Pengurangan</option>
+                                        @foreach ($aturan as $item)
+                                            <option value="{{$item->uuid}}" @if ($settingTerlambat && $settingTerlambat->nilai == $item->uuid) selected @endif>({{$item->kode}}) {{$item->aturan}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-poin-terlambat"><i class="fa-regular fa-save"></i> Simpan Aturan</button>
+                                </div>
+                                <div class="col-12 form-group mt-3">
+                                    <label for="waktu_terlambat">Waktu Jika Terlambat</label>
+                                    @php
+                                        $waktuTerlambat = $setting->first(function($item) {
+                                            if($item->jenis == "waktu_terlambat_siswa") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <input type="time" class="form-control" name="waktu_terlambat" id="waktu_terlambat" placeholder="Masukkan waktu siswa jika terlambat" value="{{$waktuTerlambat && $waktuTerlambat->nilai ? $waktuTerlambat->nilai : ""}}" />
+                                    <div class="invalid-feedback">Tidak Boleh Kosong</div>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-waktu-terlambat"><i class="fa-regular fa-save"></i> Simpan Waktu</button>
+                                </div>
+                                <script>
+                                    $('.simpan-poin-terlambat').click(function() {
+                                        var poin = $('#poinTerlambat').val();
+                                        var aturPoin = function() {
+                                            var url = "{{route('setting.poinTerlambat')}}";
+                                            loading();
+                                            $.ajax({
+                                                type: "POST",
+                                                url : url,
+                                                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                data: {poin: poin},
+                                                success: function(data) {
+                                                    removeLoading();
+                                                    oAlert("green","sukses","Aturan berhasil disimpan");
+                                                },
+                                                error: function(data) {
+                                                    var error = data.responseJSON.message;
+                                                    console.log(error);
+                                                }
+                                            })
+                                        }
+                                        cConfirm("Perhatian","Apakah anda yakin untuk mengatur poin aturan ini sebagai poin yang dikenakan siswa pada saat terlambat ?",aturPoin);
+                                    });
+                                    $('.simpan-waktu-terlambat').click(function() {
+                                        var waktu = $('#waktu_terlambat').val();
+                                        if(waktu == "") {
+                                            $('#waktu_terlambat').addClass('is-invalid').removeClass('is-valid');
+                                        } else {
+                                            $('#waktu_terlambat').removeClass('is-invalid').addClass('is-valid');
+                                            var aturWaktu = function() {
+                                                var url = "{{route('setting.waktuTerlambat')}}";
+                                                loading();
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url : url,
+                                                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                    data: {waktu: waktu},
+                                                    success: function(data) {
+                                                        removeLoading();
+                                                        oAlert("green","sukses","Waktu Terlambat berhasil disimpan");
+                                                    },
+                                                    error: function(data) {
+                                                        var error = data.responseJSON.message;
+                                                        console.log(error);
+                                                    }
+                                                })
+                                            }
+                                            cConfirm("Perhatian","Apakah anda yakin untuk mengatur waktu terlambat siswa ?",aturWaktu);
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div

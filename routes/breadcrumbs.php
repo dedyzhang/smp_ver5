@@ -18,9 +18,13 @@ use App\Models\Ruang;
 use App\Models\Siswa;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbsTrail;
+use Illuminate\Support\Str;
 
 Breadcrumbs::for('home', function (BreadcrumbsTrail $trail) {
     $trail->push('Home', route('auth.home'));
+});
+Breadcrumbs::for('ganti-password', function (BreadcrumbsTrail $trail) {
+    $trail->push('Ganti Password', route('ganti.password'));
 });
 // Guru.Breadcrumbs
 Breadcrumbs::for('guru', function (BreadcrumbsTrail $trail) {
@@ -505,11 +509,11 @@ Breadcrumbs::for('event-create', function (BreadcrumbsTrail $trail) {
     $trail->parent('event-index');
     $trail->push('Create', route('event.create'));
 });
-Breadcrumbs::for('event-show', function (BreadcrumbsTrail $trail,Event $event) {
+Breadcrumbs::for('event-show', function (BreadcrumbsTrail $trail, Event $event) {
     $trail->parent('event-index');
-    $trail->push(Str::limit($event->judul,15, '...'), route('event.show',$event->uuid));
+    $trail->push(Str::limit($event->judul, 15, '...'), route('event.show', $event->uuid));
 });
-Breadcrumbs::for('event-edit', function (BreadcrumbsTrail $trail,Event $event) {
-    $trail->parent('event-show',$event);
-    $trail->push('Edit', route('event.edit',$event->uuid));
+Breadcrumbs::for('event-edit', function (BreadcrumbsTrail $trail, Event $event) {
+    $trail->parent('event-show', $event);
+    $trail->push('Edit', route('event.edit', $event->uuid));
 });

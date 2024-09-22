@@ -3,7 +3,7 @@
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
             <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
-            <i class="app-version">5.0.6</i>
+            <i class="app-version">5.0.7</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>

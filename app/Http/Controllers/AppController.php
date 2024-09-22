@@ -17,4 +17,7 @@ class AppController extends Controller
         $link = $request->link;
         Cookie::queue('link', $link, 10080);
     }
+    public function qrcode() : View {
+        return view('qrcode');
+    }
 }

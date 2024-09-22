@@ -15,7 +15,7 @@
         </a>
     </div>
     <div class="body-contain-customize col-12 mt-3">
-        <table class="table table-bordered table-striped" id="table-temp-poin" style="width:100%">
+        <table class="table table-bordered" id="table-temp-poin" style="width:100%">
             <thead>
                 <tr>
                     <td>No</td>
