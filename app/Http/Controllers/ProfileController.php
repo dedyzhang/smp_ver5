@@ -12,15 +12,17 @@ class ProfileController extends Controller
     //Index Halaman Profile
     public function index(): View
     {
-        // $user = Auth::user();
-        // if ($user->access !== "siswa" && $user->access !== "orangtua") {
-        //     $account = Guru::where('id_login', $user->uuid)->get();
-        // }
-        return view('profile.index');
+        $user = Auth::user();
+        if ($user->access !== "siswa" && $user->access !== "orangtua") {
+            $account = Guru::with('users')->where('id_login', $user->uuid)->first();
+        }
+        return view('profile.index', compact('account'));
     }
     //Edit Halaman Profile
     public function edit(): View
     {
-        return view('profile.edit');
+        $user = Auth::user();
+        $account = Guru::with('users')->where('id_login', $user->uuid)->first();
+        return view('profile.edit', compact('account'));
     }
 }

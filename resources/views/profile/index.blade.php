@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{-- <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mt-3">
+    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mt-3">
         <div class="card rounded-4 border-0">
             <div class="card-body">
                 <div class="w-100 d-flex justify-content-center">
@@ -9,7 +9,18 @@
                 </div>
                 <h5 class=" m-0 mt-3 text-center"><b>{{$account->nama}}</b></h5>
                 <p class="m-0 text-dark-emphasis fs-12 text-center">{{$account->nik}}</p>
-                <p class="m-0 mt-3 fs-12 text-center"><b class="{{$account->jk == "laki"}}"><i class="fa fa-mars"></i> Laki-laki</b> <span class="ms-2">.</span> <span class="ms-2">Admin</span></p>
+                <p class="m-0 mt-3 fs-12 text-center">
+                    <b class="{{$account->jk == "l" ? "text-primary" : "text-danger"}}">
+                        @if ($account->jk == 'l')
+                            <i class="fa fa-mars"></i> Laki-laki
+                        @else
+                            <i class="fa fa-venus"></i> Perempuan
+                        @endif
+
+                    </b>
+                    <span class="ms-2">.</span>
+                    <span class="ms-2">{{$account->users->access}}</span>
+                </p>
             </div>
         </div>
     </div>
@@ -21,7 +32,7 @@
                         Tempat/Tanggal Lahir
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Tanjungpinang / 04 Januari 1998
+                        {{$account->tempat_lahir." / ".date('d F Y',strtotime($account->tanggal_lahir))}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -29,7 +40,7 @@
                         Agama
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Buddha
+                        {{ucfirst($account->agama)}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -37,7 +48,7 @@
                         Alamat
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Jl. Gudang Minyak Gang Punak 3 No 32
+                        {{$account->alamat}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -45,7 +56,7 @@
                         No Telepon
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        082283480447
+                        {{$account->no_telp}}
                     </div>
                 </div>
             </div>
@@ -57,7 +68,7 @@
                         Tingkat Studi
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        S1
+                        {{$account->tingkat_studi}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -65,15 +76,15 @@
                         Program Studi
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Sistem Informasi
+                        {{$account->program_studi}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Universitas
+                        Satuan Pendidikan
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Universitas Terbuka
+                        {{$account->universitas}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -81,7 +92,7 @@
                         TMT di Yayaysan
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        15 Juni 2015
+                        {{date('d F Y',strtotime($account->tmt_ngajar))}}
                     </div>
                 </div>
                 <div class="row m-0 p-0 mt-2">
@@ -89,7 +100,7 @@
                         TMT di Sekolah
                     </div>
                     <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        15 Juni 2015
+                        {{date('d F Y',strtotime($account->tmt_smp))}}
                     </div>
                 </div>
             </div>
@@ -99,5 +110,5 @@
         <a href="{{route('profile.edit')}}" class="btn btn-sm btn-warning text-warning-emphasis">
             <i class="fa fa-save"></i> Edit Profile
         </a>
-    </div> --}}
+    </div>
 @endsection
