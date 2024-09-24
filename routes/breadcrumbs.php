@@ -26,6 +26,13 @@ Breadcrumbs::for('home', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('ganti-password', function (BreadcrumbsTrail $trail) {
     $trail->push('Ganti Password', route('ganti.password'));
 });
+Breadcrumbs::for('profile', function (BreadcrumbsTrail $trail) {
+    $trail->push('Profile', route('profile.index'));
+});
+Breadcrumbs::for('profile-edit', function (BreadcrumbsTrail $trail) {
+    $trail->parent('profile');
+    $trail->push('Edit', route('profile.edit'));
+});
 // Guru.Breadcrumbs
 Breadcrumbs::for('guru', function (BreadcrumbsTrail $trail) {
     $trail->push('Guru', route('guru.index'));

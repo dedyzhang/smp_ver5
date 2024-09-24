@@ -64,8 +64,8 @@
                     <div class="col-12 col-sm-12 col-md-8 col-lg-6 col-xl-6">
                         <p><b>A. Semester dan Tahun Pelajaran</b></p>
                         <div class="form-group">
-                            <label for="tp">Tahun Pelajaran</label>
-                            <input type="text" name="tp" id="tp" class="form-control" value="{{$semester->tp}}" placeholder="Masukkan Tahun Pelajaran Berjalan">
+                            <label for="tp">Tahun Pelajaran ( Format Harus xxxx/xxxx )</label>
+                            <input type="text" name="tp" id="tp" class="form-control" value="{{$semester->tp}}" placeholder="Masukkan Tahun Pelajaran Berjalan" placeholder="XXXX/XXXX">
                         </div>
                         <p class="mt-3 fs-12 mb-0">Semester</p>
                         <div class="form-group form-check-inline mt-1">
