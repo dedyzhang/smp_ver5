@@ -135,7 +135,7 @@
                     </div>
                 </div>
                 <div class="form-group mb-3 col-12">
-                    <label for="tmt_smp">TMT SMP</label>
+                    <label for="tmt_smp">TMT di Sekolah</label>
                     <div class="input-group mt-1">
                         <input type="date" name="tmt_smp" id="tmt_smp" class="form-control" value="{{old('tmt_smp',$guru->tmt_smp)}}" />
                     </div>

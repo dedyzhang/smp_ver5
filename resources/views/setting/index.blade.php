@@ -61,23 +61,29 @@
                 aria-labelledby="main-tab"
             >
                 <div class="row m-0 p-0 pt-2">
-                    <div class="col-12 col-sm-12 col-md-8 col-lg-6 col-xl-6">
-                        <p><b>A. Semester dan Tahun Pelajaran</b></p>
-                        <div class="form-group">
-                            <label for="tp">Tahun Pelajaran ( Format Harus xxxx/xxxx )</label>
-                            <input type="text" name="tp" id="tp" class="form-control" value="{{$semester->tp}}" placeholder="Masukkan Tahun Pelajaran Berjalan" placeholder="XXXX/XXXX">
-                        </div>
-                        <p class="mt-3 fs-12 mb-0">Semester</p>
-                        <div class="form-group form-check-inline mt-1">
-                            <input type="radio" name="semester" id="ganjil" {{$semester->semester == 1 ? "checked" : ""}} class="form-check-input" value="1">
-                            <label class="form-check-label me-4" for="ganjil">Ganjil</label>
-                            <input type="radio" name="semester" id="genap" {{$semester->semester == 2 ? "checked" : ""}} class="form-check-input" value="2">
-                            <label class="form-check-label" for="genap">Genap</label>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-warning text-warning-emphasis simpan-tp">
-                                <i class="fas fa-save"></i> Simpan
-                            </button>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+                        <div class="card">
+                            <div class="card-header">
+                                A. Semester dan Tahun Pelajaran
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="tp">Tahun Pelajaran ( Format Harus xxxx/xxxx )</label>
+                                    <input type="text" name="tp" id="tp" class="form-control" value="{{$semester->tp}}" placeholder="Masukkan Tahun Pelajaran Berjalan" placeholder="XXXX/XXXX">
+                                </div>
+                                <p class="mt-3 fs-12 mb-0">Semester</p>
+                                <div class="form-group form-check-inline mt-1">
+                                    <input type="radio" name="semester" id="ganjil" {{$semester->semester == 1 ? "checked" : ""}} class="form-check-input" value="1">
+                                    <label class="form-check-label me-4" for="ganjil">Ganjil</label>
+                                    <input type="radio" name="semester" id="genap" {{$semester->semester == 2 ? "checked" : ""}} class="form-check-input" value="2">
+                                    <label class="form-check-label" for="genap">Genap</label>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-tp">
+                                        <i class="fas fa-save"></i> Simpan
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <script>
@@ -104,26 +110,32 @@
                             }
                         });
                     </script>
-                    <div class="col-12 col-sm-12 col-md-8 col-lg-7 col-xl-7 mt-4">
-                        <p><b>B. Pengaturan NIS ( Nomor Induk Siswa )</b></p>
-                        <div class="row m-0 p-0">
-                            <div class="form-group col-4">
-                                <label for="first_nis" class="fs-10">NIS 1</label>
-                                <input type="text" name="first_nis" id="first_nis" class="form-control" value="{{$nis->first_nis}}">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 mt-4">
+                        <div class="card">
+                            <div class="card-header">
+                                B. Pengaturan NIS ( Nomor Induk Siswa )
                             </div>
-                            <div class="form-group col-4">
-                                <label for="second_nis" class="fs-10">NIS 2</label>
-                                <input type="text" name="second_nis" id="second_nis" class="form-control" value="{{$nis->second_nis}}">
+                            <div class="card-body">
+                                <div class="row m-0 p-0">
+                                    <div class="form-group col-4">
+                                        <label for="first_nis" class="fs-10">NIS 1</label>
+                                        <input type="text" name="first_nis" id="first_nis" class="form-control" value="{{$nis->first_nis}}">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="second_nis" class="fs-10">NIS 2</label>
+                                        <input type="text" name="second_nis" id="second_nis" class="form-control" value="{{$nis->second_nis}}">
+                                    </div>
+                                    <div class="form-group col-4">
+                                        <label for="third_nis" class="fs-10">NIS 3</label>
+                                        <input type="text" name="third_nis" id="third_nis" class="form-control" value="{{$nis->third_nis}}">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-nis">
+                                        <i class="fas fa-save"></i> Simpan
+                                    </button>
+                                </div>
                             </div>
-                            <div class="form-group col-4">
-                                <label for="third_nis" class="fs-10">NIS 3</label>
-                                <input type="text" name="third_nis" id="third_nis" class="form-control" value="{{$nis->third_nis}}">
-                            </div>
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-sm btn-warning text-warning-emphasis simpan-nis">
-                                <i class="fas fa-save"></i> Simpan
-                            </button>
                         </div>
                     </div>
                     <script>
@@ -161,6 +173,85 @@
             >
                 <div class="row m-0 p-0 pt-2">
                     <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0">
+                        <div class="card">
+                            <div class="card-header">
+                                Data Sekolah
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Setting ini untuk mengatur data identitas sekolah</p>
+                                <div class="col-12 form-group">
+                                    @php
+                                        $identitasSekolah = $setting->first(function($item) {
+                                            if($item->jenis == "nama_sekolah") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <label for="school">Sekolah</label>
+                                    <input type="text" class="form-control validasi-identitas" name="sekolah" id="school" placeholder="Masukkan Nama Sekolah Anda" value="{{$identitasSekolah && $identitasSekolah->nilai ? $identitasSekolah->nilai : ""}}"/>
+                                    <div class="invalid-feedback">Tidak Boleh Kosong</div>
+                                </div>
+                                <div class="col-12 form-group mt-2">
+                                    @php
+                                        $identitasKepala = $setting->first(function($item) {
+                                            if($item->jenis == "kepala_sekolah") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <label for="kepala">Kepala Sekolah</label>
+                                    <select name="kepala" id="kepala" data-toggle="select" class="form-control validasi-identitas">
+                                        <option value="">Tidak Ada Kepala Sekolah</option>
+                                        @php
+                                            $guruArray = $guru->filter(function($item) {
+                                                if($item->users->access == "kepala") {
+                                                    return $item;
+                                                }
+                                            });
+                                        @endphp
+                                        @foreach ($guruArray as $item)
+                                            <option value="{{$item->uuid}}" {{$identitasKepala && $identitasKepala->nilai == $item->uuid ? "selected" : ""}}>{{$item->nama}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Tidak Boleh Kosong</div>
+                                </div>
+                                <div class="col-12">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-data-sekolah"><i class="fa-regular fa-save"></i> Simpan Biodata</button>
+                                </div>
+                                <script>
+                                    $('.simpan-data-sekolah').click(function() {
+                                        var sekolah = $('#school').val();
+                                        var kepala = $('#kepala').val();
+                                        error = 0;
+                                        $('.validasi-identitas').each(function() {
+                                            if($(this).val() == "") {
+                                                error++;
+                                                $(this).addClass('is-invalid').removeClass('is-valid');
+                                            } else {
+                                                $(this).addClass('is-valid').removeClass('is-invalid');
+                                            }
+                                            if(error == 0) {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "{{route('setting.identitas.sekolah')}}",
+                                                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                    data: {sekolah : sekolah, kepala : kepala},
+                                                    success: function(data) {
+                                                        console.log(data);
+                                                    },
+                                                    error: function(data) {
+                                                        console.log(data.responseJSON.message);
+                                                    }
+                                                })
+                                            }
+                                        });
+
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
                         <div class="card">
                             <div class="card-header">
                                 Poin & Waktu Terlambat Siswa

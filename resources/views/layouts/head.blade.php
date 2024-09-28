@@ -31,4 +31,4 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <link rel="stylesheet" href="{{asset('css/css.css')}}?ver={{date('dmYHms')}}">
-<title>SMP Maitreyawira</title>
+<title>{{$setting->nilai ?? ''}}</title>

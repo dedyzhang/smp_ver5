@@ -150,7 +150,7 @@
                                         <td class="tmt-mengajar-guru"></td>
                                     </tr>
                                     <tr>
-                                        <td>TMT SMP</td>
+                                        <td>TMT Sekolah</td>
                                         <td>:</td>
                                         <td class="tmt-smp-guru"></td>
                                     </tr>

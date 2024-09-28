@@ -2,7 +2,14 @@
     <div class="sidebar-contain">
         <div class="sidebar-logo-contain">
             <img src="{{ asset('img/logo-rounded.png') }}" class="logo-main">
-            <h5 class="logo-title"><b>SMP</b> Maitreyawira</h5>
+            @php
+                if($setting && $setting->jenis == "nama_sekolah") {
+                    $namaSekolah = explode(' ',$setting->nilai);
+                    $firstName = $namaSekolah[0];
+                    $secondName = implode(' ',array_slice($namaSekolah, 1));
+                }
+            @endphp
+            <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
             <i class="app-version">5.0.7</i>
         </div>
         <ul class="menu">

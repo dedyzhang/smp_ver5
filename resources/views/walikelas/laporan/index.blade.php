@@ -35,6 +35,9 @@
             </div>
         </div>
     </div>
+    <div class="body-contain-customize col-12 mt-3">
+        <p>Rekap Laporan Walikelas</p>
+    </div>
     <script>
         $('.lihat-laporan').click(function() {
             var bulan = $('#bulan').val();
