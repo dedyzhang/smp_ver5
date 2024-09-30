@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Guru;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -37,6 +38,8 @@ class AppController extends Controller
             }
             $url = env('APP_URL') . "ujian/admin/index.php";
         } else {
+            $siswa = Siswa::where('id_login', $user->uuid)->first();
+            Cookie::queue('siswa', $siswa->nis, time() + 86400);
             $url = env('APP_URL') . "ujian/index.php";
         }
         return Redirect::to($url);
