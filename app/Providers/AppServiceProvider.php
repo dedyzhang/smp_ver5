@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Guru;
 use App\Models\Orangtua;
 use App\Models\Sekretaris;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -40,6 +41,11 @@ class AppServiceProvider extends ServiceProvider
                 //...with this variable
                 $view->with('account', $account);
             }
+        });
+        view()->composer(['layouts.sidebar', 'layouts.head'], function ($view) {
+            $setting = Setting::where('jenis', 'nama_sekolah')->first();
+            //...with this variable
+            $view->with('setting', $setting);
         });
 
         Gate::define('admin', function () {

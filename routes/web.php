@@ -63,6 +63,7 @@ Route::get('/home', [LoginController::class, 'index'])->name('auth.home')->middl
 Route::middleware('auth')->controller(ProfileController::class)->group(function () {
     Route::get('/profile', 'index')->name('profile.index');
     Route::get('/profile/edit', 'edit')->name('profile.edit');
+    Route::put('/profile/update', 'update')->name('profile.update');
 });
 
 //Admin - Halaman Data Guru
@@ -109,6 +110,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/nis', 'updatenis')->name('setting.nis');
     Route::post('/settings/setPoinTerlambat', 'setPoinTerlambat')->name('setting.poinTerlambat');
     Route::post('/settings/setWaktuTerlambat', 'setWaktuTerlambat')->name('setting.waktuTerlambat');
+    Route::post('/settings/identitasSekolah', 'setIdentitasSekolah')->name('setting.identitas.sekolah');
 });
 
 //Admin - Halaman Cetak Excel
@@ -361,6 +363,8 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/classroom/{uuid}', 'classroomShow')->name('walikelas.classroom.show');
     Route::get('/walikelas/classroom/{uuid}/archived', 'classroomArchived')->name('walikelas.classroom.archived');
     Route::get('/walikelas/classroom/{uuid}/preview/{uuidClassroom}', 'classroomPreview')->name('walikelas.classroom.preview');
+    Route::get('/walikelas/laporan', 'laporanIndex')->name('walikelas.laporan');
+    Route::get('/walikelas/laporan/get', 'laporanGet')->name('walikelas.laporan.get');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

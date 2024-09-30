@@ -1,102 +1,152 @@
 @extends('layouts.main')
 
 @section('container')
-    <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-3 mt-3">
-        <div class="card rounded-4 border-0">
-            <div class="card-body">
-                <div class="w-100 d-flex justify-content-center">
-                    <img src="{{asset('img/teacher-boy.png')}}" width="100" class="rounded-5" alt="">
+    {{Breadcrumbs::render('profile-edit')}}
+    <div class="body-contain-customize col-md-12 col-lg-12 col-sm-12">
+        <p class="body-title">Form Edit Guru</p>
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3" role="alert">
+                <i class="bi flex-shrink-0 me-2 fa-solid fa-check" aria-label="Success:"></i>
+                <div>
+                    <strong>Sukses !</strong> {{session('success')}}
                 </div>
-                <h5 class=" m-0 mt-3 text-center"><b>Dedy, S.Kom</b></h5>
-                <p class="m-0 text-dark-emphasis fs-12 text-center">10090150289</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
+        @elseif (session('error'))
+
+        @endif
+        {{-- <hr /> --}}
+        <div class="row mt-3 m-0">
+            <form action="{{route('profile.update')}}" method="POST" enctype="multipart/form-data" class="p-0">
+                @csrf
+                @method('PUT')
+                <p><strong><i>A. Identitas Pribadi</i></strong></p>
+                <div class="form-group mb-3 col-12">
+                    <label for="nama">Nama PTK</label>
+                    <div class="input-group has-validation mt-1">
+                        <input type="text" name="nama" id="nama" placeholder="Masukkan Nama Guru" class="form-control @error('nama') is-invalid @enderror" value="{{old('nama',$guru->nama)}}" />
+                         @error('nama')
+                            <div class="invalid-feedback">
+                                Nama PTK Wajib diisi
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <p class="d-block">Jenis Kelamin</p>
+                    <div class="form-check form-check-inline mt-1">
+                        <input type="radio" class="form-check-input @error('jk') is-invalid @enderror" name="jk" id="jk-laki" value="l" @if (old('jk') == 'l' || $guru->jk == 'l') checked @endif>
+                        <label class="form-check-label" for="jk-laki">Laki-laki</label>
+                    </div>
+                    <div class="form-check form-check-inline mt-1">
+                        <input type="radio" class="form-check-input @error('jk') is-invalid @enderror" name="jk" id="jk-pere" value="p" @if (old('jk') == 'p' || $guru->jk == 'p') checked @endif>
+                        <label class="form-check-label" for="jk-pere">Perempuan</label>
+                    </div>
+                    @error('jk')
+                        <div class="invalid-feedback d-block">
+                            Jenis Kelamin Wajib Diisi
+                        </div>
+                    @enderror
+
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="agama">Agama</label>
+                    <div class="input-group has-validation mt-1">
+                        <select name="agama" class="form-control @error('agama') is-invalid @enderror" id="agama">
+                            <option value="">Pilihlah Salah Satu</option>
+                            <option value="islam" {{ old('agama') == 'islam' || $guru->agama == 'islam' ? "selected" : "" }}>Islam</option>
+                            <option value="buddha" {{ old('agama') == 'buddha' || $guru->agama == 'buddha' ? "selected" : "" }}>Buddha</option>
+                            <option value="protestan" {{ old('agama') == 'protestan' || $guru->agama == 'protestan' ? "selected" : "" }}>Protestan</option>
+                            <option value="katolik" {{ old('agama') == 'katolik' || $guru->agama == 'katolik' ? "selected" : "" }}>Katolik</option>
+                            <option value="hindu" {{ old('agama') == 'hindu' || $guru->agama == 'hindu' ? "selected" : "" }}>Hindu</option>
+                            <option value="konghucu" {{ old('agama') == 'konghucu' || $guru->agama == 'konghucu' ? "selected" : "" }}>Konghucu</option>
+                        </select>
+                        @error('agama')
+                            <div class="invalid-feedback">
+                                Agama Wajib Diisi
+                            </div>
+                        @enderror
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tempat_lahir">Tempat Lahir</label>
+                    <div class="input-group mt-1">
+                        <input type="text" name="tempat_lahir" id="tempat_lahir" placeholder="Masukkan Tempat Lahir Guru" class="form-control" value="{{old('tempat_lahir',$guru->tempat_lahir)}}" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tanggal_lahir">Tanggal Lahir</label>
+                    <div class="input-group mt-1">
+                        <input type="date" name="tanggal_lahir" id="tanggal_lahir" class="form-control" value="{{old('tanggal_lahir',$guru->tanggal_lahir)}}" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="no_telp">No Telepon</label>
+                    <div class="input-group mt-1">
+                        <input type="text" name="no_telp" id="no_telp" placeholder="Masukkan No Telepon Guru" class="form-control" value="{{old('no_telp',$guru->no_telp)}}" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="no_telp">Alamat</label>
+                    <div class="input-group mt-1">
+                        <textarea name="alamat" rows="3" id="alamat" placeholder="Masukkan Alamat Anda" class="form-control">{{old('alamat',$guru->alamat)}}</textarea>
+                    </div>
+                </div>
+                <div class="col-12 mt-5">
+                    <p><strong><i>B. Identitas Pendidikan</i></strong></p>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tingkat_studi">Jenjang Terakhir</label>
+                    <div class="input-group has-validation mt-1">
+                        <select name="tingkat_studi" class="form-control @error('tingkat_studi') is-invalid @enderror" id="tingkat_studi">
+                            <option value="">Pilihlah Salah Satu</option>
+                            <option value="SD" {{ old('tingkat_studi') == 'SD' || $guru->tingkat_studi == 'SD' ? "selected" : "" }}>SD</option>
+                            <option value="SMP" {{ old('tingkat_studi') == 'SMP' || $guru->tingkat_studi == 'SMP' ? "selected" : "" }}>SMP</option>
+                            <option value="SMA/K" {{ old('tingkat_studi') == 'SMA/K' || $guru->tingkat_studi == 'SMA/K' ? "selected" : "" }}>SMA/K</option>
+                            <option value="S1" {{ old('tingkat_studi') == 'S1' || $guru->tingkat_studi == 'S1' ? "selected" : "" }}>S1</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="program_studi">Program Studi</label>
+                    <div class="input-group mt-1">
+                        <input type="text" name="program_studi" id="program_studi" class="form-control" value="{{old('program_studi',$guru->program_studi)}}" placeholder="Masukkan Program Studi" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="universitas">Universitas</label>
+                    <div class="input-group mt-1">
+                        <input type="text" name="universitas" id="universitas" class="form-control" value="{{old('universitas',$guru->universitas)}}" placeholder="Masukkan Universitas" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tahun_tamat">Tahun Tamat</label>
+                    <div class="input-group mt-1">
+                        <input type="text" name="tahun_tamat" id="tahun_tamat" class="form-control" value="{{old('tahun_tamat',$guru->tahun_tamat)}}" placeholder="Masukkan Tahun Tamat" />
+                    </div>
+                </div>
+                <div class="col-12 mt-5">
+                    <p><strong><i>C. Identitas Sekolah</i></strong></p>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tmt_ngajar">TMT Mengajar</label>
+                    <div class="input-group mt-1">
+                        <input type="date" name="tmt_ngajar" id="tmt_ngajar" class="form-control" value="{{old('tmt_ngajar',$guru->tmt_ngajar)}}" />
+                    </div>
+                </div>
+                <div class="form-group mb-3 col-12">
+                    <label for="tmt_smp">TMT di Sekolah</label>
+                    <div class="input-group mt-1">
+                        <input type="date" name="tmt_smp" id="tmt_smp" class="form-control" value="{{old('tmt_smp',$guru->tmt_smp)}}" />
+                    </div>
+                </div>
+                <div class="col-12 button-place mt-3">
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-pencil"></i>
+                        Edit Profile
+                    </button>
+                </div>
+            </form>
         </div>
-    </div>
-    <div class="col-12 col-sm-12 col-md-6 col-lg-8 col-xl-9 mt-3">
-        <div class="card rounded-4 border-0 fs-12">
-            <div class="card-body">
-                <div class="row m-0 p-0">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Tempat/Tanggal Lahir
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Tanjungpinang / 04 Januari 1998
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Agama
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Buddha
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Alamat
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Jl. Gudang Minyak Gang Punak 3 No 32
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        No Telepon
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        082283480447
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="card rounded-4 border-0 fs-12 mt-3">
-            <div class="card-body">
-                <div class="row m-0 p-0">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Tingkat Studi
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        S1
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Program Studi
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Sistem Informasi
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        Universitas
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        Universitas Terbuka
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        TMT di Yayaysan
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        15 Juni 2015
-                    </div>
-                </div>
-                <div class="row m-0 p-0 mt-2">
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-5 col-xl-3 text-body-tertiary">
-                        TMT di Sekolah
-                    </div>
-                    <div class="col-12 col-sm-12 col-md-12 col-lg-7 col-xl-9">
-                        15 Juni 2015
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-12 col-sm-12 d-grid d-sm-grid d-md-block d-xl-block d-lg-block col-md-12 col-lg-12 col-xl-12 mt-3 body-contain-customize nostrip">
-        <a href="" class="btn btn-sm btn-warning text-warning-emphasis">
-            <i class="fa fa-save"></i> Edit Profile
-        </a>
     </div>
 @endsection

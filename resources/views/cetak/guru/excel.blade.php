@@ -1,5 +1,5 @@
 <h1>Data Guru</h1>
-<h3>SMPS Maitreyawira Tanjungpinang</h3>
+<h3>{{$setting->nilai ?? ""}}</h3>
 <h5>Dicetak Pada {{date('d F Y H:i:s')}}</h5>
 
 <table style="font-size:12px">
@@ -19,7 +19,7 @@
         <th bgcolor="#A5DD9B" width="40" valign="middle" align="center" style="border:1px solid #000000">Universitas</th>
         <th bgcolor="#A5DD9B" width="10" valign="middle" align="center" style="border:1px solid #000000">Tahun Tamat</th>
         <th bgcolor="#EF9C66" width="15" valign="middle" align="center" style="border:1px solid #000000">TMT Mengajar</th>
-        <th bgcolor="#EF9C66" width="15" valign="middle" align="center" style="border:1px solid #000000">TMT di SMP</th>
+        <th bgcolor="#EF9C66" width="15" valign="middle" align="center" style="border:1px solid #000000">TMT di Sekolah</th>
     </tr>
     </thead>
     <tbody>

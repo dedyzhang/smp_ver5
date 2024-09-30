@@ -1,5 +1,5 @@
 <h1>Data Siswa</h1>
-<h3>SMPS Maitreyawira Tanjungpinang</h3>
+<h3>{{$setting->nilai ?? ""}}</h3>
 <h5>Dicetak Pada {{date('d F Y H:i:s')}}</h5>
 
 <table style="font-size:12px">

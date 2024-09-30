@@ -19,6 +19,7 @@ use App\Models\Sekretaris;
 use App\Models\Semester;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -402,5 +403,44 @@ class WalikelasController extends Controller
             $jawaban_array = array();
         }
         return View('walikelas.classroom.preview', compact('classroom', 'file_array', 'status_array', 'jawaban_array', 'siswa', 'uuid'));
+    }
+    /**
+     * Laporan Walikelas
+     */
+    public function laporanIndex(): View
+    {
+        return view('walikelas.laporan.index');
+    }
+    /**
+     * Laporan Walikelas - Get Data
+     */
+    public function laporanGet(Request $request)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+
+        //Setting Awal
+        $sem = Semester::first();
+        $tp = explode('/', $sem->tp);
+
+
+        //Get Absensi Siswa
+        $bulan = $request->bulan;
+        $year = $bulan >= 6 ? $tp[0] : $tp[1];
+
+        $dari = Carbon::createFromFormat('n Y', $bulan . ' ' . $year)->startOfMonth()->toDateString();
+        $sampai = Carbon::createFromFormat('n Y', $bulan . ' ' . $year)->endOfMonth()->toDateString();
+
+        $absensi = TanggalAbsensi::whereBetween('tanggal', [$dari, $sampai])->where('ada_siswa', 1)->get();
+        $absensi_array = $absensi->pluck('uuid')->toArray();
+        $siswa_id_array = $kelas->siswa->pluck('uuid')->toArray();
+
+        $absensi_siswa = AbsensiSiswa::selectRaw('
+            COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
+            COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
+            COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
+        ')->whereIn('id_tanggal', $absensi_array)->whereIn('id_siswa', $siswa_id_array)->first();
     }
 }
