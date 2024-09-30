@@ -103,7 +103,8 @@
                 </ul>
             </li>
             @endcan
-
+            {{--Ujian--}}
+            <li class="menu-list"><a href="{{route('ujian.index')}}"> <i class="fa-solid fa-school"></i> Go To Ujian</a></li>
             {{-- Penilaian --}}
             @canany(['admin', 'kurikulum','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">

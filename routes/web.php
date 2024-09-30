@@ -65,6 +65,8 @@ Route::middleware('auth')->controller(ProfileController::class)->group(function 
     Route::get('/profile/edit', 'edit')->name('profile.edit');
     Route::put('/profile/update', 'update')->name('profile.update');
 });
+//Ujian App
+Route::get('/redirectUjian', [AppController::class, 'ujian'])->name('ujian.index')->middleware('auth');
 
 //Admin - Halaman Data Guru
 Route::resource('/guru', \App\Http\Controllers\GuruController::class)->middleware(IsAdmin::class);
