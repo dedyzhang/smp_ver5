@@ -15,6 +15,7 @@ use App\Models\PerangkatAjar;
 use App\Models\PerangkatAjarGuru;
 use App\Models\PTS;
 use App\Models\Rapor;
+use App\Models\RaporManual;
 use App\Models\RaporTemp;
 use App\Models\Semester;
 use App\Models\Siswa;
@@ -26,6 +27,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Mavinoo\Batch\BatchFacade as Batch;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 use PhpParser\Node\Expr\Cast\String_;
 
 class PenilaianController extends Controller
@@ -917,6 +919,52 @@ class PenilaianController extends Controller
         }
         $jabaran->delete();
     }
+    /**
+     * Rapor Manual
+     */
+    public function manual(): View
+    {
+        $pelajaran = Pelajaran::all()->sortBy('urutan', SORT_NATURAL);
+        $kelas = Kelas::all()->sortBy('kelas')->sortBy('tingkat');
+        return view('penilaian.rapor.manual.index', compact('pelajaran', 'kelas'));
+    }
+    /**
+     * Rapor Manual - Ambil Data Ngajar
+     */
+    public function manualGetNilai(Request $request)
+    {
+        $pelajaran_uuid = $request->pelajaran;
+        $kelas_uuid = $request->kelas;
+
+        $ngajar = Ngajar::with('siswa', 'pelajaran', 'kelas', 'guru')->where([['id_pelajaran', '=', $pelajaran_uuid], ['id_kelas', '=', $kelas_uuid]])->first();
+
+        return response()->json(['ngajar' => $ngajar]);
+    }
+    /**
+     * Rapor Manual - Tambahkan Nilai Manual
+     */
+    public function manualCreate(String $uuid, Request $request)
+    {
+        $semester = Semester::first();
+        $manual = RaporManual::where([
+            ['id_ngajar', '=', $uuid],
+            ['id_siswa', '=', $request->siswa]
+        ])->first();
+        if ($manual === null) {
+            RaporManual::create([
+                'id_ngajar' => $uuid,
+                'id_siswa' => $request->siswa,
+                'nilai' => $request->nilai,
+                'deskripsi_positif' => $request->positif,
+                'deskripsi_negatif' => $request->negatif,
+                'semester' => $semester->semester
+            ]);
+            return response()->json(["success" => true]);
+        } else {
+            return response()->json(["success" => false]);
+        }
+    }
+
     /**
      * Perangkat Ajar
      */

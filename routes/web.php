@@ -8,6 +8,7 @@ use App\Http\Controllers\CetakController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DetailController;
+use App\Http\Controllers\EkskulController;
 use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
@@ -152,8 +153,12 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/pas/{uuid}/show', 'pasShow')->name('penilaian.admin.pas.show');
     //Rapor
     Route::get('/penilaian/rapor/{uuid}/show', 'raporShow')->name('penilaian.admin.rapor.show');
-    //Rapor
+    //Penjabaran
     Route::get('/penilaian/penjabaran/{uuid}/show', 'penjabaranShow')->name('penilaian.admin.penjabaran.show');
+    //Rapor Manual
+    Route::get('/penilaian/manual', 'manual')->name('penilaian.admin.manual');
+    Route::get('/penilaian/manual/getNilai', 'manualGetNilai')->name('penilaian.admin.manual.getNilai');
+    Route::post('/penilaian/manual/{uuid}/create', 'manualCreate')->name('penilaian.admin.manual.create');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -434,6 +439,7 @@ Route::middleware(isPenilaianController::class)->controller(PerangkatAjarControl
     Route::delete('/perangkat-ajar/{uuid}/hapus', 'deletePerangkat')->name('perangkat.guru.delete');
     Route::get('/perangkat-ajar/{uuid}/zip', 'downloadZip')->name('perangkat.guru.zip');
 });
+// {------------------------------------------------- END --------------------------------------------------------------------}
 
 // {----------------------------------------Halaman Detail Informasi Siswa----------------------------------------------------}
 Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->group(function () {
@@ -442,3 +448,23 @@ Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->
     Route::get('/detail/nilai', 'nilai')->name('detail.nilai.index');
     Route::get('/detail/nilai/{uuid}/show', 'nilaiShow')->name('detail.nilai.show');
 });
+// {------------------------------------------------- END --------------------------------------------------------------------}
+
+// {-------------------------------------------Halaman EkstraKurikuler--------------------------------------------------------}
+
+Route::middleware(IsAdminKurikulumKepala::class)->controller(EkskulController::class)->group(function () {
+    Route::get('/ekskul', 'index')->name('ekskul.index');
+    Route::get('/ekskul/create', 'create')->name('ekskul.create');
+    Route::get('/ekskul/{uuid}/edit', 'edit')->name('ekskul.edit');
+    Route::get('/ekskul/sort', 'sort')->name('ekskul.sort');
+});
+Route::middleware(isPenilaianController::class)->controller(EkskulController::class)->group(function () {
+    Route::get('/ekskul/nilai', 'nilai')->name('ekskul.nilai.index');
+    Route::get('/ekskul/nilai/{uuid}/show', 'showNilai')->name('ekskul.nilai.show');
+    Route::get('/ekskul/nilai/get', 'getNilai')->name('ekskul.nilai.get');
+    Route::post('/ekskul/nilai/create', 'createNilai')->name('ekskul.nilai.create');
+    Route::post('/ekskul/store', 'store')->name('ekskul.store');
+    Route::put('/ekskul/{uuid}/update', 'update')->name('ekskul.update');
+    Route::delete('/ekskul/{uuid}/destroy', 'destroy')->name('ekskul.destroy');
+    Route::post('/ekskul/sorting', 'sorting')->name('ekskul.sorting');
+});;

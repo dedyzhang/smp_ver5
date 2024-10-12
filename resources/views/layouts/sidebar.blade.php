@@ -120,12 +120,29 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pts') }}"> PTS</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.admin.manual') }}"> Rapor Manual</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
                 </ul>
             </li>
             @endcan
-
+            {{-- Ekskul --}}
+            @canany(['admin','kurikulum','kepalasekolah'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-ekskul" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-basketball"></i>
+                    Ekskul
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-ekskul">
+                    <li class="submenu-list"><a href="{{ route('ekskul.index') }}"> Data Ekskul</a></li>
+                    <li class="submenu-list"><a href="{{ route('ekskul.nilai.index') }}"> Nilai Ekskul</a></li>
+                </ul>
+            </li>
+            @endcan
+            @canany(['guru','kesiswaan','sapras'])
+            <li class="menu-list"><a href="{{route('ekskul.nilai.index')}}"> <i class="fa-solid fa-basketball"></i> Ekskul</a></li>
+            @endcan
             {{-- Aturan --}}
             @canany(['admin','kesiswaan'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">

@@ -28,18 +28,18 @@ class AppController extends Controller
     public function ujian()
     {
         $user = Auth::user();
-
+        $website = "." . env('APP_WEB');
         if ($user->access != "siswa" && $user->access != "orangtua") {
             $guru = Guru::where('id_login', $user->uuid)->first();
             if ($user->access == "admin" || $user->access == "kepala") {
-                Cookie::queue('admin', $guru->nik, time() + 86400);
+                setCookie('admin', $guru->nik, time() + 86400, '/', $website);
             } else {
-                Cookie::queue('guru', $guru->nik, time() + 86400);
+                setCookie('guru', $guru->nik, time() + 86400, '/', $website);
             }
             $url = env('APP_URL') . "ujian/admin/index.php";
         } else {
             $siswa = Siswa::where('id_login', $user->uuid)->first();
-            Cookie::queue('siswa', $siswa->nis, time() + 86400);
+            setCookie('siswa', $siswa->nis, time() + 86400, '/', $website);
             $url = env('APP_URL') . "ujian/index.php";
         }
         return Redirect::to($url);
