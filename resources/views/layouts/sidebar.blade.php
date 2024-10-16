@@ -217,7 +217,7 @@
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.classroom') }}">Classroom</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
-                    <li class="submenu-list"><a href="{{ route('walikelas.laporan') }}">Laporan Walikelas</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.rapor') }}">Rapor Semester</a></li>
                 </ul>
             </li>
             @endcan

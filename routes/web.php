@@ -115,6 +115,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/setWaktuTerlambat', 'setWaktuTerlambat')->name('setting.waktuTerlambat');
     Route::post('/settings/identitasSekolah', 'setIdentitasSekolah')->name('setting.identitas.sekolah');
     Route::post('/settings/raporPelajaran', 'setMapelRapor')->name('setting.rapor.pelajaran');
+    Route::post('/settings/tanggalRapor', 'setTanggalRapor')->name('setting.rapor.tanggal');
 });
 
 //Admin - Halaman Cetak Excel
@@ -377,6 +378,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/classroom/{uuid}/preview/{uuidClassroom}', 'classroomPreview')->name('walikelas.classroom.preview');
     Route::get('/walikelas/laporan', 'laporanIndex')->name('walikelas.laporan');
     Route::get('/walikelas/laporan/get', 'laporanGet')->name('walikelas.laporan.get');
+    Route::get('/walikelas/rapor','raporIndex')->name('walikelas.rapor');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

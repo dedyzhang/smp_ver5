@@ -443,4 +443,18 @@ class WalikelasController extends Controller
             COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
         ')->whereIn('id_tanggal', $absensi_array)->whereIn('id_siswa', $siswa_id_array)->first();
     }
+
+    /**
+     * Rapor Kelas
+     */
+    public function raporIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+
+        return view('walikelas.rapor.index', compact('kelas', 'guru', 'semester'));
+    }
 }

@@ -112,11 +112,13 @@ class SettingController extends Controller
     /**
      * Rapor - mata pelajaran yang tampil
      */
-    public function setMapelRapor(Request $request) {
-        $pelajaran = (array) $request->pelajaran;
-        $settingPelajaran = Setting::where('jenis','pelajaran_rapor')->first();
+    public function setMapelRapor(Request $request)
+    {
+        $pelajaran = $request->pelajaran;
+        $pelajaran = implode(',', $pelajaran);
+        $settingPelajaran = Setting::where('jenis', 'pelajaran_rapor')->first();
 
-        if($settingPelajaran !== null) {
+        if ($settingPelajaran !== null) {
             $settingPelajaran->update([
                 'nilai' => $pelajaran
             ]);
@@ -124,6 +126,25 @@ class SettingController extends Controller
             Setting::create([
                 'jenis' => 'pelajaran_rapor',
                 'nilai' => $pelajaran
+            ]);
+        }
+    }
+    /**
+     * Rapor - Tanggal Rapor
+     */
+    public function setTanggalRapor(Request $request)
+    {
+        $tanggal = $request->tanggal;
+        $settingPelajaran = Setting::where('jenis', 'tanggal_rapor')->first();
+
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $tanggal
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'tanggal_rapor',
+                'nilai' => $tanggal
             ]);
         }
     }
