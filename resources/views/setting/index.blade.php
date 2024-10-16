@@ -365,11 +365,11 @@
                                         loading();
                                         $.ajax({
                                             type: "POST",
-                                            url: "{{route('setting.rapor.pelajaran')}}";
+                                            url: "{{route('setting.rapor.pelajaran')}}",
                                             data: {pelajaran: pelajaran},
                                             headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
                                             success: function(data) {
-                                                console.log(data);
+                                                removeLoading();
                                             },
                                             error: function(data) {
                                                 console.log(data.responseJSON.message);
