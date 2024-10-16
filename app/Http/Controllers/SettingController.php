@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aturan;
 use App\Models\Guru;
 use App\Models\Nis;
+use App\Models\Pelajaran;
 use App\Models\Semester;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ class SettingController extends Controller
         $aturan = Aturan::where('jenis', 'kurang')->orderBy('kode')->get();
         $setting = Setting::all();
         $guru = Guru::with('users')->orderBy('nama')->get();
-        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru'));
+        $pelajaran = Pelajaran::all()->sortBy('urutan');
+        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru', 'pelajaran'));
     }
     public function updateSemester(Request $request)
     {
@@ -106,4 +108,8 @@ class SettingController extends Controller
             ]);
         }
     }
+
+    /**
+     * Rapor -
+     */
 }

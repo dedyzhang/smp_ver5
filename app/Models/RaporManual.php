@@ -19,4 +19,13 @@ class RaporManual extends Model
         'deskripsi_negatif',
         'semester'
     ];
+
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa');
+    }
+    public function pelajaran()
+    {
+        return $this->hasOneThrough(Pelajaran::class, Ngajar::class, 'uuid', 'uuid', 'id_ngajar', 'id_pelajaran');
+    }
 }

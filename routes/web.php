@@ -114,6 +114,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/setPoinTerlambat', 'setPoinTerlambat')->name('setting.poinTerlambat');
     Route::post('/settings/setWaktuTerlambat', 'setWaktuTerlambat')->name('setting.waktuTerlambat');
     Route::post('/settings/identitasSekolah', 'setIdentitasSekolah')->name('setting.identitas.sekolah');
+    Route::post('/settings/raporPelajaran', 'setMapelRapor')->name('setting.rapor.pelajaran');
 });
 
 //Admin - Halaman Cetak Excel
@@ -159,6 +160,10 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/manual', 'manual')->name('penilaian.admin.manual');
     Route::get('/penilaian/manual/getNilai', 'manualGetNilai')->name('penilaian.admin.manual.getNilai');
     Route::post('/penilaian/manual/{uuid}/create', 'manualCreate')->name('penilaian.admin.manual.create');
+    Route::get('/penilaian/manual/history', 'manualHistory')->name('penilaian.admin.manual.history');
+    Route::get('/penilaian/manual/{uuid}/edit', 'manualEdit')->name('penilaian.admin.manual.edit');
+    Route::put('/penilaian/manual/{uuid}/update', 'manualUpdate')->name('penilaian.admin.manual.update');
+    Route::delete('/penilaian/manual/{uuid}/delete', 'manualDelete')->name('penilaian.admin.manual.delete');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {

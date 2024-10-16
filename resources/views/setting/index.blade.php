@@ -342,6 +342,44 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Setting Rapor
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Setting ini untuk cetak rapor semester</p>
+                                <div class="col-12 form-group">
+                                    <label for="mapel">Mapel Yang Ditampilkan</label>
+                                    <select name="mapel" id="mapel" data-toggle="select" multiple="multiple">
+                                        <option value="">Tidak Ada Mapel</option>
+                                        @foreach ($pelajaran as $item)
+                                            <option value="{{$item->uuid}}">{{$item->pelajaran_singkat}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-pelajaran"><i class="fa-regular fa-save"></i> Simpan Pelajaran</button>
+                                </div>
+                                <script>
+                                    $('.simpan-pelajaran').click(function() {
+                                        var pelajaran = $('#mapel').val();
+                                        loading();
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{route('setting.rapor.pelajaran')}}";
+                                            data: {pelajaran: pelajaran},
+                                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                            success: function(data) {
+                                                console.log(data);
+                                            },
+                                            error: function(data) {
+                                                console.log(data.responseJSON.message);
+                                            }
+                                        })
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div

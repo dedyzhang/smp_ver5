@@ -657,6 +657,7 @@ class PenilaianController extends Controller
         $materi = Materi::with('tupe')->where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
         $rapor_temp = RaporTemp::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
         $raporFinal = Rapor::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+        $raporManual = RaporManual::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
         $materiArray = array();
         $tupeArray = array();
 
@@ -716,13 +717,23 @@ class PenilaianController extends Controller
             ));
         }
 
+        $manual_array = array();
+        foreach ($raporManual as $item) {
+            array_push($manual_array, array(
+                "id_siswa" => $item->id_siswa,
+                "nilai" => $item->nilai,
+                "positif" => $item->deskripsi_positif,
+                "negatif" => $item->deskripsi_negatif
+            ));
+        }
+
         if ($raporFinal->count() > 0) {
             $sudah_konfirmasi = "sudah";
         } else {
             $sudah_konfirmasi = "belum";
         }
 
-        return View("penilaian.rapor.show", compact('ngajar', 'formatif_array', 'sumatif_array', 'pas_array', 'temp_array', 'tupeArray', 'materiArray', 'semester', 'sudah_konfirmasi'));
+        return View("penilaian.rapor.show", compact('ngajar', 'formatif_array', 'sumatif_array', 'pas_array', 'temp_array', 'tupeArray', 'materiArray', 'semester', 'sudah_konfirmasi', 'manual_array'));
     }
     /**
      * Rapor Temp- Edit Rapor Temp Nilai
@@ -963,6 +974,51 @@ class PenilaianController extends Controller
         } else {
             return response()->json(["success" => false]);
         }
+    }
+    /**
+     * Rapor Manual - History Rapor Manual
+     */
+    public function manualHistory(): View
+    {
+        $semester = Semester::first();
+        $manual = RaporManual::with('pelajaran', 'siswa')->where('semester', $semester->semester)->get();
+        return view('penilaian.rapor.manual.history', compact('manual'));
+    }
+    /**
+     * Rapor Manual - Halaman Edit Rapor Manual
+     */
+    public function manualEdit(String $uuid): View
+    {
+        $semester = Semester::first();
+        $manual = RaporManual::with('pelajaran', 'siswa')->findOrFail($uuid);
+        return view('penilaian.rapor.manual.edit', compact('manual'));
+    }
+    /**
+     * Rapor Manual - Proses Update Rapor Manual
+     */
+    public function manualUpdate(Request $request, String $uuid)
+    {
+        $request->validate([
+            'nilai' => 'required',
+            'positif' => 'required',
+            'negatif' => 'required'
+        ]);
+
+        $manual = RaporManual::findOrFail($uuid)->update([
+            'nilai' => $request->nilai,
+            'deskripsi_positif' => $request->positif,
+            'deskripsi_negatif' => $request->negatif
+        ]);
+
+        return redirect()->route('penilaian.admin.manual.history')->with(['success' => 'Nilai Berhasil Diedit']);
+    }
+    /**
+     * Rapor Manual - Delete nilai manual
+     */
+    public function manualDelete(String $uuid)
+    {
+        $manual = RaporManual::findOrFail($uuid)->delete();
+        return response()->json(['success' => true]);
     }
 
     /**

@@ -5,6 +5,11 @@
         <h5><b>Rapor Manual</b></h5>
         <p>Halaman ini diperuntukkan admin untuk menginput nilai siswa diluar dari aplikasi ( seperti nilai pendidikan Agama dan Budi Pekerti )</p>
     </div>
+    <div class="body-contain-customize col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-block col-lg-auto d-lg-block col-xl-auto d-xl-block mt-3">
+        <a href="{{route('penilaian.admin.manual.history')}}" class="btn btn-sm btn-warning text-warning-emphasis">
+            <i class="fas fa-history"></i> Nilai Yang Sudah Diajukan
+        </a>
+    </div>
     <div class="body-contain-customize col-12 mt-3">
         <p><b>Form Penambahan Nilai Manual</b></p>
         <div class="row m-0 p-0">
