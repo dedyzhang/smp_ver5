@@ -44,7 +44,7 @@
                                 <td>{{$siswa->nis}}</td>
                                 <td>{{$siswa->nama}}</td>
                                 <td>
-                                    <a href="" class="btn btn-sm btn-warning text-warning-emphasis">
+                                    <a href="{{route('walikelas.rapor.show',$siswa->uuid)}}" class="btn btn-sm btn-warning text-warning-emphasis">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                 </td>

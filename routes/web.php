@@ -378,7 +378,8 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/classroom/{uuid}/preview/{uuidClassroom}', 'classroomPreview')->name('walikelas.classroom.preview');
     Route::get('/walikelas/laporan', 'laporanIndex')->name('walikelas.laporan');
     Route::get('/walikelas/laporan/get', 'laporanGet')->name('walikelas.laporan.get');
-    Route::get('/walikelas/rapor','raporIndex')->name('walikelas.rapor');
+    Route::get('/walikelas/rapor', 'raporIndex')->name('walikelas.rapor');
+    Route::get('/walikelas/rapor/{uuid}/show', 'raporShow')->name('walikelas.rapor.show');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

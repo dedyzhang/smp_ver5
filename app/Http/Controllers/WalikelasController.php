@@ -17,6 +17,7 @@ use App\Models\Ruang;
 use App\Models\RuangKelas;
 use App\Models\Sekretaris;
 use App\Models\Semester;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
 use Carbon\Carbon;
@@ -456,5 +457,18 @@ class WalikelasController extends Controller
         $semester = Semester::first();
 
         return view('walikelas.rapor.index', compact('kelas', 'guru', 'semester'));
+    }
+    /**
+     * Rapor Kelas - Tampilan Halaman rapor
+     */
+    public function raporshow(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $setting = Setting::all();
+        $semester = Semester::first();
+
+        $ngajar = Ngajar::with('pelajaran')->where('id_kelas', $siswa->kelas->uuid)->get()->sortBy('pelajaran.urutan', SORT_NATURAL);
+
+        return view('Walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar'));
     }
 }
