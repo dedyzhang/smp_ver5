@@ -342,6 +342,92 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
+                        <div class="card">
+                            <div class="card-header">
+                                Setting Rapor
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Setting ini untuk cetak rapor semester</p>
+                                <div class="col-12 form-group">
+                                    @php
+                                        $pelajaran_rapor_array = $setting->first(function($item) {
+                                            if($item->jenis == "pelajaran_rapor") {
+                                                return $item;
+                                            }
+                                        });
+                                        $pelajaran_array = explode(',',$pelajaran_rapor_array['nilai']);
+                                    @endphp
+                                    <label for="mapel">Mapel Yang Ditampilkan</label>
+                                    <select name="mapel" id="mapel" data-toggle="select" multiple="multiple">
+                                        <option value="">Tidak Ada Mapel</option>
+                                        @foreach ($pelajaran as $item)
+                                            @php
+                                                if(in_array($item->uuid,$pelajaran_array)) {
+                                                    $selected = "selected";
+                                                } else {
+                                                    $selected = "";
+                                                }
+                                            @endphp
+                                            <option {{$selected}} value="{{$item->uuid}}">{{$item->pelajaran_singkat}}</option>
+                                        @endforeach
+                                    </select>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-pelajaran"><i class="fa-regular fa-save"></i> Simpan Pelajaran</button>
+                                </div>
+                                <div class="col-12 form-group mt-3">
+                                    @php
+                                        $tanggal_rapor_array = $setting->first(function($item) {
+                                            if($item->jenis == "tanggal_rapor") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <label for="tanggal_rapor">Tanggal Rapor</label>
+                                    <input type="date" class="form-control" id="tanggal_rapor" name="tanggal_rapor" value="{{$tanggal_rapor_array && $tanggal_rapor_array->nilai ? $tanggal_rapor_array->nilai : ""}}">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-tanggal-rapor"><i class="fa-regular fa-save"></i> Simpan Tanggal Rapor</button>
+                                </div>
+                                <script>
+                                    $('.simpan-pelajaran').click(function() {
+                                        var pelajaran = $('#mapel').val();
+                                        loading();
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{route('setting.rapor.pelajaran')}}",
+                                            data: {pelajaran: pelajaran},
+                                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                            success: function(data) {
+                                                removeLoading();
+                                                console.log(data);
+                                            },
+                                            error: function(data) {
+                                                console.log(data.responseJSON.message);
+                                            }
+                                        })
+                                    });
+                                    $('.simpan-tanggal-rapor').click(function() {
+                                        var tanggalRapor = $('#tanggal_rapor').val();
+                                        if(tanggalRapor == "") {
+                                            oAlert("orange","Perhatian","Tanggal rapor tidak boleh kosong");
+                                        } else {
+                                            loading();
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "{{route('setting.rapor.tanggal')}}",
+                                                data: {tanggal : tanggalRapor},
+                                                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                success: function(data) {
+                                                    removeLoading();
+                                                },
+                                                error: function(data) {
+                                                    console.log(data.responseJSON.message);
+                                                }
+                                            })
+                                        }
+                                    })
+                                </script>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div

@@ -10,6 +10,7 @@ use App\Models\Sekretaris;
 use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\User;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        //Untuk Nutup Enkripsi ujian
+        EncryptCookies::except(['guru', 'siswa']);
+
         view()->composer(['layouts.main'], function ($view) {
             if (Auth::check()) {
                 $access = Auth::user()->access;

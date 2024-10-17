@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.0.7</i>
+            <i class="app-version">5.0.9</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
@@ -103,7 +103,10 @@
                 </ul>
             </li>
             @endcan
-
+            {{--Ujian--}}
+            @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah','siswa'])
+                <li class="menu-list"><a href="{{route('ujian.index')}}"> <i class="fa-solid fa-school"></i> Go To Ujian</a></li>
+            @endcan
             {{-- Penilaian --}}
             @canany(['admin', 'kurikulum','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
@@ -117,12 +120,29 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pts') }}"> PTS</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.admin.manual') }}"> Rapor Manual</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
                 </ul>
             </li>
             @endcan
-
+            {{-- Ekskul --}}
+            @canany(['admin','kurikulum','kepalasekolah'])
+            <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                <a href="#menu-ekskul" class="menu-title" data-bs-toggle="collapse">
+                    <i class="fa-solid fa-basketball"></i>
+                    Ekskul
+                    <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                </a>
+                <ul class="submenu collapse" id="menu-ekskul">
+                    <li class="submenu-list"><a href="{{ route('ekskul.index') }}"> Data Ekskul</a></li>
+                    <li class="submenu-list"><a href="{{ route('ekskul.nilai.index') }}"> Nilai Ekskul</a></li>
+                </ul>
+            </li>
+            @endcan
+            @canany(['guru','kesiswaan','sapras'])
+            <li class="menu-list"><a href="{{route('ekskul.nilai.index')}}"> <i class="fa-solid fa-basketball"></i> Ekskul</a></li>
+            @endcan
             {{-- Aturan --}}
             @canany(['admin','kesiswaan'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
@@ -197,7 +217,7 @@
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.classroom') }}">Classroom</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
-                    <li class="submenu-list"><a href="{{ route('walikelas.laporan') }}">Laporan Walikelas</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.rapor') }}">Rapor Semester</a></li>
                 </ul>
             </li>
             @endcan

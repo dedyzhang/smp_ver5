@@ -306,9 +306,10 @@
                         datasets: [{
                             label: "Laki-laki",
                             data: [
-                                {x: "tingkat 7",y: {{isset($array_tingkat[7]['laki']) ? $array_tingkat[7]['laki'] : 0}}},
-                                {x: "tingkat 8",y: {{isset($array_tingkat[8]['laki']) ? $array_tingkat[8]['laki'] : 0}}},
-                                {x: "tingkat 9",y: {{isset($array_tingkat[9]['laki']) ? $array_tingkat[9]['laki'] : 0}}},
+                                @foreach ($array_tingkat as $tingkat => $value)
+                                    {x: "tingkat {{$tingkat}}",y: {{isset($value['laki']) ? $value['laki'] : 0}}},
+                                @endforeach
+
                             ],
                             backgroundColor: [
                                 '#cfe2ff'
@@ -316,9 +317,9 @@
                         },{
                             label: "Perempuan",
                             data: [
-                                {x: "tingkat 7",y: {{isset($array_tingkat[7]['perempuan']) ? $array_tingkat[7]['perempuan'] : 0}}},
-                                {x: "tingkat 8",y: {{isset($array_tingkat[8]['perempuan']) ? $array_tingkat[8]['perempuan'] : 0}}},
-                                {x: "tingkat 9",y: {{isset($array_tingkat[9]['perempuan']) ? $array_tingkat[9]['perempuan'] : 0}}},
+                                @foreach ($array_tingkat as $tingkat => $value)
+                                    {x: "tingkat {{$tingkat}}",y: {{isset($value['perempuan']) ? $value['perempuan'] : 0}}},
+                                @endforeach
                             ],
                             backgroundColor: [
                                 '#f8d7da'
