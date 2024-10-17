@@ -253,6 +253,16 @@
                                     $totalRapor = $nilai_temp[0]['perubahan'];
                                     $ada_temp_nilai = true;
                                 }
+                                $nilai_manual = array_values(
+                                    array_filter($manual_array, function ($var) use ($id_siswa) {
+                                        return $var['id_siswa'] == $id_siswa;
+                                    }),
+                                );
+                                $ada_nilai_manual = false;
+                                if(isset($nilai_manual[0])) {
+                                    $totalRapor = $nilai_manual[0]['nilai'];
+                                    $ada_nilai_manual = true;
+                                }
                             @endphp
                             <td rowspan="2"
                                 class="text-center @if ($rata2Formatif < $ngajar->kkm) bg-danger-subtle text-danger @endif">
@@ -264,15 +274,15 @@
                                 class="text-center @if ($rata2Pas < $ngajar->kkm) bg-danger-subtle text-danger @endif">
                                 {{ $rata2Pas }}</td>
                             <td rowspan="2"
-                                class="text-center nilai-siswa ganti-nilai @if ($totalRapor < $ngajar->kkm) bg-danger-subtle text-danger @endif @if ($ada_temp_nilai) ada-perubahan @endif"
+                                class="text-center nilai-siswa {{$ada_nilai_manual ? '' : 'ganti-nilai'}} @if ($totalRapor < $ngajar->kkm) bg-danger-subtle text-danger @endif @if ($ada_temp_nilai && !$ada_nilai_manual) ada-perubahan @elseif ($ada_nilai_manual) ada-manual @endif"
                                 style="cursor: pointer">{{ $totalRapor }}</td>
-                            <td class="fs-12 deskripsi-positif ganti-deskripsi-positif @if ($ada_temp_desk_positif) ada-perubahan @endif"
+                            <td class="fs-12 deskripsi-positif {{$ada_nilai_manual ? '' : 'ganti-deskripsi-positif'}} @if ($ada_temp_desk_positif) ada-perubahan @elseif ($ada_nilai_manual) ada-manual @endif"
                                 data-uuid="{{ $maxUUID }}" data-predikat={{ $max_predikat }} style="cursor: pointer">
-                                {{ $max_keterangan }}</td>
+                                {{$ada_nilai_manual ? $nilai_manual[0]['positif'] : $max_keterangan }}</td>
                         </tr>
                         <tr data-siswa="{{ $siswa->uuid }}" data-ngajar="{{ $ngajar->uuid }}">
-                            <td class="fs-12 deskripsi-negatif ganti-deskripsi-negatif @if ($ada_temp_desk_negatif) ada-perubahan @endif"
-                                data-uuid="{{ $minUUID }}" style="cursor: pointer">{{ $min_keterangan }}</td>
+                            <td class="fs-12 deskripsi-negatif {{$ada_nilai_manual ? '' : 'ganti-deskripsi-negatif'}} @if ($ada_temp_desk_negatif) ada-perubahan @elseif ($ada_nilai_manual) ada-manual @endif"
+                                data-uuid="{{ $minUUID }}" style="cursor: pointer">{{$ada_nilai_manual ? $nilai_manual[0]['negatif'] : $min_keterangan }}</td>
                         </tr>
                     @endforeach
                 </tbody>

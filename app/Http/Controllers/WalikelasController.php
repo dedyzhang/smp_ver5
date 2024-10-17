@@ -17,6 +17,7 @@ use App\Models\Ruang;
 use App\Models\RuangKelas;
 use App\Models\Sekretaris;
 use App\Models\Semester;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
 use Carbon\Carbon;
@@ -442,5 +443,32 @@ class WalikelasController extends Controller
             COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
             COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
         ')->whereIn('id_tanggal', $absensi_array)->whereIn('id_siswa', $siswa_id_array)->first();
+    }
+
+    /**
+     * Rapor Kelas
+     */
+    public function raporIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+
+        return view('walikelas.rapor.index', compact('kelas', 'guru', 'semester'));
+    }
+    /**
+     * Rapor Kelas - Tampilan Halaman rapor
+     */
+    public function raporshow(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $setting = Setting::all();
+        $semester = Semester::first();
+
+        $ngajar = Ngajar::with('pelajaran')->where('id_kelas', $siswa->kelas->uuid)->get()->sortBy('pelajaran.urutan', SORT_NATURAL);
+
+        return view('Walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar'));
     }
 }
