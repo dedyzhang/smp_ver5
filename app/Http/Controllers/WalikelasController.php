@@ -8,11 +8,15 @@ use App\Models\Barang;
 use App\Models\Classroom;
 use App\Models\ClassroomJawaban;
 use App\Models\ClassroomSiswa;
+use App\Models\Ekskul;
+use App\Models\EkskulSiswa;
 use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\Poin;
 use App\Models\PoinTemp;
+use App\Models\Rapor;
+use App\Models\RaporManual;
 use App\Models\Ruang;
 use App\Models\RuangKelas;
 use App\Models\Sekretaris;
@@ -20,6 +24,7 @@ use App\Models\Semester;
 use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\TanggalAbsensi;
+use App\Models\Walikelas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -466,9 +471,31 @@ class WalikelasController extends Controller
         $siswa = Siswa::with('kelas')->findOrFail($uuid);
         $setting = Setting::all();
         $semester = Semester::first();
+        $walikelas = Walikelas::with('Guru')->where('id_kelas', $siswa->kelas->uuid)->first();
 
         $ngajar = Ngajar::with('pelajaran')->where('id_kelas', $siswa->kelas->uuid)->get()->sortBy('pelajaran.urutan', SORT_NATURAL);
+        $raporSiswa = Rapor::where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
+        $ekskul = Ekskul::all()->sortBy('urutan', SORT_NATURAL);
+        $ekskulSiswa = EkskulSiswa::with('ekskul')->where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
 
-        return view('Walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar'));
+        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', 1]])->get();
+        $tanggalArray = $jumlahHari->pluck('uuid');
+        $absensi = AbsensiSiswa::selectRaw('
+            COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
+            COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
+            COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
+        ')->where('id_siswa', $uuid)->whereIn('id_tanggal', $tanggalArray)->first();
+
+        $kepalaSekolah = $setting->first(function ($elem) {
+            return $elem->jenis == 'kepala_sekolah';
+        });
+
+        if ($kepalaSekolah) {
+            $kepala_sekolah = Guru::findOrFail($kepalaSekolah->nilai);
+        } else {
+            $kepala_sekolah = "";
+        }
+
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah'));
     }
 }
