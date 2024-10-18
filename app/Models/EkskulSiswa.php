@@ -17,4 +17,9 @@ class EkskulSiswa extends Model
         'deskripsi',
         'semester'
     ];
+
+    public function ekskul()
+    {
+        return $this->belongsTo(Ekskul::class, 'id_ekskul');
+    }
 }
