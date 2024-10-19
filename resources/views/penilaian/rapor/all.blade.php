@@ -55,7 +55,7 @@
                                         data-bs-placement="top">
                                         <i class="fas fa-square-plus text-success"></i>
                                     </td>
-                                    <td class="child-cell hide child{{ $item->uuid }}"
+                                    <td class="child-cell hide child{{ $item->uuid }}" data-bs-toggle="tooltip"
                                         data-bs-title="{{ $rapor_array[$item->uuid . '.' . $siswa->uuid]['negatif'] }}"
                                         data-bs-placement="top">
                                         <i class="fas fa-square-minus text-danger"></i>

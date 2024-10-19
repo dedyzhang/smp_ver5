@@ -291,7 +291,7 @@ class PenilaianController extends Controller
             "tupe" => $newTupe
         ]);
         $formatif_array = array();
-        $ngajar = Ngajar::with('siswa')->findOrFail($request->idNgajar)->first();
+        $ngajar = Ngajar::with('siswa')->findOrFail($request->idNgajar);
         foreach ($ngajar->siswa as $siswa) {
             array_push($formatif_array, array(
                 "id_materi" => $uuid,
