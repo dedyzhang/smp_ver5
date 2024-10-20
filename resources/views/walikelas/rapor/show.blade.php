@@ -573,7 +573,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="table-primary"><b>Rata-rata</b></td>
-                        <td class="text-center"><b>{{round($total_inggris/$jumlah_inggris,2)}}</b></td>
+                        <td class="text-center"><b>{{$jumlah_inggris !== 0 ? round($total_inggris/$jumlah_inggris,2) : 0}}</b></td>
                         <td></td>
                     </tr>
                 </table>
@@ -735,7 +735,7 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="table-primary"><b>Rata-rata</b></td>
-                        <td class="text-center"><b>{{round($total_mandarin/$jumlah_mandarin,2)}}</b></td>
+                        <td class="text-center"><b>{{$jumlah_mandarin !== 0 ? round($total_mandarin/$jumlah_mandarin,2) : 0}}</b></td>
                         <td></td>
                     </tr>
                 </table>
