@@ -12,7 +12,7 @@
         width: 334px;
         margin: 0 auto;
         position: absolute;
-        top: 50%;
+        top: 60%;
         left: 0;
         text-align: center;
         right: 0;
@@ -25,7 +25,7 @@
         background: #222838;
         }
         a {
-        color: white;
+        color: #313131;
         text-decoration: none;
         }
 
@@ -163,6 +163,29 @@
         color: #63FFAC;
         font-weight: 700;
         }
+        .four {
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 10px 0px #cfcfcfd8;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(#cfcfcfd8), to(rgba(190, 190, 190, 0.18))), url("{{asset('img/Sekolah/smp.jpg')}}");
+        background-image: linear-gradient(to bottom, #cfcfcfd8, rgba(190, 190, 190, 0.18)), url("{{asset('img/Sekolah/smp.jpg')}}");
+        }
+        .four:hover {
+        box-shadow: 0px 0px 0px 2px rgba(255, 255, 255, 0.16) inset, 0px 0px 30px 0px #cfcfcfd8;
+        }
+        .four:hover:after {
+        -webkit-transform: scale(1);
+                transform: scale(1);
+        }
+        .four:hover:before {
+        -webkit-transform: scale(0.4);
+                transform: scale(0.4);
+        }
+        .four:after, .four:before {
+            content: url("{{asset('img/Sekolah/logo-rounded.png')}}");
+        }
+        .four b {
+        color: #cfcfcfd8;
+        font-weight: 700;
+        }
         h3 {
             color: #ffffff;
             font-size: 14px;
@@ -210,6 +233,7 @@
         <p>Bright Heart . Bright Mind . Bright Future</p>
     </div>
     <div class='container'>
+        <button class='getLink four' data-sekolah="sdmw"><a href="https://sdmaitreyawiratpi.sch.id">SDS Maitreyawira Tanjungpinang</a></button>
         <button class='getLink one' data-sekolah="smpmw"><a href="{{route('login')}}">SMPS Maitreyawira Tanjungpinang</a></button>
         <button class='getLink two' data-sekolah="smpmwbincen"><a href="https://bincent.smpmaitreyawiratpi.sch.id/signin">SMPS Maitreyawira Bintan Center</a></button>
         <button class='getLink three' data-sekolah="smamw"><a href="https://smasmaitreyawira.sch.id/signin">SMAS Maitreyawira Tanjungpinang</a></button>

@@ -253,7 +253,7 @@
                             setTimeout(() => {
                                 removeLoading();
                                 cAlert("green","Sukses","sukses menambahkan tujuan pembelajaran",true);
-                            },500)
+                            },500);
                         },error: function(data) {
                             console.log(data.responseJSON);
                         }
