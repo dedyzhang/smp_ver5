@@ -11,6 +11,8 @@ use App\Models\ClassroomSiswa;
 use App\Models\Ekskul;
 use App\Models\EkskulSiswa;
 use App\Models\Guru;
+use App\Models\JabarInggris;
+use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\Poin;
@@ -486,6 +488,16 @@ class WalikelasController extends Controller
             COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
         ')->where('id_siswa', $uuid)->whereIn('id_tanggal', $tanggalArray)->first();
 
+        $pInggris = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 1;
+        });
+        $jabarInggris = JabarInggris::where([['id_ngajar', '=', $pInggris->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
+        $pMandarin = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 2;
+        });
+        $jabarMandarin = JabarMandarin::where([['id_ngajar', '=', $pMandarin->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
         });
@@ -496,6 +508,15 @@ class WalikelasController extends Controller
             $kepala_sekolah = "";
         }
 
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah'));
+        $tanggal_rapor = $setting->first(function ($item) {
+            return $item->jenis == 'tanggal_rapor';
+        });
+        if ($tanggal_rapor != null) {
+            $tanggal = Carbon::parse($tanggal_rapor->nilai)->isoFormat('D MMMM Y');
+        } else {
+            $tanggal = "";
+        }
+
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
     }
 }

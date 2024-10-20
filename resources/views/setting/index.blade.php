@@ -356,7 +356,11 @@
                                                 return $item;
                                             }
                                         });
-                                        $pelajaran_array = explode(',',$pelajaran_rapor_array['nilai']);
+                                        if($pelajaran_rapor_array !== null) {
+                                            $pelajaran_array = explode(',',$pelajaran_rapor_array['nilai']);
+                                        } else {
+                                            $pelajaran_array = array();
+                                        }
                                     @endphp
                                     <label for="mapel">Mapel Yang Ditampilkan</label>
                                     <select name="mapel" id="mapel" data-toggle="select" multiple="multiple">

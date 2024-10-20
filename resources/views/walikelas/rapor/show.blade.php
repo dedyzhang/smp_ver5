@@ -348,25 +348,420 @@
             </div>
             <div class="col-2"></div>
             <div class="col-5 text-center">
-                <p class="m-0">Tanjungpinang, 13 Desember 2024</p>
+                <p class="m-0">Tanjungpinang, {{$tanggal}}</p>
                 <p class="m-0 mb-5">Wali Kelas</p>
                 <p class="m-0">{{$walikelas->Guru->nama}}</p>
                 <p class="m-0">NIK.{{$walikelas->Guru->nik}}</p>
             </div>
         </div>
-        <div class="row mt-1 mb-1">
+        <div class="row mt-1 mb-1 breakafter">
             <div class="col-12 text-center">
                 <p class="m-0">Mengetahui</p>
-                <p class="m-0 mb-5">Kepala {{$nama_sekolah->nilai}}</p>
+                <p class="m-0 mb-5">Kepala {{$nama_sekolah ? $nama_sekolah->nilai : ""}}</p>
                 <p class="m-0">{{$kepala_sekolah !== null ? $kepala_sekolah->nama : ""}}</p>
                 <p class="m-0">NIK.{{$kepala_sekolah !== null ? $kepala_sekolah->nik : ""}}</p>
             </div>
         </div>
+        {{-- Page 3 --}}
+        <div class="row d-flex align-items-center pb-2" style="border-bottom:5px double #000">
+            <div class="col-2"><img src="{{asset('img/tutwuri.png')}}" alt="" width="100%"></div>
+            <div class="col-8 text-center">
+                <h6 class="m-0"><b>YAYASAN BUMI MAITRI</b></h6>
+                <h4 class="m-0"><b>SMP MAITREYAWIRA TANJUNGPINANG</b></h4>
+                <h6 class="m-0"><b>TERAKREDITASI A</b></h6>
+                <p class="m-0 fs-10">Komp. Gedung Pendidikan dan Pelatihan Buddhis Bumi Maitreya</p>
+                <p class="m-0 fs-10">Jl. Prof. Ir Sutami No 38 (0771) 4505723 Email smpmai.tpi@gmail.com</p>
+                <p class="m-0 fs-10">Tanjungpinang Kepulauan Riau</p>
+            </div>
+            <div class="col-2"><img src="{{asset('img/maitreyawira_square.png')}}" alt="" width="80%"></div>
+        </div>
+        <div class="row mt-1 mb-1">
+            <div class="col-12 mb-0">
+                <h5 class="text-center m-0 p-0"><b>PENCAPAIAN KOMPETENSI PESERTA DIDIK</b></h5>
+                <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS DAN MANDARIN</b></h5>
+            </div>
+            <div class="row mt-3">
+                <div class="col-2">Nama</div>
+                <div class="col-4">: {{$siswa->nama}}</div>
+                <div class="col-3">Kelas</div>
+                <div class="col-3">: {{$siswa->kelas->tingkat.$siswa->kelas->kelas}}</div>
+                <div class="col-2">No Induk</div>
+                <div class="col-4">: {{$siswa->nis}}</div>
+                <div class="col-3">Semester</div>
+                <div class="col-3">: {{$semester->semester}} ( {{$semester->semester == "1" ? "Ganjil" : "Genap"}} )</div>
+                <div class="col-2">Sekolah</div>
+                <div class="col-4">: {{$nama_sekolah->nilai}}</div>
+                <div class="col-3">Tahun Pelajaran</div>
+                <div class="col-3">: {{$semester->tp}}</div>
+            </div>
+        </div>
+        <div class="row mt-1 mb-1">
+            @php
+                $pInggris = $ngajar->first(function($elem) {
+                    return $elem->pelajaran->has_penjabaran == 1;
+                });
+            @endphp
+            <div class="col-12"><p class="m-0">Ketuntasan Minimal Belajar : {{$pInggris ? $pInggris->kkm : 0}}</p></div>
+            <div class="col-12">
+                @php
+                    $no_urut = 1;
+                    $jumlah_inggris = 0;
+                    $total_inggris = 0;
+                @endphp
+                <table class="table table-bordered fs-12">
+                    <tr class="table-primary">
+                        <td colspan="4"><b>A. English</b></td>
+                    </tr>
+                    {{-- Listening --}}
+                    @if ($jabarInggris !== null && $jabarInggris->listening !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">Listening / Mendengarkan</td>
+                            <td width="10%" class="text-center">{{$jabarInggris->listening}}</td>
+                            <td width="45%">
+                                @if ($jabarInggris->listening < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->listening == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->listening;
+                        @endphp
+                    @endif
+                    {{-- Speaking --}}
+                    @if ($jabarInggris !== null && $jabarInggris->speaking !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Speaking / Berbicara</td>
+                            <td class="text-center">{{$jabarInggris->speaking}}</td>
+                            <td>
+                                @if ($jabarInggris->speaking < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->speaking == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->speaking;
+                        @endphp
+                    @endif
+                    {{-- Writting --}}
+                    @if ($jabarInggris !== null && $jabarInggris->writing !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Writing / Menulis</td>
+                            <td class="text-center">{{$jabarInggris->writing}}</td>
+                            <td>
+                                @if ($jabarInggris->writing < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->writing == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->writing;
+                        @endphp
+                    @endif
+                    {{-- Reading --}}
+                    @if ($jabarInggris !== null && $jabarInggris->reading !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Reading / Membaca</td>
+                            <td class="text-center">{{$jabarInggris->reading}}</td>
+                            <td>
+                                @if ($jabarInggris->reading < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->reading == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->reading;
+                        @endphp
+                    @endif
+                    {{-- Grammar --}}
+                    @if ($jabarInggris !== null && $jabarInggris->grammar !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Grammar / Tata Bahasa</td>
+                            <td class="text-center">{{$jabarInggris->grammar}}</td>
+                            <td>
+                                @if ($jabarInggris->grammar < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->grammar == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->grammar;
+                        @endphp
+                    @endif
+                    {{-- Vocabulary--}}
+                    @if ($jabarInggris !== null && $jabarInggris->vocabulary !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Vocabulary / Kosakata</td>
+                            <td class="text-center">{{$jabarInggris->vocabulary}}</td>
+                            <td>
+                                @if ($jabarInggris->vocabulary < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->vocabulary == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->vocabulary;
+                        @endphp
+                    @endif
+                    {{-- Singing --}}
+                    @if ($jabarInggris !== null && $jabarInggris->singing !== 0)
+                        <tr>
+                            <td>{{$no_urut}}</td>
+                            <td>Singing / Bernyanyi</td>
+                            <td class="text-center">{{$jabarInggris->singing}}</td>
+                            <td>
+                                @if ($jabarInggris->singing < $pInggris->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarInggris->singing == $pInggris->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_inggris++;
+                            $total_inggris += $jabarInggris->singing;
+                        @endphp
+                    @endif
+                    <tr>
+                        <td colspan="2" class="table-info"><b>Jumlah</b></td>
+                        <td class="text-center"><b>{{$total_inggris}}</b></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="table-primary"><b>Rata-rata</b></td>
+                        <td class="text-center"><b>{{round($total_inggris/$jumlah_inggris,2)}}</b></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-1 mb-1">
+            @php
+                $pMandarin = $ngajar->first(function($elem) {
+                    return $elem->pelajaran->has_penjabaran == 2;
+                });
+            @endphp
+            <div class="col-12"><p class="m-0">Ketuntasan Minimal Belajar : {{$pMandarin ? $pMandarin->kkm : 0}}</p></div>
+            <div class="col-12">
+                @php
+                    $no_urut = 1;
+                    $jumlah_mandarin = 0;
+                    $total_mandarin = 0;
+                @endphp
+                <table class="table table-bordered fs-12">
+                    <tr class="table-primary">
+                        <td colspan="4"><b>B. Mandarin</b></td>
+                    </tr>
+                    {{-- Listening --}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->listening !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">听力 (tīng lì) Mendengarkan</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->listening}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->listening < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->listening == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->listening;
+                        @endphp
+                    @endif
+                    {{-- Speaking --}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->speaking !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">会话 (huì huà) Berbicara</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->speaking}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->speaking < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->speaking == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->speaking;
+                        @endphp
+                    @endif
+                    {{-- Writting --}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->writing !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">书写 (xiě zì) Menulis</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->writing}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->writing < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->writing == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->writing;
+                        @endphp
+                    @endif
+                    {{-- Reading --}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->reading !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">阅读 (yuè dú) Membaca</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->reading}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->reading < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->reading == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->reading;
+                        @endphp
+                    @endif
+                    {{-- Vocabulary--}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->vocabulary !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">词汇 (cí huì) Kosakata</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->vocabulary}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->vocabulary < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->vocabulary == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->vocabulary;
+                        @endphp
+                    @endif
+                    {{-- Singing --}}
+                    @if ($jabarMandarin !== null && $jabarMandarin->singing !== 0)
+                        <tr>
+                            <td width="5%">{{$no_urut}}</td>
+                            <td width="30%">唱歌 (chàng gē) Bernyanyi</td>
+                            <td width="10%" class="text-center">{{$jabarMandarin->singing}}</td>
+                            <td width="45%">
+                                @if ($jabarMandarin->singing < $pMandarin->kkm)
+                                    @if ($semester->semester == 1) Belum Tuntas
+                                    @else Tidak Tuntas
+                                    @endif
+                                @elseif ($jabarMandarin->singing == $pMandarin->kkm) Tuntas
+                                @else Terlampaui
+                                @endif
+                            </td>
+                        </tr>
+                        @php
+                            $no_urut++;
+                            $jumlah_mandarin++;
+                            $total_mandarin += $jabarMandarin->singing;
+                        @endphp
+                    @endif
+                    <tr>
+                        <td colspan="2" class="table-info"><b>Jumlah</b></td>
+                        <td class="text-center"><b>{{$total_mandarin}}</b></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="table-primary"><b>Rata-rata</b></td>
+                        <td class="text-center"><b>{{round($total_mandarin/$jumlah_mandarin,2)}}</b></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row mt-1 mb-1">
+            <div class="col-5">
+                <p class="m-0">Mengetahui</p>
+                <p class="m-0 mb-5">Orang Tua / Wali Murid</p>
+                <p class="m-0"></p>
+                <p>...............................................</p>
+            </div>
+            <div class="col-2"></div>
+            <div class="col-5 text-center">
+                <p class="m-0">Tanjungpinang, {{$tanggal}}</p>
+                <p class="m-0 mb-5">Wali Kelas</p>
+                <p class="m-0">{{$walikelas->Guru->nama}}</p>
+                <p class="m-0">NIK.{{$walikelas->Guru->nik}}</p>
+            </div>
+        </div>
+
+        {{-- Footer --}}
         <div class="col-12 ms-4 me-4 pe-4" style="position:fixed !important; bottom:1mm;width:90%;border-top:1px dotted #000;background-color:#fff">
-            <p class="m-0"><span class="bg-primary ps-3 pe-3"></span> <span class="ms-3">Rapor {{$nama_sekolah->nilai}}</span></p>
+            <p class="m-0"><span class="bg-primary ps-3 pe-3"></span> <span class="ms-3">Rapor {{$nama_sekolah->nilai}} Tanjungpinang</span></p>
             <p class="m-0"><span class="bg-primary-subtle ps-3 pe-3"></span> <span class="ms-3">{{$siswa->nis}} | {{$siswa->nama}} | Kelas {{$siswa->kelas->tingkat.$siswa->kelas->kelas}} | Semester {{$semester->semester}} | {{$semester->tp}}</span></p>
         </div>
-        {{-- Page 3 --}}
     </div>
     <script>
         $('.print-rapor').click(function() {
