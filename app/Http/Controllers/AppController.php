@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use App\Models\Siswa;
+use Gemini\Laravel\Facades\Gemini as FacadesGemini;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
@@ -43,5 +44,11 @@ class AppController extends Controller
             $url = env('APP_URL') . "ujian/index.php";
         }
         return Redirect::to($url);
+    }
+    public function getGemini(Request $request)
+    {
+        $result = FacadesGemini::geminiPro()->generateContent($request->text);
+
+        return $result->text();
     }
 }

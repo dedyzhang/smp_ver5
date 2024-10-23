@@ -855,3 +855,152 @@ table.dataTables tbody td {
 .StepProgress strong {
     display: block;
 }
+/* Gemini */
+.tombol-gemini {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #fff;
+    opacity: 0.4;
+    border: none;
+    padding: 5px 3px;
+    border-radius: 10px;
+    transition: 0.1s all ease-in;
+}
+.tombol-gemini:hover {
+    opacity: 1;
+    box-shadow: 1px 1px 1px #dddddd;
+}
+.tombol-gemini.active {
+    opacity: 1;
+}
+.tombol-gemini.active img {
+    transform: rotate(360deg);
+    transition: transform 1s ease-out;
+}
+.gemini-chatbox {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    width: 350px;
+    height: 500px;
+    background: #ffffff;
+    z-index: 999;
+    border-radius: 10px;
+    box-shadow: -3px 0 8px #d4d4d4, 2px 0 5px #d4d4d4;
+    transform: scaleY(0);
+    transition: transform 0.3s;
+    transform-origin: 0 100%;
+}
+@media screen and (max-width: 450px) {
+    .gemini-chatbox {
+        width: 90%;
+        height: 550px;
+    }
+}
+.gemini-chatbox.active {
+    transform: scaleY(1);
+}
+.gemini-container {
+    padding: 30px 10px 10px 10px;
+}
+.gemini-chatbox .gemini-container .row {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+}
+.gemini-chatbox .gemini-container .row textarea {
+    overflow-y: hidden;
+    font-size: 12px;
+}
+.gemini-container {
+    max-height: 80%;
+    overflow-y: auto;
+}
+.gemini-container .bot {
+    width: 90%;
+    padding: 5px;
+    font-size: 12px;
+    float: right;
+    white-space: pre-wrap;
+}
+.gemini-container .my-question {
+    max-width: 250px;
+    background-color: #e2e2e2;
+    padding: 5px 7px;
+    border-radius: 5px;
+    float: right;
+    clear: both;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+.gemini-img {
+    width: 20px;
+    height: 20px;
+    float: left;
+    margin-right: 10px;
+}
+.welcome-gemini {
+    position: absolute;
+    width: 80%;
+    text-align: center;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: all 0.5s ease-out;
+}
+.welcome-gemini.active {
+    opacity: 1;
+    top: 30%;
+    transition: all 0.5s ease-out;
+}
+.welcome-gemini h4 {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Loading Animation */
+.loading {
+    width: 100px;
+}
+.loading span {
+    display: inline-block;
+    vertical-align: middle;
+    width: 10px;
+    height: 10px;
+    background: black;
+    border-radius: 10px;
+    animation: loader 0.8s infinite alternate;
+}
+.loading span:nth-of-type(2) {
+    animation-delay: 0.2s;
+}
+.loading span:nth-of-type(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes loader {
+    0% {
+        opacity: 0.9;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 0.1;
+        transform: scale(1);
+    }
+}
+.copy-button {
+    background: none;
+    border: 1px solid #bebebe;
+    border-radius: 5px;
+    color: #bebebe;
+}
+.copy-button:hover {
+    color: #8a8a8a;
+    border: 1px solid #8a8a8a;
+}
+.copy-button.copied {
+    color: #88c273;
+    border: 1px solid #88c273;
+}
