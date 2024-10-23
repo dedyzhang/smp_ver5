@@ -892,6 +892,12 @@ table.dataTables tbody td {
     transition: transform 0.3s;
     transform-origin: 0 100%;
 }
+@media screen and (max-width: 450px) {
+    .gemini-chatbox {
+        width: 90%;
+        height: 600px;
+    }
+}
 .gemini-chatbox.active {
     transform: scaleY(1);
 }
