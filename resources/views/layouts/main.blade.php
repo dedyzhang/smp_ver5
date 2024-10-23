@@ -14,8 +14,11 @@
                 @yield('container')
             </div>
         </div>
+        @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah'])
         <button class="tombol-gemini"><img src="{{asset('img/google-gemini.svg')}}" width="30" /></button>
+        @endcan
     </div>
+    @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah'])
     <div class="gemini-chatbox" id="gemini-chatbox">
         <div class="gemini-container">
             <div class="gemini-result">
@@ -35,22 +38,6 @@
             </div>
         </div>
 
-    </div>
-    <div class="modal fade in" tabindex="-1" id="modal_gemini">
-        <div class="modal-dialog modal-fullscreen">
-            <div class="modal-content">
-            <div class="modal-body">
-                <p>Tanyakan Ke Gemini</p>
-                <textarea class="form-control" rows="3" name="gemini" id="gemini"></textarea>
-                <button class="btn btn-sm btn-info gemini_search">Cari</button>
-
-                <div class="mt-3"><pre class="gemini-box" style="width:100%; white-space: pre-wrap;"></pre></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-            </div>
-        </div>
     </div>
     <script>
         var first = true;
@@ -121,6 +108,7 @@
             navigator.clipboard.writeText(clipboard);
         });
     </script>
+    @endcan
     @include('layouts.foot')
 </body>
 </html>
