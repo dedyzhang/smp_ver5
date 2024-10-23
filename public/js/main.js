@@ -139,5 +139,9 @@ $(document).ready(function () {
         toolbar2:
             "link image media table mergetags | hecklist numlist bullist indent outdent | align lineheight",
     });
-    //Get Key by value
+    //Untuk Resize textarea
 });
+function textAreaAdjust(element) {
+    element.style.height = "1px";
+    element.style.height = 8 + element.scrollHeight + "px";
+}
