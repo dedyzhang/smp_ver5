@@ -895,7 +895,7 @@ table.dataTables tbody td {
 @media screen and (max-width: 450px) {
     .gemini-chatbox {
         width: 90%;
-        height: 600px;
+        height: 550px;
     }
 }
 .gemini-chatbox.active {
