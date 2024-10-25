@@ -13,13 +13,13 @@
             <i class="app-version">5.1.0</i>
         </div>
         <ul class="menu">
-            <li class="menu-list"><a href="/home"> <i class="fa-solid fa-home"></i> Dashboard</a></li>
+            <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
 
             {{-- Menu Guru --}}
             @can('admin')
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-data" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-database"></i>
+                    <ion-icon src="{{asset('img/icons/folder-open.svg')}}"></ion-icon>
                     Data Sekolah
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -36,7 +36,7 @@
             @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-absensi" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-calendar-check"></i>
+                    <ion-icon src="{{asset('img/icons/calendar.svg')}}"></ion-icon>
                     Absensi PTK
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -52,7 +52,7 @@
             @can('siswa')
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-absensi" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-calendar-check"></i>
+                    <ion-icon src="{{asset('img/icons/calendar.svg')}}"></ion-icon>
                     Absensi Siswa
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -68,7 +68,7 @@
             @canany(['kurikulum', 'guru','kesiswaan','sapras'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-guru" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <ion-icon src="{{asset('img/icons/book-2.svg')}}"></ion-icon>
                     Buku Guru
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -88,7 +88,7 @@
             @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-agenda" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-address-book"></i>
+                    <ion-icon src="{{asset('img/icons/notebook.svg')}}"></ion-icon>
                     Buku Agenda
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -105,13 +105,13 @@
             @endcan
             {{--Ujian--}}
             @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah','siswa'])
-                <li class="menu-list"><a href="{{route('ujian.index')}}"> <i class="fa-solid fa-school"></i> Go To Ujian</a></li>
+                <li class="menu-list"><a href="{{route('ujian.index')}}"> <ion-icon src="{{asset('img/icons/test.svg')}}"></ion-icon> Go To Ujian</a></li>
             @endcan
             {{-- Penilaian --}}
             @canany(['admin', 'kurikulum','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-pelajaran" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-book"></i>
+                    <ion-icon src="{{asset('img/icons/book-2.svg')}}"></ion-icon>
                     Penilaian
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -130,7 +130,7 @@
             @canany(['admin','kurikulum','kepalasekolah'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-ekskul" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-basketball"></i>
+                    <ion-icon src="{{asset('img/icons/basketball.svg')}}"></ion-icon>
                     Ekskul
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -141,13 +141,13 @@
             </li>
             @endcan
             @canany(['guru','kesiswaan','sapras'])
-            <li class="menu-list"><a href="{{route('ekskul.nilai.index')}}"> <i class="fa-solid fa-basketball"></i> Ekskul</a></li>
+            <li class="menu-list"><a href="{{route('ekskul.nilai.index')}}"> <ion-icon src="{{asset('img/icons/basketball.svg')}}"></ion-icon> Ekskul</a></li>
             @endcan
             {{-- Aturan --}}
             @canany(['admin','kesiswaan'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-aturan" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-scale-balanced"></i>
+                    <ion-icon src="{{asset('img/icons/shield.svg')}}"></ion-icon>
                     Aturan
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -162,7 +162,7 @@
             @canany(['admin','sapras'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                  <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
+                    <ion-icon src="{{asset('img/icons/box.svg')}}"></ion-icon>
                     Sapras
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -173,7 +173,7 @@
             </li>
             @endcan
             @canany(['guru','kesiswaan','kepalasekolah','kurikulum'])
-                <li class="menu-list"><a href="{{route('penggunaan.index')}}"> <i class="fa-solid fa-screwdriver-wrench"></i> Penggunaan Ruang</a>
+                <li class="menu-list"><a href="{{route('penggunaan.index')}}"> <ion-icon src="{{asset('img/icons/box.svg')}}"></ion-icon> Penggunaan Ruang</a>
             </li>
             @endcan
 
@@ -181,7 +181,7 @@
             @canany(['siswa','orangtua'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                  <a href="#menu-sapras" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-circle-info"></i>
+                    <ion-icon src="{{asset('img/icons/info-square.svg')}}"></ion-icon>
                     Informasi Sekolah
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -195,11 +195,11 @@
 
             {{-- Classroom --}}
             @canany(['guru','kesiswaan','sapras','kurikulum'])
-            <li class="menu-list"><a href="{{route('classroom.index')}}"> <i class="fa-solid fa-landmark"></i> Classroom</a>
+            <li class="menu-list"><a href="{{route('classroom.index')}}"> <ion-icon src="{{asset('img/icons/ruler-pen.svg')}}"></ion-icon> Classroom</a>
             </li>
             @endcan
             @can('siswa')
-            <li class="menu-list"><a href="{{route('classroom.siswa.index')}}"> <i class="fa-solid fa-landmark"></i>
+            <li class="menu-list"><a href="{{route('classroom.siswa.index')}}"> <ion-icon src="{{asset('img/icons/ruler-pen.svg')}}"></ion-icon>
                     Classroom</a></li>
             @endcan
 
@@ -207,7 +207,7 @@
             @canany(['guru','kesiswaan','sapras','kurikulum'])
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-walikelas" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-file-signature"></i>
+                    <ion-icon src="{{asset('img/icons/people-nearby.svg')}}"></ion-icon>
                     Walikelas
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -226,7 +226,7 @@
             @can('sekretaris')
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-aturan" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa fa-keyboard"></i>
+                    <ion-icon src="{{asset('img/icons/keyboard.svg')}}"></ion-icon>
                     Sekretaris
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -240,7 +240,7 @@
             {{-- Jadwal --}}
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-jadwal" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-clock"></i>
+                    <ion-icon src="{{asset('img/icons/clock-circle.svg')}}"></ion-icon>
                     Jadwal Sekolah
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -257,7 +257,7 @@
             @can('admin')
             <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
                 <a href="#menu-cetak" class="menu-title" data-bs-toggle="collapse">
-                    <i class="fa-solid fa-print"></i>
+                    <ion-icon src="{{asset('img/icons/printer.svg')}}"></ion-icon>
                     Cetak Data
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
@@ -266,7 +266,7 @@
                     <li class="submenu-list"><a href="{{ route('cetak.absensi.guru.index') }}"> Absensi Guru</a></li>
                 </ul>
             </li>
-            <li class="menu-list"><a href="{{route('setting.index')}}"> <i class="fa-solid fa-gear"></i> Setting</a>
+            <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>
             </li>
             @endcan
         </ul>
