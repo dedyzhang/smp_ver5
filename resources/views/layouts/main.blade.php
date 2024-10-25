@@ -112,4 +112,3 @@
     @include('layouts.foot')
 </body>
 </html>
-#bde0b0

@@ -212,7 +212,7 @@ hr {
     transform: translate(-50%, -50%) scale(1);
     transition: all 0.2s ease-in;
 }
-.loader .loading-box i {
+.loader .loading-box svg {
     font-size: 3rem;
 }
 
@@ -319,17 +319,23 @@ body {
     padding: 10px 30px;
 }
 .sidebar-contain ul.menu li:hover {
-    box-shadow: inset 5px 0px 0px 0px #1e7cff, 5px 0px 0px 0px #1e7cff;
+    background: #fff6c3;
+    border-radius: 10px;
 }
 .sidebar-contain ul.menu li a {
     width: 100%;
-    display: block;
+    display: flex;
+    align-items: center;
     text-decoration: none;
     color: rgb(37, 37, 37);
     position: relative;
 }
-.sidebar-contain ul.menu li a i {
-    margin-right: 5px;
+/* .sidebar-contain ul.menu li a svg {
+    margin-right: 10px;
+} */
+.sidebar-contain ul.menu li a ion-icon {
+    font-size: 20px;
+    margin-right: 10px;
 }
 .sidebar-contain ul.menu li .indicator-icon {
     position: absolute;
