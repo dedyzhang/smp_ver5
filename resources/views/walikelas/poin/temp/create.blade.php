@@ -1,11 +1,28 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('walikelas-poin-temp-create')}}
+    @if (\Request::route()->getName() === 'walikelas.poin.')
+        {{Breadcrumbs::render('walikelas-poin-temp-create')}}
+    @elseif(\Request::route()->getName() === 'poin.guru.create')
+        {{Breadcrumbs::render('poin-guru-tambah')}}
+    @else
+        {{Breadcrumbs::render('sekretaris-poin-create')}}
+    @endif
     <div class="body-contain-customize col-12">
         <h5><b>Tambah Pengajuan Poin</b></h5>
         <p>Halaman ini digunakan untuk menambahkan pengajuan poin Sementara</p>
     </div>
+    @if (session('success'))
+        <div class="body-contain-customize mt-3 col-12">
+            <div class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3" role="alert">
+                <i class="bi flex-shrink-0 me-2 fa-solid fa-check" aria-label="Success:"></i>
+                <div>
+                    <strong>Sukses !</strong> {{session('success')}}
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    @endif
     <div class="body-contain-customize col-12 mt-3">
         <p>Form Pengajuan Poin Sementara</p>
         <form action="{{route('walikelas.poin.temp.create')}}" method="post">
@@ -16,7 +33,7 @@
                     <select name="siswa" id="siswa" class="form-group w-100 @error('siswa') is-invalid @enderror" data-toggle="select">
                         <option value="">Pilih Salah Satu</option>
                         @foreach ($siswa as $item)
-                            <option @if(old('siswa') == $item->uuid) selected @endif value="{{$item->uuid}}">{{$item->nama}}</option>
+                            <option @if(old('siswa') == $item->uuid) selected @endif value="{{$item->uuid}}">{{$item->nama}} - {{$item->nis}} ({{$item->kelas->tingkat.$item->kelas->kelas}})</option>
                         @endforeach
                     </select>
                     @error('siswa')

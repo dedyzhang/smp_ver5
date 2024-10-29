@@ -1,31 +1,31 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('walikelas-poin-temp')}}
+    @if (\Request::route()->getName() === 'walikelas.poin.temp')
+        {{Breadcrumbs::render('walikelas-poin-temp')}}
+    @elseif(\Request::route()->getName() === 'poin.guru.index')
+        {{Breadcrumbs::render('poin-guru')}}
+    @else
+        {{Breadcrumbs::render('sekretaris-poin')}}
+    @endif
+    
     <div class="body-contain-customize col-12">
         <h5><b>Pengajuan Poin</b></h5>
         <p>Halaman ini untuk menampilkan poin yang sudah diajukan walikelas ataupun sekretaris</p>
     </div>
-    @if (session('success'))
-        <div class="body-contain-customize mt-3 col-12">
-            <div class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3" role="alert">
-                <i class="bi flex-shrink-0 me-2 fa-solid fa-check" aria-label="Success:"></i>
-                <div>
-                    <strong>Sukses !</strong> {{session('success')}}
-                </div>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </div>
-    @endif
     <div class="body-contain-customize mt-3 col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex">
         @if (\Request::route()->getName() === 'walikelas.poin.temp')
             <a href="{{route('walikelas.poin.temp.create')}}" class="btn btn-sm btn-warning text-warning-emphasis">
                 <i class="fa fa-plus"></i> Tambah Pengajuan
             </a>
-        @else
-           <a href="{{route('sekretaris.poin.create')}}" class="btn btn-sm btn-warning text-warning-emphasis">
+        @elseif(\Request::route()->getName() === 'poin.guru.index')
+           <a href="{{route('poin.guru.create')}}" class="btn btn-sm btn-warning text-warning-emphasis">
                 <i class="fa fa-plus"></i> Tambah Pengajuan
             </a>
+        @else
+        <a href="{{route('sekretaris.poin.create')}}" class="btn btn-sm btn-warning text-warning-emphasis">
+            <i class="fa fa-plus"></i> Tambah Pengajuan
+        </a>
         @endif
 
     </div>
@@ -36,7 +36,8 @@
                     <td>No</td>
                     <td>Tanggal</td>
                     <td>Siswa</td>
-                    <td>Jenis</td>
+                    <td>Kelas</td>
+                    <td>Aturan</td>
                     <td>Poin</td>
                     <td>Diajukan Oleh</td>
                     <td>Status</td>
@@ -49,10 +50,11 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{date('d M Y',strtotime($item->tanggal))}}</td>
                         <td>{{$item->siswa->nama}}</td>
-                        <td>{{$item->aturan->jenis}}</td>
+                        <td>{{$item->siswa->kelas->tingkat.$item->siswa->kelas->kelas}}</td>
+                        <td class="{{$item->aturan->jenis == "kurang" ? "text-danger" : "text-success"}}">{{$item->aturan->kode."-".$item->aturan->aturan}}</td>
                         <td>{{$item->aturan->poin}}</td>
                         <td>{{isset($all_name[$item->id_input]) ? $all_name[$item->id_input] : "" }}</td>
-                        <td>
+                        <td class="status-place">
                             @if ($item->status == "belum")
                                 <i class="fa-regular fs-20 fa-face-meh" data-bs-toggle="tooltip" data-bs-title="Belum diapprove Kesiswaan" data-bs-placement="top"></i>
                             @elseif ($item->status == "approve")
@@ -76,17 +78,18 @@
     <script>
         var table = new DataTable('#table-temp-poin',{
             columns: [
-                {width: '5%'},
+                {width: '3%'},
                 {width: '10%'},
-                {width: '25%'},
-                {width: '10%'},
+                {width: '15%'},
+                {width: '3%'},
+                {width: '20%'},
                 {width: '5%'},
-                {width: '30%'},
+                {width: '20%'},
                 {width: '5%'},
                 {width: '10%'},
             ],
             columnDefs: [
-                { className: 'text-center', targets: [0,1,3,4,6,7] },
+                { className: 'text-center', targets: [0,1,3,4,5,7,8] },
              ],
             "initComplete" : function(settings,json) {
                 $('#table-temp-poin').wrap('<div style="overflow:auto; width:100%; position:relative"></div>');
