@@ -162,6 +162,14 @@ Breadcrumbs::for('penilaian-penjabaran-show', function (BreadcrumbsTrail $trail,
     $trail->parent('penilaian-penjabaran');
     $trail->push($pelajaran->pelajaran_singkat . " " . $kelas->tingkat . $kelas->kelas, route('penilaian.penjabaran.show', $ngajar));
 });
+//Penilaian.Poin.Breadcrumbs
+Breadcrumbs::for('poin-guru', function (BreadcrumbsTrail $trail) {
+    $trail->push('Poin', route('poin.guru.index'));
+});
+Breadcrumbs::for('poin-guru-tambah', function (BreadcrumbsTrail $trail) {
+    $trail->parent('poin-guru');
+    $trail->push('Create', route('poin.guru.create'));
+});
 
 
 //Penilaian.Admin.Breadcrumbs
@@ -430,6 +438,13 @@ Breadcrumbs::for('walikelas-classroom-preview', function (BreadcrumbsTrail $trai
 // Sekretaris.Breadcrumbs
 Breadcrumbs::for('sekretaris-absensi', function (BreadcrumbsTrail $trail) {
     $trail->push('Absensi', route('sekretaris.absensi'));
+});
+Breadcrumbs::for('sekretaris-poin', function (BreadcrumbsTrail $trail) {
+    $trail->push('Poin', route('sekretaris.poin'));
+});
+Breadcrumbs::for('sekretaris-poin-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('sekretaris-poin');
+    $trail->push('Create', route('sekretaris.poin.create'));
 });
 //Sapras.Breadcrumbs
 Breadcrumbs::for('ruang', function (BreadcrumbsTrail $trail) {

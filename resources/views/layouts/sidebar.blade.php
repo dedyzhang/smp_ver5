@@ -82,6 +82,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.pas.index') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.rapor.index') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.penjabaran.index') }}"> Penjabaran</a></li>
+                    <li class="submenu-list"><a href="{{ route('poin.guru.index') }}"> Pengajuan Poin</a></li>
                 </ul>
             </li>
             @endcan

@@ -8,6 +8,7 @@ use App\Models\Poin;
 use App\Models\PoinTemp;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class PoinController extends Controller
@@ -230,5 +231,23 @@ class PoinController extends Controller
         $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
         $all_name = array_merge($siswa_all_name, $guru_all_name);
         return view('poin.temp.approve', compact('temp', 'all_name'));
+    }
+    public function guruPoinIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::all();
+        $guru_all = Guru::get();
+        $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
+        $all_name = $guru_all_name;
+        $poin_temp = PoinTemp::with('aturan', 'siswa')->where('id_input', $guru->uuid)->orderBy('created_at', 'DESC')->get();
+        return view('walikelas.poin.temp.index', compact('poin_temp', 'all_name'));
+    }
+    public function guruPoinCreate(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::where('id_login', $auth->uuid)->first();
+        $siswa = Siswa::with('kelas')->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        return view('walikelas.poin.temp.create', compact('siswa'));
     }
 }

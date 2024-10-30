@@ -40,6 +40,7 @@ use App\Http\Middleware\IsSiswa;
 use App\Http\Middleware\IsSiswaOrangtua;
 use App\Http\Middleware\IsWalidanSekre;
 use App\Http\Middleware\IsWalikelas;
+use App\Http\Middleware\IsWaliSekredanGuru;
 
 Route::get('/', function () {
     return view('home.index');
@@ -391,7 +392,7 @@ Route::middleware(IsSekretaris::class)->controller(SekretarisController::class)-
 });
 
 // {--------------------------------Halaman Proses Walikelas dan Sekretaris-----------------------------------------------------}
-Route::middleware(IsWalidanSekre::class)->controller(WalikelasController::class)->group(function () {
+Route::middleware(IsWaliSekredanGuru::class)->controller(WalikelasController::class)->group(function () {
     Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
     Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
     Route::get('/walikelas/poin/temp/getaturan', 'poinGetAturan')->name('walikelas.poin.temp.getAturan');
@@ -415,6 +416,10 @@ Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->g
     Route::post('/temp/{uuid}', 'tempUpdate')->name('temp.update');
     Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
     Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
+});
+Route::middleware(isPenilaianController::class)->controller(PoinController::class)->group(function() {
+    Route::get('/bukuguru/poin','guruPoinIndex')->name('poin.guru.index');
+    Route::get('/bukuguru/poin/create','guruPoinCreate')->name('poin.guru.create');
 });
 
 // {----------------------------------------------------END------------------------------------------------------------------}

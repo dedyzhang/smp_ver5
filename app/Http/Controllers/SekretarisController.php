@@ -40,7 +40,8 @@ class SekretarisController extends Controller
         $siswa_all_name = $siswa->pluck('nama', 'uuid')->toArray();
         $guru_all_name = $guru_all->pluck('nama', 'uuid')->toArray();
         $all_name = array_merge($siswa_all_name, $guru_all_name);
-        $siswa_array = $siswa->pluck('uuid')->toArray();
+        $siswa_per_kelas = Siswa::where('id_kelas',$id_kelas)->get();
+        $siswa_array = $siswa_per_kelas->pluck('uuid')->toArray();
         $poin_temp = PoinTemp::with('aturan', 'siswa')->whereIn('id_siswa', $siswa_array)->orderBy('created_at', 'DESC')->get();
         return view('walikelas.poin.temp.index', compact('poin_temp', 'all_name'));
     }

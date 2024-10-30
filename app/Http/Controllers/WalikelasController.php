@@ -295,7 +295,7 @@ class WalikelasController extends Controller
             'status' => 'belum'
         ]);
         if ($auth->access != "siswa") {
-            return redirect()->route('walikelas.poin.temp')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
+            return redirect()->back()->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
         } else {
             return redirect()->route('sekretaris.poin')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
         }
