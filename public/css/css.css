@@ -179,6 +179,11 @@ hr {
     margin: 0 0 10px 0;
     color: #afafaf;
 }
+/* Atur warna pada input ketika focus */
+.form-control:focus {
+    border-color: #636363;
+    box-shadow: none
+  }
 /* Atur Label dalam input */
 .body-contain-customize .form-group label {
     font-size: 12px;

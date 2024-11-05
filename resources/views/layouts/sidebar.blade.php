@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.0</i>
+            <i class="app-version">5.1.1</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -122,6 +122,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.manual') }}"> Rapor Manual</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.p5.index') }}"> Projek P5</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
                 </ul>

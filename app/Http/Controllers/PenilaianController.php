@@ -9,6 +9,7 @@ use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\P5Dimensi;
 use App\Models\PAS;
 use App\Models\Pelajaran;
 use App\Models\PerangkatAjar;
@@ -1046,5 +1047,26 @@ class PenilaianController extends Controller
             }
         }
         return view('perangkat.guru.index', compact('guru', 'perangkat', 'perangkat_array'));
+    }
+    public function projekIndex() {
+        return view('penilaian.projek.index');
+    }
+    public function projekAtur() {
+        $dimensi = P5Dimensi::all()->sortBy('created_by');
+        return view('penilaian.projek.atur',compact('dimensi'));
+    }
+    public function projekTambahDimensi(Request $request) {
+
+        P5Dimensi::create([
+            'dimensi' => $request->dimensi
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    public function projekDeleteDimensi(String $uuid) {
+        $p5dimensi = P5Dimensi::findOrFail($uuid);
+        $p5dimensi->delete();
+
+        return response()->json(['success' => true]);
     }
 }
