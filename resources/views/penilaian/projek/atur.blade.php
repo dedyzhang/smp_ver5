@@ -34,7 +34,7 @@
                                     <div class="ms-2 me-auto">
                                     {{$item->dimensi}}
                                     </div>
-                                    <span class="badge text-bg-warning rounded-pill fs-13 hapus-dimensi" data-uuid="{{$item->uuid}}"><i class="fas fa-close"></i></span>
+                                    <span class="badge text-bg-warning rounded-pill fs-13 hapus-dimensi" role="button" data-uuid="{{$item->uuid}}"><i class="fas fa-close"></i></span>
                                 </li>    
                             @endforeach
                         </ol>
@@ -52,7 +52,7 @@
                     <div class="row m-0 p-0">
                         <div class="col-12 form-group p-0">
                             <label for="elemen-dimensi">Dimensi</label>
-                            <select name="elemen-dimensi" id="elemen-dimensi" class="form-control" data-toggle="select">
+                            <select name="elemen-dimensi" id="elemen-dimensi" class="form-control validasi-elemen" data-toggle="select">
                                 <option value="">Pilih Salah Satu</option>
                                 @foreach ($dimensi as $item)
                                     <option value="{{$item->uuid}}">{{$item->dimensi}}</option>
@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-12 form-group p-0">
                             <label for="elemen" class="fs-12">Elemen</label>
-                            <input type="text" name="elemen" id="elemen" class="form-control">
+                            <input type="text" name="elemen" id="elemen" class="form-control validasi-elemen">
                             <div class="invalid-feedback">Tidak Boleh Kosong</div>
                         </div>
                         <div class="col-12 mt-2 p-0">
@@ -81,8 +81,19 @@
                                         </button>
                                         </h2>
                                         <div id="accordion-{{$item->uuid}}" class="accordion-collapse collapse" data-bs-parent="#accordionElemen">
-                                            <div class="accordion-body fs-12">
-                                                
+                                            <div class="accordion-body fs-12 m-0 p-0">
+                                                <ol class="list-group list-group-flush">
+                                                    @foreach ($elemen as $elemenitem)
+                                                        @if ($elemenitem->id_dimensi == $item->uuid)
+                                                            <li class="fs-12 list-group-item list-group-item-secondary d-flex justify-content-between align-items-center">
+                                                                <div class="ms-2 me-auto">
+                                                                {{$elemenitem->elemen}}
+                                                                </div>
+                                                                <span class="badge text-bg-warning rounded-pill fs-13 hapus-elemen" role="button" data-uuid="{{$elemenitem->uuid}}"><i class="fas fa-close"></i></span>
+                                                            </li>    
+                                                        @endif
+                                                    @endforeach
+                                                </ol>
                                             </div>
                                         </div>
                                     </div>
@@ -139,6 +150,58 @@
                 });
             }
             cConfirm("Peringatan","Sebelum menghapus dimensi, pastikan tidak ada elemen dan sub elemen dalam dimensi bersangkutan",hapusDimensi);
+        });
+        $('.simpan-elemen').click(function() {
+            var dimensi = $('#elemen-dimensi').val();
+            var elemen = $('#elemen').val();
+            var error = 0;
+            $('.validasi-elemen').each(function() {
+                if($(this).val() == "") {
+                    error++;
+                    $(this).addClass('is-invalid').removeClass('is-valid');
+                } else {
+                    $(this).addClass('is-valid').removeClass('is-invalid');
+                }
+            });
+
+            if(error == 0) {
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('penilaian.p5.elemen.tambah')}}",
+                    data: {dimensi : dimensi,elemen: elemen},
+                    headers: {'X-CSRF-TOKEN' : "{{csrf_token()}}"},
+                    success: function(data) {
+                        if(data.success == true) {
+                            removeLoading();
+                            cAlert("green","Sukses","Elemen Berhasil Ditambah",true);
+                        }
+                    },
+                    error: function (data) {console.log(data.responseJSON.message);  }
+                });
+            }
+        });
+        $('.hapus-elemen').click(function() { 
+            var uuid = $(this).data('uuid');           
+            var hapusElemen = () => {
+                loading();
+                var url = "{{route('penilaian.p5.elemen.hapus',':id')}}";
+                url = url.replace(':id',uuid);
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                    success: function (data) {
+                        if(data.success == true) {
+                            removeLoading();
+                            cAlert("green","Berhasil","Elemen Berhasil Dihapus",true);
+                        }
+                        
+                    },
+                    error: function (data) { console.log(data.responseJSON.message) }
+                });
+            }
+            cConfirm("Peringatan","Sebelum menghapus elemen, pastikan tidak ada sub elemen dalam elemen bersangkutan",hapusElemen);
         });
     </script>
 @endsection

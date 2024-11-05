@@ -172,6 +172,8 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/p5/atur','projekAtur')->name('penilaian.p5.atur');
     Route::post('/penilaian/p5/atur/dimensi','projekTambahDimensi')->name('penilaian.p5.dimensi.tambah');
     Route::delete('/penilaian/p5/atur/dimensi/{uuid}/delete','projekDeleteDimensi')->name('penilaian.p5.dimensi.hapus');
+    Route::post('/penilaian/p5/atur/elemen','projekTambahElemen')->name('penilaian.p5.elemen.tambah');
+    Route::delete('/penilaian/p5/atur/elemen/{uuid}/delete','projekDeleteElemen')->name('penilaian.p5.elemen.hapus');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
