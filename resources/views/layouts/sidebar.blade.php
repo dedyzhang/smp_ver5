@@ -100,6 +100,7 @@
                     @endcan
                     @canany(['admin','kurikulum','kepalasekolah'])
                         <li class="submenu-list"><a href="{{ route('agenda.rekap') }}">Rekap Agenda</a></li>
+                        <li class="submenu-list"><a href="{{ route('agenda.batas') }}">Buku Batas</a></li>
                     @endcan
                 </ul>
             </li>
@@ -266,6 +267,9 @@
                 <ul class="submenu collapse" id="menu-cetak">
                     <li class="submenu-list"><a href="{{ route('cetak.siswa.index') }}"> Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.absensi.guru.index') }}"> Absensi Guru</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.harian.index') }}"> Nilai Harian dan Olahan</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.pas.index') }}"> Nilai SAS</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.rapor.index') }}"> Nilai Rapor</a></li>
                 </ul>
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>

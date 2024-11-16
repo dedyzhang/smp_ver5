@@ -9,6 +9,7 @@ use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\JadwalHari;
 use App\Models\JadwalVer;
+use App\Models\Kelas;
 use App\Models\Semester;
 use App\Models\TanggalAbsensi;
 use App\Models\User;
@@ -428,5 +429,84 @@ class AgendaController extends Controller
         $agenda_array = Agenda::with('absensi.siswa', 'pancasila.siswa', 'jadwal')->whereIn('tanggal', $tanggal_array)->where('id_guru', $guru->uuid)->get()->sortBy('jadwal.waktu.waktu_mulai')->sortBy('tanggal')->toArray();
         // dd($agenda_array);
         return view('agenda.rekap.guru', compact('guru', 'tanggal', 'agenda_array', 'jadwal_array', 'idMinggu'));
+    }
+
+    //Buku Batas
+    public function bukuBatas(): View
+    {
+        $tanggal = TanggalAbsensi::orderBy('tanggal')->get()->groupBy(function ($date) {
+            return Carbon::parse($date->tanggal)->format('W Y');
+        });
+        $kelas = Kelas::all()->sortBy('kelas')->sortBy('tingkat');
+        return view('agenda.batas.index', compact('tanggal', 'kelas'));
+    }
+    //Buku Batas - Cek Data Buku Batas
+    public function cekBukuBatas(Request $request)
+    {
+        $tanggal = explode(',', $request->tanggal);
+        $kelas = $request->kelas;
+
+        $tanggal_absensi = TanggalAbsensi::whereIn('uuid', $tanggal)->get();
+        $real_tanggal_absensi = $tanggal_absensi->pluck('tanggal');
+        $jadwal_id_array = array();
+        $jadwal_hari = JadwalHari::all()->sortBy('no_hari')->pluck('uuid', 'no_hari');
+        foreach ($tanggal_absensi as $item) {
+            $id_hari = date('N', strtotime($item->tanggal));
+            if (isset($jadwal_hari[$id_hari])) {
+                $uuid_id_hari = $jadwal_hari[$id_hari];
+                $jadwal_id_array[$uuid_id_hari] = $item->id_jadwal;
+            }
+        }
+        $jadwal_array = array();
+        $jadwal_uuid_array = array();
+        foreach ($jadwal_id_array as $jadwal_key => $jadwal_value) {
+            $jadwal = Jadwal::with('kelas', 'guru', 'pelajaran', 'waktu', 'hari')->where([
+                ['id_jadwal', '=', $jadwal_value],
+                ['id_hari', '=', $jadwal_key],
+                ['id_kelas', '=', $kelas]
+            ])->get();
+            foreach ($jadwal as $item) {
+                array_push($jadwal_uuid_array, $item->uuid);
+                if (empty($jadwal_array[$item->hari->nama_hari])) {
+                    $jadwal_array[$item->hari->nama_hari] = array();
+                    array_push($jadwal_array[$item->hari->nama_hari], array(
+                        'uuid' => $item->uuid,
+                        'id_jadwal' => $item->id_jadwal,
+                        'id_hari' => $item->id_hari,
+                        'id_waktu' => $item->id_waktu,
+                        'jenis' => $item->jenis,
+                        'id_ngajar' => $item->id_ngajar,
+                        'id_pelajaran' => $item->id_pelajaran,
+                        'id_guru' => $item->id_guru,
+                        'guru' => $item->guru,
+                        'pelajaran' => $item->pelajaran,
+                        'kelas' => $item->kelas,
+                        'waktu' => $item->waktu,
+                        'spesial' => $item->spesial,
+                    ));
+                } else {
+                    array_push($jadwal_array[$item->hari->nama_hari], array(
+                        'uuid' => $item->uuid,
+                        'id_jadwal' => $item->id_jadwal,
+                        'id_hari' => $item->id_hari,
+                        'id_waktu' => $item->id_waktu,
+                        'jenis' => $item->jenis,
+                        'id_ngajar' => $item->id_ngajar,
+                        'id_pelajaran' => $item->id_pelajaran,
+                        'id_guru' => $item->id_guru,
+                        'guru' => $item->guru,
+                        'pelajaran' => $item->pelajaran,
+                        'kelas' => $item->kelas,
+                        'waktu' => $item->waktu,
+                        'spesial' => $item->spesial,
+                    ));
+                }
+            }
+        }
+
+        $agenda = Agenda::with('absensi')->whereIn('tanggal', $real_tanggal_absensi)->whereIn('id_jadwal', $jadwal_uuid_array)->get();
+
+
+        return response()->json(['jadwalArray' => $jadwal_array, 'agenda' => $agenda]);
     }
 }
