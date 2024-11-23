@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Exports\AbsensiGuruExport;
 use App\Exports\GuruExport;
 use App\Exports\HarianExport;
+use App\Exports\OlahanExport;
 use App\Exports\PasExport;
+use App\Exports\PenjabaranExport;
+use App\Exports\PtsExport;
 use App\Exports\RaporExport;
 use App\Exports\SiswaExport;
 use App\Models\Kelas;
@@ -95,6 +98,21 @@ class CetakController extends Controller
         return Excel::download(new PasExport($params), $namaFile);
     }
     /**
+     * Cetak Nilai Penilaian Akhir Semester
+     */
+    public function pts(): View
+    {
+        $kelas = Kelas::get()->sortBy('kelas')->sortBy('tingkat');
+        return view('cetak.pts.index', compact('kelas'));
+    }
+    //Cetak Nilai Penilaian Akhir Semester - Proses
+    public function cetakPts(String $params)
+    {
+        $kelas = Kelas::findOrFail($params);
+        $namaFile = 'Nilai PTS Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
+        return Excel::download(new PtsExport($params), $namaFile);
+    }
+    /**
      * Cetak Nilai Harian Per Mapel
      */
     public function harian(): View
@@ -108,5 +126,35 @@ class CetakController extends Controller
         $kelas = Kelas::findOrFail($params);
         $namaFile = 'Nilai Harian Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
         return Excel::download(new HarianExport($params), $namaFile);
+    }
+    /**
+     * Cetak Nilai Harian Per Mapel
+     */
+    public function olahan(): View
+    {
+        $kelas = Kelas::get()->sortBy('kelas')->sortBy('tingkat');
+        return view('cetak.olahan.index', compact('kelas'));
+    }
+    //Cetak Nilai Harian Per Mapel - Proses
+    public function cetakOlahan(String $params)
+    {
+        $kelas = Kelas::findOrFail($params);
+        $namaFile = 'Nilai Olahan Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
+        return Excel::download(new OlahanExport($params), $namaFile);
+    }
+    /**
+     * Cetak Penjabaran Per Mapel
+     */
+    public function penjabaran(): View
+    {
+        $kelas = Kelas::get()->sortBy('kelas')->sortBy('tingkat');
+        return view('cetak.penjabaran.index', compact('kelas'));
+    }
+    //Cetak Nilai Harian Per Mapel - Proses
+    public function cetakPenjabaran(String $params)
+    {
+        $kelas = Kelas::findOrFail($params);
+        $namaFile = 'Nilai Penjabaran Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
+        return Excel::download(new PenjabaranExport($params), $namaFile);
     }
 }

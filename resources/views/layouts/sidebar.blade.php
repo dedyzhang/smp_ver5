@@ -267,9 +267,12 @@
                 <ul class="submenu collapse" id="menu-cetak">
                     <li class="submenu-list"><a href="{{ route('cetak.siswa.index') }}"> Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.absensi.guru.index') }}"> Absensi Guru</a></li>
-                    <li class="submenu-list"><a href="{{ route('cetak.harian.index') }}"> Nilai Harian dan Olahan</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.harian.index') }}"> Nilai Harian</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.olahan.index') }}"> Nilai Olahan</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.pts.index') }}"> Nilai PTS</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.pas.index') }}"> Nilai SAS</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.rapor.index') }}"> Nilai Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.penjabaran.index') }}"> Nilai Penjabaran</a></li>
                 </ul>
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>

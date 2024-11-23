@@ -1,14 +1,39 @@
+@php
+    $totalKolumn = ($countFormatif + $countSumatif) + 2;
+    $totalPembagian = $totalKolumn % 2 == 0 ? $totalKolumn / 2 : ($totalKolumn - 1) / 2;
+@endphp
+<table>
+    <tr>
+        <td style="font-size:13px" colspan="{{$totalKolumn}}" align="center"><b>Daftar Rekapulasi Nilai Formatif dan Sumatif {{$setting->nilai ?? ""}}</b></td>
+    </tr>
+    <tr>
+        <td style="font-size:13px" colspan="{{$totalKolumn}}" align="center"><b>Kelas {{$kelas->tingkat.$kelas->kelas}} Semester {{$semester->semester == 1 ? "Ganjil" : "Genap"}}</b></td>
+    </tr>
+    <tr>
+        <td style="font-size:13px" colspan="{{$totalKolumn}}" align="center"><b>Tahun Pelajaran {{$semester->tp}}</b></td>
+    </tr>
+</table>
+<table>
+    <tr>
+        <td colspan="{{$totalPembagian}}">Nama Pendidik : {{$ngajar->guru->nama}}</td>
+        <td colspan="{{$totalPembagian}}">Kelas : {{$ngajar->kelas->tingkat.$ngajar->kelas->kelas}}</td>
+    </tr>
+    <tr>
+        <td colspan="{{$totalPembagian}}">Semester : {{$semester->semester == 1 ? "Ganjil" : "Genap"}}</td>
+        <td colspan="{{$totalPembagian}}">Tahun Pelajaran : {{$semester->tp}}</td>
+    </tr>
+</table>
 <table class="table table-bordered fs-12 nilai-table">
     <thead>
         <tr class="text-center">
-            <td width="3" rowspan="3" align="center" valign="middle" style="border:1px solid #000;" bgcolor="#ffedb0">No</td>
+            <td width="5" rowspan="3" align="center" valign="middle" style="border:1px solid #000;" bgcolor="#ffedb0">No</td>
             <td width="25" rowspan="3" align="center" valign="middle" style="border:1px solid #000;" bgcolor="#ffedb0">Siswa</td>
             <td class="mainNilaiCell" colspan="{{$countFormatif}}" align="center" style="border:1px solid #000;" bgcolor="#c2ffb0">Formatif</td>
             <td class="mainNilaiCell" colspan="{{$countSumatif}}" align="center" style="border:1px solid #000;" bgcolor="#b0beff">Sumatif</td>
         </tr>
         <tr class="text-center">
             @foreach ($materiArray as $item)
-                <td colspan="{{$item['jumlahTupe'] + 1}}" align="center" style="border:1px solid #000;" bgcolor="#dfffd6">M{{$loop->iteration}}</td>
+                <td height="33" colspan="{{$item['jumlahTupe'] + 1}}" align="center" valign="middle" style="border:1px solid #000; word-wrap:break-word" bgcolor="#dfffd6">{{$item['materi']}}</td>
             @endforeach
             @foreach ($materiArray as $item)
                 <td rowspan="2" align="center" valign="middle" style="border:1px solid #000;" bgcolor="#d6ddff">M{{$loop->iteration}}</td>
@@ -52,4 +77,14 @@
             </tr>
         @endforeach
     </tbody>
+</table>
+
+<p>List Tujuan Pembelajaran</p>
+<table>
+    @foreach ($tupeArray as $tupe)
+        <tr>
+            <td width="7" align="center" style="border:1px solid #000;" bgcolor="#dfffd6">TP{{$loop->iteration}}</td>
+            <td colspan="{{$countFormatif + $countSumatif + 1}}" style="border:1px solid #000;font-size:9px">{{$tupe['tupe']}}</td>
+        </tr>
+    @endforeach
 </table>

@@ -132,8 +132,14 @@ Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(fun
     Route::get('/cetak/rapor/{params}', 'cetakRapor')->name('cetak.rapor.excel');
     Route::get('/cetak/pas', 'pas')->name('cetak.pas.index');
     Route::get('/cetak/pas/{params}', 'cetakPas')->name('cetak.pas.excel');
+    Route::get('/cetak/pts', 'pts')->name('cetak.pts.index');
+    Route::get('/cetak/pts/{params}', 'cetakPts')->name('cetak.pts.excel');
     Route::get('/cetak/harian', 'harian')->name('cetak.harian.index');
     Route::get('/cetak/harian/{params}', 'cetakHarian')->name('cetak.harian.excel');
+    Route::get('/cetak/olahan', 'olahan')->name('cetak.olahan.index');
+    Route::get('/cetak/olahan/{params}', 'cetakOlahan')->name('cetak.olahan.excel');
+    Route::get('/cetak/penjabaran', 'penjabaran')->name('cetak.penjabaran.index');
+    Route::get('/cetak/penjabaran/{params}', 'cetakPenjabaran')->name('cetak.penjabaran.excel');
 });
 
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}

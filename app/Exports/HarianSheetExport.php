@@ -3,9 +3,11 @@
 namespace App\Exports;
 
 use App\Models\Formatif;
+use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\Semester;
+use App\Models\Setting;
 use App\Models\Sumatif;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
@@ -28,6 +30,8 @@ class HarianSheetExport implements FromView, WithTitle
 
     public function view(): View
     {
+        $setting = Setting::where('jenis', 'nama_sekolah')->first();
+        $kelas = Kelas::findOrFail($this->params);
         $semester = Semester::first();
         $sem = $semester->semester;
         $materi = Materi::with('tupe')->where([['id_ngajar', '=', $this->ngajar->uuid], ['semester', '=', $sem]])->get();
@@ -84,7 +88,10 @@ class HarianSheetExport implements FromView, WithTitle
             'formatif_array' => $formatif_array,
             'sumatif_array' => $sumatif_array,
             'materiArray' => $materiArray,
-            'tupeArray' => $tupeArray
+            'tupeArray' => $tupeArray,
+            'setting' => $setting,
+            'kelas' => $kelas,
+            'semester' => $semester
         ]);
     }
     public function title(): string
