@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.0</i>
+            <i class="app-version">5.1.1</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -100,6 +100,7 @@
                     @endcan
                     @canany(['admin','kurikulum','kepalasekolah'])
                         <li class="submenu-list"><a href="{{ route('agenda.rekap') }}">Rekap Agenda</a></li>
+                        <li class="submenu-list"><a href="{{ route('agenda.batas') }}">Buku Batas</a></li>
                     @endcan
                 </ul>
             </li>
@@ -122,6 +123,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.pas') }}"> PAS/T</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.rapor') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.admin.manual') }}"> Rapor Manual</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.p5.index') }}"> Projek P5</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
                 </ul>
@@ -265,6 +267,12 @@
                 <ul class="submenu collapse" id="menu-cetak">
                     <li class="submenu-list"><a href="{{ route('cetak.siswa.index') }}"> Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.absensi.guru.index') }}"> Absensi Guru</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.harian.index') }}"> Nilai Harian</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.olahan.index') }}"> Nilai Olahan</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.pts.index') }}"> Nilai PTS</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.pas.index') }}"> Nilai SAS</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.rapor.index') }}"> Nilai Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.penjabaran.index') }}"> Nilai Penjabaran</a></li>
                 </ul>
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>

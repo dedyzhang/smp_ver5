@@ -28,7 +28,7 @@
                             <td>{{date('d F Y',strtotime($item->tanggal))}}</td>
                                 @if (isset($absensi_array['datang-'.$item->uuid]))
                                 @php
-                                    if(strtotime($absensi_array['datang-'.$item->uuid]) >= strtotime('07:45:00')) {
+                                    if(strtotime($absensi_array['datang-'.$item->uuid]) >= strtotime('07:46:00')) {
                                         $class = "text-danger";
                                     } else {
                                         $class = "";
