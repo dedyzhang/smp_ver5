@@ -30,7 +30,7 @@
                         <td>{{$absensi_array[$item->uuid]['absensi']}}</td>
                         @if (isset($absensi_array[$item->uuid]['waktu']))
                             @php
-                                if(strtotime($absensi_array[$item->uuid]['waktu']) >= strtotime('07:45:00')) {
+                                if(strtotime($absensi_array[$item->uuid]['waktu']) >= strtotime('07:46:00')) {
                                     $class = "text-danger";
                                 } else {
                                     $class = "";

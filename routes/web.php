@@ -41,6 +41,7 @@ use App\Http\Middleware\IsSiswaOrangtua;
 use App\Http\Middleware\IsWalidanSekre;
 use App\Http\Middleware\IsWalikelas;
 use App\Http\Middleware\IsWaliSekredanGuru;
+use Google\Service\Adsense\Row;
 
 Route::get('/', function () {
     return view('home.index');
@@ -127,6 +128,18 @@ Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(fun
     Route::get('/cetak/guru', 'guru')->name('cetak.guru.excel');
     Route::get('/cetak/absensi/guru', 'absensiGuru')->name('cetak.absensi.guru.index');
     Route::get('/cetak/absensi/guru/{dari}/{sampai}', 'cetakAbsensiGuru')->name('cetak.absensi.guru.excel');
+    Route::get('/cetak/rapor', 'rapor')->name('cetak.rapor.index');
+    Route::get('/cetak/rapor/{params}', 'cetakRapor')->name('cetak.rapor.excel');
+    Route::get('/cetak/pas', 'pas')->name('cetak.pas.index');
+    Route::get('/cetak/pas/{params}', 'cetakPas')->name('cetak.pas.excel');
+    Route::get('/cetak/pts', 'pts')->name('cetak.pts.index');
+    Route::get('/cetak/pts/{params}', 'cetakPts')->name('cetak.pts.excel');
+    Route::get('/cetak/harian', 'harian')->name('cetak.harian.index');
+    Route::get('/cetak/harian/{params}', 'cetakHarian')->name('cetak.harian.excel');
+    Route::get('/cetak/olahan', 'olahan')->name('cetak.olahan.index');
+    Route::get('/cetak/olahan/{params}', 'cetakOlahan')->name('cetak.olahan.excel');
+    Route::get('/cetak/penjabaran', 'penjabaran')->name('cetak.penjabaran.index');
+    Route::get('/cetak/penjabaran/{params}', 'cetakPenjabaran')->name('cetak.penjabaran.excel');
 });
 
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
@@ -167,6 +180,13 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/manual/{uuid}/edit', 'manualEdit')->name('penilaian.admin.manual.edit');
     Route::put('/penilaian/manual/{uuid}/update', 'manualUpdate')->name('penilaian.admin.manual.update');
     Route::delete('/penilaian/manual/{uuid}/delete', 'manualDelete')->name('penilaian.admin.manual.delete');
+    //P5
+    Route::get('/penilaian/p5', 'projekIndex')->name('penilaian.p5.index');
+    Route::get('/penilaian/p5/atur', 'projekAtur')->name('penilaian.p5.atur');
+    Route::post('/penilaian/p5/atur/dimensi', 'projekTambahDimensi')->name('penilaian.p5.dimensi.tambah');
+    Route::delete('/penilaian/p5/atur/dimensi/{uuid}/delete', 'projekDeleteDimensi')->name('penilaian.p5.dimensi.hapus');
+    Route::post('/penilaian/p5/atur/elemen', 'projekTambahElemen')->name('penilaian.p5.elemen.tambah');
+    Route::delete('/penilaian/p5/atur/elemen/{uuid}/delete', 'projekDeleteElemen')->name('penilaian.p5.elemen.hapus');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -310,6 +330,8 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(AgendaController::c
     Route::get('/agenda/rekap', 'rekap')->name('agenda.rekap');
     Route::get('/agenda/rekap/tanggal', 'getTanggal')->name('agenda.getTanggal');
     Route::get('/agenda/rekap/{idGuru}/{idMinggu}', 'rekapGuru')->name('agenda.rekap.guru');
+    Route::get('/agenda/batas', 'bukuBatas')->name('agenda.batas');
+    Route::get('/agenda/batas/cek', 'cekBukuBatas')->name('agenda.cekBatas');
 });
 // {----------------------------------------------------END------------------------------------------------------------------}
 
@@ -417,9 +439,9 @@ Route::middleware(IsAdminKesiswaan::class)->controller(PoinController::class)->g
     Route::get('/temp/approve', 'tempApprove')->name('temp.approve');
     Route::get('/temp/disapprove', 'tempDisapprove')->name('temp.disapprove');
 });
-Route::middleware(isPenilaianController::class)->controller(PoinController::class)->group(function() {
-    Route::get('/bukuguru/poin','guruPoinIndex')->name('poin.guru.index');
-    Route::get('/bukuguru/poin/create','guruPoinCreate')->name('poin.guru.create');
+Route::middleware(isPenilaianController::class)->controller(PoinController::class)->group(function () {
+    Route::get('/bukuguru/poin', 'guruPoinIndex')->name('poin.guru.index');
+    Route::get('/bukuguru/poin/create', 'guruPoinCreate')->name('poin.guru.create');
 });
 
 // {----------------------------------------------------END------------------------------------------------------------------}

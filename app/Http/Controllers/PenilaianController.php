@@ -9,6 +9,8 @@ use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\P5Dimensi;
+use App\Models\P5Elemen;
 use App\Models\PAS;
 use App\Models\Pelajaran;
 use App\Models\PerangkatAjar;
@@ -112,7 +114,7 @@ class PenilaianController extends Controller
         return view('penilaian.pas.all', compact('ngajar', 'kelas', 'siswa', 'pas_array'));
     }
     /**
-     * Penilaian PAS Show All Index
+     * Penilaian Rapor Show All Index
      */
     public function raporIndexAll(): View
     {
@@ -121,7 +123,7 @@ class PenilaianController extends Controller
         return view('penilaian.rapor', compact('kelas'));
     }
     /**
-     * Penilaian PAS Show All
+     * Penilaian rapor Show All
      */
     public function raporShowAll(String $id): View
     {
@@ -1046,5 +1048,66 @@ class PenilaianController extends Controller
             }
         }
         return view('perangkat.guru.index', compact('guru', 'perangkat', 'perangkat_array'));
+    }
+    /**
+     * Projek - Halaman Pertama Projek P5
+     */
+    public function projekIndex()
+    {
+        return view('penilaian.projek.index');
+    }
+    /**
+     * Projek - Halaman Atur Dimensi, Elemen dan Subelemen Projek P5
+     */
+    public function projekAtur()
+    {
+        $dimensi = P5Dimensi::all()->sortBy('created_by');
+        $elemen = P5Elemen::all()->sortBy('created_by');
+        return view('penilaian.projek.atur', compact('dimensi', 'elemen'));
+    }
+    /**
+     * Projek - Proses Tambah Dimensi Projek P5
+     */
+    public function projekTambahDimensi(Request $request)
+    {
+
+        P5Dimensi::create([
+            'dimensi' => $request->dimensi
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Projek - Projek Hapus dimensi Projek P5
+     */
+    public function projekDeleteDimensi(String $uuid)
+    {
+        $p5dimensi = P5Dimensi::findOrFail($uuid);
+        $p5dimensi->delete();
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Projek - Proses Tambah Elemen Projek P5
+     */
+    public function projekTambahElemen(Request $request)
+    {
+
+        P5Elemen::create([
+            'id_dimensi' => $request->dimensi,
+            'elemen' => $request->elemen
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Projek - Projek Hapus elemen Projek P5
+     */
+    public function projekDeleteElemen(String $uuid)
+    {
+        $p5elemen = P5Elemen::findOrFail($uuid);
+        $p5elemen->delete();
+
+        return response()->json(['success' => true]);
     }
 }

@@ -9,8 +9,8 @@
     margin: 23mm 5mm 5mm 5mm;
 }
 @page rapor {
-    size: 8.5in 13in;
-    margin: 5mm 5mm 5mm 5mm;
+    size: legal;
+    margin: 2mm 2mm 28mm 5mm;
 }
 @media print {
     body {
@@ -76,9 +76,24 @@
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
         -moz-print-color-adjust: exact;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-rapor .row {
+        background-color: rgba(255, 255, 255, 0.1) !important;
     }
     .printable-rapor .breakafter {
         break-after: page;
+    }
+    .printable-rapor table .transback td,
+    .printable-rapor table .transback th {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-rapor table tr .transback {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-rapor table .table-primary td,
+    .printable-rapor table .table-primary {
+        background-color: #95b1ff !important;
     }
 }
 
@@ -178,6 +193,11 @@
 hr {
     margin: 0 0 10px 0;
     color: #afafaf;
+}
+/* Atur warna pada input ketika focus */
+.form-control:focus {
+    border-color: #636363;
+    box-shadow: none;
 }
 /* Atur Label dalam input */
 .body-contain-customize .form-group label {
