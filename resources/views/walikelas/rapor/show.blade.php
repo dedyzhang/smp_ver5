@@ -5,6 +5,17 @@
         $nama_sekolah = $setting->first(function($item) {
             return $item->jenis == 'nama_sekolah';
         });
+        $kop_rapor = $setting->first(function($item) {
+            return $item->jenis == 'kop_rapor';
+        });
+        $fase_rapor = $setting->first(function($item) {
+            return $item->jenis == "fase_rapor";
+        });
+        if(isset($fase_rapor)) {
+            $fase_rapor_array = unserialize($fase_rapor->nilai);
+        } else {
+            $fase_rapor_array = array();
+        }
     @endphp
     <div class="body-contain-customize col-12">
         <h5>Rapor Kelas</h5>
@@ -50,15 +61,10 @@
     <div class="body-contain-customize col-12 mt-3 printable-rapor">
         {{-- Page1 --}}
         <div style="background:linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.8)), url('{{asset('img/logo.png')}}'); background-size: contain;background-repeat: no-repeat;background-position:50% 70%">
-            <div class="row d-flex align-items-center pb-2" style="border-bottom:5px double #000">
+            <div class="row d-flex align-items-center pt-0 mt-0 pb-2" style="border-bottom:5px double #000">
                 <div class="col-2"><img src="{{asset('img/tutwuri.png')}}" alt="" width="100%"></div>
-                <div class="col-8 text-center">
-                    <h6 class="m-0"><b>YAYASAN BUMI MAITRI</b></h6>
-                    <h4 class="m-0"><b>SMP MAITREYAWIRA TANJUNGPINANG</b></h4>
-                    <h6 class="m-0"><b>TERAKREDITASI A</b></h6>
-                    <p class="m-0 fs-10">Komp. Gedung Pendidikan dan Pelatihan Buddhis Bumi Maitreya</p>
-                    <p class="m-0 fs-10">Jl. Prof. Ir Sutami No 38 (0771) 4505723 Email smpmai.tpi@gmail.com</p>
-                    <p class="m-0 fs-10">Tanjungpinang Kepulauan Riau</p>
+                <div class="col-8 text-center kop-surat">
+                    {!! $kop_rapor && $kop_rapor->nilai ? $kop_rapor->nilai : "" !!}
                 </div>
                 <div class="col-2"><img src="{{asset('img/maitreyawira_square.png')}}" alt="" width="80%"></div>
             </div>
@@ -72,7 +78,7 @@
                     <div class="col-2">No Induk</div>
                     <div class="col-4">: {{$siswa->nis}}</div>
                     <div class="col-3">Fase</div>
-                    <div class="col-3">: D</div>
+                    <div class="col-3">: {{isset($fase_rapor_array[$siswa->kelas->tingkat]) ? $fase_rapor_array[$siswa->kelas->tingkat] : ""}}</div>
                     <div class="col-2">Sekolah</div>
                     <div class="col-4">: {{$nama_sekolah->nilai}}</div>
                     <div class="col-3">Semester</div>
@@ -250,7 +256,7 @@
                                     @endphp
                                     <tr style="height:40px" class="transback">
                                         <td width="20%" style="vertical-align:middle;font-size:9px; padding:3px 5px">{{$item->ekskul}}</td>
-                                        <td width="80%" style="height:40px;vertical-align:middle;font-size:9px; padding:3px 5px"><b>{{$rapor ? "( ".$predikat." )" : ""}}</b>.{{$rapor ? $rapor->deskripsi_positif : ""}}{{$rapor ? $rapor->deskripsi_negatif : ""}}</td>
+                                        <td width="80%" style="height:40px;vertical-align:middle;font-size:9px; padding:3px 5px"><b>{{$rapor ? "( ".$predikat." )" : ""}}</b>.{{$rapor ? $rapor->deskripsi_positif : ""}}</td>
                                     </tr>
                                     @php
                                         $no_ekskul++;
@@ -366,16 +372,11 @@
             </div>
         </div>
         {{-- Page 3 --}}
-        <div style="background:linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.8)), url('{{asset('img/logo.png')}}'); background-size: contain;background-repeat: no-repeat;background-position:center">
+        <div style="background:linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.8)), url('{{asset('img/logo.png')}}'); background-size: contain;background-repeat: no-repeat;background-position:center; position:relative; height:100%">
             <div class="row d-flex align-items-center pb-2" style="border-bottom:5px double #000">
                 <div class="col-2"><img src="{{asset('img/tutwuri.png')}}" alt="" width="100%"></div>
-                <div class="col-8 text-center">
-                    <h6 class="m-0"><b>YAYASAN BUMI MAITRI</b></h6>
-                    <h4 class="m-0"><b>SMP MAITREYAWIRA TANJUNGPINANG</b></h4>
-                    <h6 class="m-0"><b>TERAKREDITASI A</b></h6>
-                    <p class="m-0 fs-10">Komp. Gedung Pendidikan dan Pelatihan Buddhis Bumi Maitreya</p>
-                    <p class="m-0 fs-10">Jl. Prof. Ir Sutami No 38 (0771) 4505723 Email smpmai.tpi@gmail.com</p>
-                    <p class="m-0 fs-10">Tanjungpinang Kepulauan Riau</p>
+                <div class="col-8 text-center kop-surat">
+                    {!! $kop_rapor && $kop_rapor->nilai ? $kop_rapor->nilai : "" !!}
                 </div>
                 <div class="col-2"><img src="{{asset('img/maitreyawira_square.png')}}" alt="" width="80%"></div>
             </div>
@@ -412,7 +413,7 @@
                         $jumlah_inggris = 0;
                         $total_inggris = 0;
                     @endphp
-                    <table class="table table-bordered fs-12" style="border:1px solid #3f3f3f">
+                    <table class="table table-bordered fs-12 penjabaran" style="border:1px solid #3f3f3f">
                         <tr class="table-primary">
                             <td colspan="4"><b>A. English</b></td>
                         </tr>
@@ -596,7 +597,7 @@
                         $jumlah_mandarin = 0;
                         $total_mandarin = 0;
                     @endphp
-                    <table class="table table-bordered fs-12" style="border:1px solid #3f3f3f">
+                    <table class="table table-bordered fs-12 penjabaran" style="border:1px solid #3f3f3f">
                         <tr class="table-primary">
                             <td colspan="4"><b>B. Mandarin</b></td>
                         </tr>
@@ -745,7 +746,7 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-1 mb-1">
+            <div class="row mt-1 mb-1" style="position:absolute;bottom:30px; width:90%;">
                 <div class="col-5">
                     <p class="m-0">Mengetahui</p>
                     <p class="m-0 mb-5">Orang Tua / Wali Murid</p>

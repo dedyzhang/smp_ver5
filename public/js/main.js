@@ -139,6 +139,23 @@ $(document).ready(function () {
         toolbar2:
             "link image media table mergetags | hecklist numlist bullist indent outdent | align lineheight",
     });
+    //Tinymce Kop Rapor
+    tinymce.init({
+        selector: ".tinymce-rapor",
+        content_style:
+            "p,div { margin: 0;margin-bottom:0 } h1,h2,h3,h4,h5,h6 { margin: 0; margin-bottom:0 }",
+        convert_fonts_to_spans: false,
+        external_plugins: {
+            tiny_mce_wiris:
+                "https://cdn.jsdelivr.net/npm/@wiris/mathtype-tinymce6@8.10.0/plugin.min.js",
+        },
+        plugins:
+            "anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount",
+        toolbar1:
+            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough  tiny_mce_wiris_formulaEditor tiny_mce_wiris_formulaEditorChemistry removeformat",
+        toolbar2:
+            "link image media table mergetags | hecklist numlist bullist indent outdent | align lineheight",
+    });
     //Untuk Resize textarea
 });
 function textAreaAdjust(element) {

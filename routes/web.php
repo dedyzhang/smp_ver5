@@ -119,6 +119,8 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/identitasSekolah', 'setIdentitasSekolah')->name('setting.identitas.sekolah');
     Route::post('/settings/raporPelajaran', 'setMapelRapor')->name('setting.rapor.pelajaran');
     Route::post('/settings/tanggalRapor', 'setTanggalRapor')->name('setting.rapor.tanggal');
+    Route::post('/settings/koprapor', 'setKopRapor')->name('setting.rapor.kop');
+    Route::post('/settings/fase', 'setFaseRapor')->name('setting.rapor.fase');
 });
 
 //Admin - Halaman Cetak Excel
