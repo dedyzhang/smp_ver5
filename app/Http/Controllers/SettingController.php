@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Aturan;
 use App\Models\Guru;
+use App\Models\Kelas;
 use App\Models\Nis;
 use App\Models\Pelajaran;
 use App\Models\Semester;
@@ -21,7 +22,8 @@ class SettingController extends Controller
         $setting = Setting::all();
         $guru = Guru::with('users')->orderBy('nama')->get();
         $pelajaran = Pelajaran::all()->sortBy('urutan');
-        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru', 'pelajaran'));
+        $kelas = Kelas::groupBy('tingkat')->get();
+        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru', 'pelajaran', 'kelas'));
     }
     public function updateSemester(Request $request)
     {
@@ -145,6 +147,44 @@ class SettingController extends Controller
             Setting::create([
                 'jenis' => 'tanggal_rapor',
                 'nilai' => $tanggal
+            ]);
+        }
+    }
+    /**
+     * Rapor - Setting Kop Rapor
+     */
+    public function setKopRapor(Request $request)
+    {
+        $kop = $request->kop;
+        $settingPelajaran = Setting::where('jenis', 'kop_rapor')->first();
+
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $kop
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'kop_rapor',
+                'nilai' => $kop
+            ]);
+        }
+    }
+    /**
+     * Rapor - Setting Kop Rapor
+     */
+    public function setFaseRapor(Request $request)
+    {
+        $fase = serialize($request->fase);
+        $settingPelajaran = Setting::where('jenis', 'fase_rapor')->first();
+
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $fase
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'fase_rapor',
+                'nilai' => $fase
             ]);
         }
     }

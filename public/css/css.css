@@ -95,6 +95,14 @@
     .printable-rapor table .table-primary {
         background-color: #95b1ff !important;
     }
+    .table.penjabaran tr td {
+        padding-top: 3px;
+        padding-bottom: 3px;
+    }
+    .printable-rapor .kop-surat > * {
+        margin-bottom: 0;
+        padding: 0;
+    }
 }
 
 .fs-10 {

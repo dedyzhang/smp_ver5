@@ -348,6 +348,7 @@
                                 Setting Rapor
                             </div>
                             <div class="card-body">
+                                {{-- Form Setting Mapel yang ingin ditampilkan di rapor --}}
                                 <p class="fs-12">Setting ini untuk cetak rapor semester</p>
                                 <div class="col-12 form-group">
                                     @php
@@ -378,6 +379,7 @@
                                     </select>
                                     <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-pelajaran"><i class="fa-regular fa-save"></i> Simpan Pelajaran</button>
                                 </div>
+                                {{-- Form Tanggal Rapor --}}
                                 <div class="col-12 form-group mt-3">
                                     @php
                                         $tanggal_rapor_array = $setting->first(function($item) {
@@ -389,6 +391,60 @@
                                     <label for="tanggal_rapor">Tanggal Rapor</label>
                                     <input type="date" class="form-control" id="tanggal_rapor" name="tanggal_rapor" value="{{$tanggal_rapor_array && $tanggal_rapor_array->nilai ? $tanggal_rapor_array->nilai : ""}}">
                                     <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-tanggal-rapor"><i class="fa-regular fa-save"></i> Simpan Tanggal Rapor</button>
+                                </div>
+                                <div class="col-12 form-group mt-5">
+                                    @php
+                                        $kop_rapor_array = $setting->first(function($item) {
+                                            if($item->jenis == "kop_rapor") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <p class="fs-12">Setting Kop Rapor</p>
+                                    <textarea class="tinymce-rapor" id="kopRapor">{{$kop_rapor_array && $kop_rapor_array->nilai ? $kop_rapor_array->nilai : ""}}</textarea>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis mt-3 simpan-kop-surat">
+                                        <i class="fas fa-save"></i> Simpan Kop Rapor
+                                    </button>
+                                </div>
+                                <div class="col-12 form-group mt-5">
+                                    <p><b>Fase Rapor Kurikulum Merdeka</b></p>
+                                    @php
+                                        $fase_rapor = $setting->first(function($item) {
+                                            if($item->jenis == "fase_rapor") {
+                                                return $item;
+                                            }
+                                        });
+
+                                        if(isset($fase_rapor)) {
+                                            $fase_rapor_array = unserialize($fase_rapor->nilai);
+                                        } else {
+                                            $fase_rapor_array = array();
+                                        }
+                                    @endphp
+                                    @foreach ($kelas as $item)
+                                        <div class="row m-0 p-0 mt-1">
+                                            <div class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                                <label for="kelas-{{$item->tingkat}}">Tingkat {{$item->tingkat}}</label>
+                                            </div>
+                                            <div class="col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+                                                <select name="kelas-{{$item->tingkat}}" id="kelas-{{$item->tingkat}}" class="form-control faseKelas" data-tingkat="{{$item->tingkat}}">
+                                                    <option value="A" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "A" ? "selected" : "" : ""}}>A</option>
+                                                    <option value="B" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "B" ? "selected" : "" : ""}}>B</option>
+                                                    <option value="C" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "C" ? "selected" : "" : ""}}>C</option>
+                                                    <option value="D" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "D" ? "selected" : "" : ""}}>D</option>
+                                                    <option value="E" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "E" ? "selected" : "" : ""}}>E</option>
+                                                    <option value="F" {{isset($fase_rapor_array[$item->tingkat]) ? $fase_rapor_array[$item->tingkat] == "F" ? "selected" : "" : ""}}>F</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                    <div class="row m-0 p-0 mt-1">
+                                        <div class="form-group col-12">
+                                            <button class="btn btn-sm btn-warning text-warning-emphasis simpan-fase-rapor">
+                                                <i class="fas fa-save"></i> Simpan Fase Rapor
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <script>
                                     $('.simpan-pelajaran').click(function() {
@@ -427,7 +483,50 @@
                                                 }
                                             })
                                         }
-                                    })
+                                    });
+                                    $('.simpan-kop-surat').click(function() {
+                                        var kopSurat = tinymce.get("kopRapor").getContent();
+                                        if(kopSurat == "") {
+                                            oAlert("orange","Perhatian","Kop rapor tidak boleh kosong");
+                                        } else {
+                                            loading();
+                                            $.ajax({
+                                                type: "POST",
+                                                url: "{{route('setting.rapor.kop')}}",
+                                                data: {kop : kopSurat},
+                                                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                success: function(data) {
+                                                    removeLoading();
+                                                },
+                                                error: function(data) {
+                                                    console.log(data.responseJSON.message);
+                                                }
+                                            })
+                                        }
+                                    });
+                                    $('.simpan-fase-rapor').click(function() {
+                                        var faseArray = [];
+
+                                        $('.faseKelas').each(function() {
+                                            var value = $(this).val();
+                                            var data = $(this).data('tingkat');
+
+                                            faseArray[data] = value;
+                                        });
+                                        loading();
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "{{route('setting.rapor.fase')}}",
+                                            data: {fase : faseArray},
+                                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                            success: function(data) {
+                                                removeLoading();
+                                            },
+                                            error: function(data) {
+                                                console.log(data.responseJSON.message);
+                                            }
+                                        })
+                                    });
                                 </script>
                             </div>
                         </div>
