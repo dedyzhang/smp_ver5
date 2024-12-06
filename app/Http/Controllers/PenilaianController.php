@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AbsensiSiswa;
+use App\Models\Ekskul;
+use App\Models\EkskulSiswa;
 use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\JabarInggris;
@@ -20,9 +23,13 @@ use App\Models\Rapor;
 use App\Models\RaporManual;
 use App\Models\RaporTemp;
 use App\Models\Semester;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\Sumatif;
+use App\Models\TanggalAbsensi;
 use App\Models\Tupe;
+use App\Models\Walikelas;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -147,6 +154,60 @@ class PenilaianController extends Controller
         }
         $siswa = Siswa::where('id_kelas', $id)->orderBy('nama', 'ASC')->get();
         return view('penilaian.rapor.all', compact('ngajar', 'kelas', 'siswa', 'rapor_array'));
+    }
+    /**
+     * Tampilan Rapor Untuk Dicetak
+     */
+    public function raporIndividu(String $uuid)
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $setting = Setting::all();
+        $semester = Semester::first();
+        $walikelas = Walikelas::with('Guru')->where('id_kelas', $siswa->kelas->uuid)->first();
+
+        $ngajar = Ngajar::with('pelajaran')->where('id_kelas', $siswa->kelas->uuid)->get()->sortBy('pelajaran.urutan', SORT_NATURAL);
+        $raporSiswa = Rapor::where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
+        $ekskul = Ekskul::all()->sortBy('urutan', SORT_NATURAL);
+        $ekskulSiswa = EkskulSiswa::with('ekskul')->where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
+
+        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', 1]])->get();
+        $tanggalArray = $jumlahHari->pluck('uuid');
+        $absensi = AbsensiSiswa::selectRaw('
+            COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
+            COUNT(CASE WHEN absensi = "izin" THEN 1 ELSE null END) as "izin",
+            COUNT(CASE WHEN absensi = "alpa" THEN 1 ELSE null END) as "alpa"
+        ')->where('id_siswa', $uuid)->whereIn('id_tanggal', $tanggalArray)->first();
+
+        $pInggris = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 1;
+        });
+        $jabarInggris = JabarInggris::where([['id_ngajar', '=', $pInggris->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
+        $pMandarin = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 2;
+        });
+        $jabarMandarin = JabarMandarin::where([['id_ngajar', '=', $pMandarin->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
+        $kepalaSekolah = $setting->first(function ($elem) {
+            return $elem->jenis == 'kepala_sekolah';
+        });
+
+        if ($kepalaSekolah) {
+            $kepala_sekolah = Guru::findOrFail($kepalaSekolah->nilai);
+        } else {
+            $kepala_sekolah = "";
+        }
+
+        $tanggal_rapor = $setting->first(function ($item) {
+            return $item->jenis == 'tanggal_rapor';
+        });
+        if ($tanggal_rapor != null) {
+            $tanggal = Carbon::parse($tanggal_rapor->nilai)->isoFormat('D MMMM Y');
+        } else {
+            $tanggal = "";
+        }
+
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
     }
 
 

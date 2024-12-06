@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('cetak-siswa')}}
+    {{Breadcrumbs::render('cetak-olahan')}}
     <div class="body-contain-customize col-12">
         <h5><b>Cetak Nilai Olahan</b></h5>
         <p>Halaman Admin untuk mencetak Nilai Rapor Hasil Olahan Guru</p>

@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('ekskul-nilai-show',$ekskul)}}
     <div class="body-contain-customize col-12">
         <h5><b>Nilai Ekskul</b></h5>
         <p>Halaman ini berisi informasi penting mengenai penilaian ekstrakurikuler, termasuk kriteria penilaian, tujuan kegiatan, dan dampaknya terhadap pengembangan keterampilan siswa.</p>
