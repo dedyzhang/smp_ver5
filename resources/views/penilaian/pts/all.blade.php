@@ -1,5 +1,9 @@
 @extends('layouts.main') @section('container')
-    {{ Breadcrumbs::render('penilaian-admin-pts-showAll', $kelas) }}
+    @if (\Request::route()->getName() === 'penilaian.admin.pts.showAll')
+        {{ Breadcrumbs::render('penilaian-admin-pts-showAll', $kelas) }}
+    @else
+        {{ Breadcrumbs::render('walikelas-nilai-pts') }}
+    @endif
     <div class="body-contain-customize col-12">
         <h5>
             <b>PTS Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>

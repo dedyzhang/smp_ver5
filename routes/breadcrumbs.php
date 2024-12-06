@@ -4,6 +4,7 @@ use App\Models\Agenda;
 use App\Models\Aturan;
 use App\Models\Barang;
 use App\Models\Classroom;
+use App\Models\Ekskul;
 use App\Models\Event;
 use App\Models\Guru;
 use App\Models\Jadwal;
@@ -101,7 +102,24 @@ Breadcrumbs::for('cetak-siswa', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('cetak-absensi-guru', function (BreadcrumbsTrail $trail) {
     $trail->push('Absensi Guru', route('cetak.absensi.guru.index'));
 });
-
+Breadcrumbs::for('cetak-rapor', function (BreadcrumbsTrail $trail) {
+    $trail->push('Rapor', route('cetak.rapor.index'));
+});
+Breadcrumbs::for('cetak-olahan', function (BreadcrumbsTrail $trail) {
+    $trail->push('Olahan', route('cetak.olahan.index'));
+});
+Breadcrumbs::for('cetak-harian', function (BreadcrumbsTrail $trail) {
+    $trail->push('Harian', route('cetak.harian.index'));
+});
+Breadcrumbs::for('cetak-pas', function (BreadcrumbsTrail $trail) {
+    $trail->push('PAS', route('cetak.pas.index'));
+});
+Breadcrumbs::for('cetak-pts', function (BreadcrumbsTrail $trail) {
+    $trail->push('PTS', route('cetak.pts.index'));
+});
+Breadcrumbs::for('cetak-penjabaran', function (BreadcrumbsTrail $trail) {
+    $trail->push('Penjabaran', route('cetak.penjabaran.index'));
+});
 //Penilaian.kktp.Breadcrumbs
 Breadcrumbs::for('penilaian-kktp', function (BreadcrumbsTrail $trail) {
     $trail->push('KKTP', route('penilaian.kktp.index'));
@@ -196,6 +214,10 @@ Breadcrumbs::for('penilaian-admin-rapor', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('penilaian-admin-rapor-showAll', function (BreadcrumbsTrail $trail, Kelas $kelas) {
     $trail->parent('penilaian-admin-rapor');
     $trail->push($kelas->tingkat . $kelas->kelas, route('penilaian.admin.rapor.showAll', $kelas));
+});
+Breadcrumbs::for('penilaian-admin-rapor-individu', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('penilaian-admin-rapor-showAll', $siswa->kelas);
+    $trail->push($siswa->nama, route('penilaian.admin.rapor.individu', $siswa->uuid));
 });
 
 Breadcrumbs::for('penilaian-admin-materi-show', function (BreadcrumbsTrail $trail, Pelajaran $pelajaran, Kelas $kelas, Ngajar $ngajar) {
@@ -435,6 +457,28 @@ Breadcrumbs::for('walikelas-classroom-preview', function (BreadcrumbsTrail $trai
     $trail->parent('classroom-show', $ngajar->pelajaran, $ngajar->kelas, $ngajar);
     $trail->push("Preview", route('classroom.preview', ['uuid' => $uuid, 'uuidClassroom' => $classroom->uuid]));
 });
+Breadcrumbs::for('walikelas-rapor', function (BreadcrumbsTrail $trail) {
+    $trail->push('Rapor', route('walikelas.rapor'));
+});
+Breadcrumbs::for('walikelas-rapor-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('walikelas-rapor');
+    $trail->push($siswa->nama, route('walikelas.rapor.show', $siswa->uuid));
+});
+Breadcrumbs::for('walikelas-nilai', function (BreadcrumbsTrail $trail) {
+    $trail->push('Nilai', route('walikelas.nilai'));
+});
+Breadcrumbs::for('walikelas-nilai-pts', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-nilai');
+    $trail->push('PTS', route('walikelas.nilai.pts'));
+});
+Breadcrumbs::for('walikelas-nilai-pas', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-nilai');
+    $trail->push('PAS', route('walikelas.nilai.pas'));
+});
+Breadcrumbs::for('walikelas-nilai-olahan', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-nilai');
+    $trail->push('Olahan', route('walikelas.nilai.olahan'));
+});
 // Sekretaris.Breadcrumbs
 Breadcrumbs::for('sekretaris-absensi', function (BreadcrumbsTrail $trail) {
     $trail->push('Absensi', route('sekretaris.absensi'));
@@ -538,4 +582,27 @@ Breadcrumbs::for('event-show', function (BreadcrumbsTrail $trail, Event $event) 
 Breadcrumbs::for('event-edit', function (BreadcrumbsTrail $trail, Event $event) {
     $trail->parent('event-show', $event);
     $trail->push('Edit', route('event.edit', $event->uuid));
+});
+//Ekskul.Breadcrumbs
+Breadcrumbs::for('ekskul-index', function (BreadcrumbsTrail $trail) {
+    $trail->push('Ekskul', route('ekskul.index'));
+});
+Breadcrumbs::for('ekskul-create', function (BreadcrumbsTrail $trail) {
+    $trail->parent('ekskul-index');
+    $trail->push('Create', route('ekskul.create'));
+});
+Breadcrumbs::for('ekskul-edit', function (BreadcrumbsTrail $trail, Ekskul $ekskul) {
+    $trail->parent('ekskul-index');
+    $trail->push($ekskul->ekskul, route('ekskul.edit', $ekskul->uuid));
+});
+Breadcrumbs::for('ekskul-sort', function (BreadcrumbsTrail $trail) {
+    $trail->parent('ekskul-index');
+    $trail->push('Sort', route('ekskul.sort'));
+});
+Breadcrumbs::for('ekskul-nilai', function (BreadcrumbsTrail $trail) {
+    $trail->push('Nilai Ekskul', route('ekskul.nilai.index'));
+});
+Breadcrumbs::for('ekskul-nilai-show', function (BreadcrumbsTrail $trail, Ekskul $ekskul) {
+    $trail->parent('ekskul-nilai');
+    $trail->push($ekskul->ekskul, route('ekskul.nilai.show', $ekskul->uuid));
 });

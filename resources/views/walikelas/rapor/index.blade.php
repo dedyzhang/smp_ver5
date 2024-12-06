@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('walikelas-rapor')}}
     <div class="body-contain-customize col-12">
         <h5>Rapor Kelas</h5>
         <p>Halaman ini digunakan untuk menampilkan dan mencetak seluruh halaman rapor siswa</p>

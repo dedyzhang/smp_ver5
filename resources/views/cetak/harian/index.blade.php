@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('cetak-siswa')}}
+    {{Breadcrumbs::render('cetak-harian')}}
     <div class="body-contain-customize col-12">
         <h5><b>Cetak Nilai Formatif dan Sumatif</b></h5>
         <p>Halaman Admin untuk mencetak Nilai Formatif dan Sumatif Siswa</p>

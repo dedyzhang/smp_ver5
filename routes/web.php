@@ -160,6 +160,7 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     //show All Rapor
     Route::get('/penilaian/rapor', 'raporIndexAll')->name('penilaian.admin.rapor');
     Route::get('/penilaian/rapor/{uuid}/showAll', 'raporShowAll')->name('penilaian.admin.rapor.showAll');
+    Route::get('/penilaian/rapor/{uuid}', 'raporIndividu')->name('penilaian.admin.rapor.individu');
     //Materi
     Route::get('/penilaian/materi/{uuid}/show', 'materiShow')->name('penilaian.admin.materi.show');
     //formatif
@@ -406,6 +407,10 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/laporan/get', 'laporanGet')->name('walikelas.laporan.get');
     Route::get('/walikelas/rapor', 'raporIndex')->name('walikelas.rapor');
     Route::get('/walikelas/rapor/{uuid}/show', 'raporShow')->name('walikelas.rapor.show');
+    Route::get('/walikelas/nilai', 'nilaiIndex')->name('walikelas.nilai');
+    Route::get('/walikelas/nilai/pts', 'nilaiPTS')->name('walikelas.nilai.pts');
+    Route::get('/walikelas/nilai/pas', 'nilaiPAS')->name('walikelas.nilai.pas');
+    Route::get('/walikelas/nilai/olahan', 'nilaiOlahan')->name('walikelas.nilai.olahan');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

@@ -1,5 +1,9 @@
 @extends('layouts.main') @section('container')
-    {{ Breadcrumbs::render('penilaian-admin-rapor-showAll', $kelas) }}
+    @if (\Request::route()->getName() === 'penilaian.admin.rapor.showAll')
+        {{ Breadcrumbs::render('penilaian-admin-rapor-showAll', $kelas) }}
+    @else
+        {{ Breadcrumbs::render('walikelas-nilai-olahan') }}
+    @endif
     <div class="body-contain-customize col-12">
         <h5>
             <b>Rapor Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>
@@ -14,6 +18,11 @@
                         <td rowspan="3" style="min-width: 170px" width="20%">
                             Nama
                         </td>
+                        @if (\Request::route()->getName() === 'penilaian.admin.rapor.showAll')
+                        <td rowspan="3" style="min-width:80px">
+                           Print Rapor
+                        </td>
+                        @endif
                         <td colspan="{{ $ngajar->count() }}" class="main-cell">
                             Nilai
                         </td>
@@ -43,6 +52,11 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $siswa->nama }}</td>
+                            @if (\Request::route()->getName() === 'penilaian.admin.rapor.showAll')
+                            <td class="text-center">
+                                <a href="{{route('penilaian.admin.rapor.individu',$siswa->uuid)}}"><i class="fas fa-print"></i></a>
+                            </td>
+                            @endif
                             @foreach ($ngajar as $item)
                                 @if (isset($rapor_array[$item->uuid . '.' . $siswa->uuid]))
                                     <td
