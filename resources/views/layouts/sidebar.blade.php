@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.2</i>
+            <i class="app-version">5.1.1</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
