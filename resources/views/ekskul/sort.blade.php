@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('ekskul-sort')}}
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
         <h5><b>Atur Urutan</b></h5>
     </div>

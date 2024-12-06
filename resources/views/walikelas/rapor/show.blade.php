@@ -1,7 +1,12 @@
 @extends('layouts.main')
 
 @section('container')
-     @php
+    @if (\Request::route()->getName() === 'walikelas.rapor.show')
+        {{Breadcrumbs::render('walikelas-rapor-show',$siswa)}}
+    @else
+        {{Breadcrumbs::render('penilaian-admin-rapor-individu',$siswa)}}
+    @endif
+    @php
         $nama_sekolah = $setting->first(function($item) {
             return $item->jenis == 'nama_sekolah';
         });

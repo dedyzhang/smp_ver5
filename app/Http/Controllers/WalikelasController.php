@@ -15,8 +15,10 @@ use App\Models\JabarInggris;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Ngajar;
+use App\Models\PAS;
 use App\Models\Poin;
 use App\Models\PoinTemp;
+use App\Models\PTS;
 use App\Models\Rapor;
 use App\Models\RaporManual;
 use App\Models\Ruang;
@@ -518,5 +520,103 @@ class WalikelasController extends Controller
         }
 
         return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
+    }
+
+    /**
+     * Tampilkan Halaman Nilai PAS - PTS dan Olahan Rekap Seluruh Kelas
+     */
+
+    /**
+     * Halaman Nilai Utama
+     */
+    public function nilaiIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        return view('walikelas.nilai.index', compact('kelas'));
+    }
+    /**
+     * Menampilkan Halaman Nilai PTS
+     */
+    public function nilaiPTS(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*', 'pelajaran', 'pelajaran_singkat'])
+            ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
+            ->where('id_kelas', $kelas->uuid)
+            ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach ($ngajar as $item) {
+            array_push($id_ngajar, $item->uuid);
+        }
+        $pts_array = array();
+        $pts = PTS::whereIn('id_ngajar', $id_ngajar)->where('semester', $semester->semester)->get();
+        foreach ($pts as $item) {
+            $pts_array[$item->id_ngajar . "." . $item->id_siswa] = $item->nilai;
+        }
+        $siswa = Siswa::where('id_kelas', $kelas->uuid)->orderBy('nama', 'ASC')->get();
+        return view('penilaian.pts.all', compact('ngajar', 'kelas', 'siswa', 'pts_array'));
+    }
+    /**
+     * Menampilkan Halaman Nilai PAS
+     */
+    public function nilaiPAS(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*', 'pelajaran', 'pelajaran_singkat'])
+            ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
+            ->where('id_kelas', $kelas->uuid)
+            ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach ($ngajar as $item) {
+            array_push($id_ngajar, $item->uuid);
+        }
+        $pas_array = array();
+        $pas = PAS::whereIn('id_ngajar', $id_ngajar)->where('semester', $semester->semester)->get();
+        foreach ($pas as $item) {
+            $pas_array[$item->id_ngajar . "." . $item->id_siswa] = $item->nilai;
+        }
+        $siswa = Siswa::where('id_kelas', $kelas->uuid)->orderBy('nama', 'ASC')->get();
+        return view('penilaian.pas.all', compact('ngajar', 'kelas', 'siswa', 'pas_array'));
+    }
+    /**
+     * Menampilkan Nilai Olahan
+     */
+    public function nilaiOlahan(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+        $ngajar = Ngajar::with('guru')->select(['ngajar.*', 'pelajaran', 'pelajaran_singkat'])
+            ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
+            ->where('id_kelas', $kelas->uuid)
+            ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')->get();
+        $id_ngajar = array();
+        foreach ($ngajar as $item) {
+            array_push($id_ngajar, $item->uuid);
+        }
+        $rapor_array = array();
+        $rapor = Rapor::whereIn('id_ngajar', $id_ngajar)->where('semester', $semester->semester)->get();
+        foreach ($rapor as $item) {
+            $rapor_array[$item->id_ngajar . "." . $item->id_siswa] = array(
+                "nilai" => $item->nilai,
+                "positif" => $item->deskripsi_positif,
+                "negatif" => $item->deskripsi_negatif
+            );
+        }
+        $siswa = Siswa::where('id_kelas', $kelas->uuid)->orderBy('nama', 'ASC')->get();
+        return view('penilaian.rapor.all', compact('ngajar', 'kelas', 'siswa', 'rapor_array'));
     }
 }

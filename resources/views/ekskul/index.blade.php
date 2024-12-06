@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('ekskul-index')}}
     <div class="body-contain-customize col-12">
         <h5><b>Data Ekskul</b></h5>
         <p>Halaman ini menyediakan platform mudah untuk mengelola data ekstrakurikuler, memungkinkan pengguna untuk menambah, mengedit, dan menghapus informasi kegiatan secara efisien.</p>
