@@ -2,11 +2,21 @@
 
 @section('container')
     {{Breadcrumbs::render('siswa')}}
-    <div class="body-contain-customize col-auto col-md-auto col-sm-auto col-lg-auto col-xl-auto">
+    <div class="body-contain-customize col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex col-xl-auto d-xl-flex gap-2">
             <a href="{{route('siswa.create')}}" class="btn btn-sm btn-warning fs-14">
                 <i class="fa-solid fa-plus"></i>
                 Tambah Siswa
             </a>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-primary dropdown-toggle fs-13" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-upload"></i>
+                Import Siswa
+                </button>
+                <ul class="dropdown-menu">
+                <li><a class="dropdown-item fs-12" href="{{asset('files/Format Import Siswa.xlsx')}}">Download Format</a></li>
+                <li><a class="dropdown-item fs-12" data-bs-toggle="modal" data-bs-target="#import-siswa" href="#">Import Siswa</a></li>
+                </ul>
+            </div>
 
         </div>
     <div class="body-contain-customize col-md-12 col-lg-12 col-sm-12 mt-3">
@@ -19,9 +29,7 @@
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        @elseif (session('error'))
-
-        @endif
+        @elseif (session('error')) @endif
     </div>
     <div class="body-contain-customize col-md-12 col-lg-12 col-xl-12 col-sm-12 col-12 mt-3">
         <div class="row">
@@ -223,6 +231,30 @@
             </div>
         </div>
     </div>
+    <div class="modal fade in p-0" id="import-siswa">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6><b>Import Siswa</b></h6>
+                    <button class="btn btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-12">Pastikan mengupload format excel yang sudah disediakan didalam aplikasi. Download format excel sebelum mengimport data siswa.</p>
+                    <div class="row m-0 p-0 mt-2">
+                        <div class="form-group col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <label class="mb-2" for="importFile">Import Siswa</label>
+                            <input type="file" class="form-control" name="importFile" id="importFile">
+                        </div>
+                        <div class="button-place mt-3">
+                            <button type="button" class="btn btn-sm btn-warning text-warning-emphasis import-siswa-button">
+                                <i class="fa-solid fa-upload"></i> Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         var table = new DataTable('#datatable-siswa',{
             // scrollX : true,
@@ -366,6 +398,35 @@
         $('#kelas').change(function(){
             var val = $(this).val();
             $('input[type="search"]').val(val).keyup();
+        });
+        $('.import-siswa-button').click(function() {
+            var uploadExcel = () => {
+                var formData = new FormData();
+                var files = formData.append('file',document.getElementById('importFile').files[0]);
+                BigLoading('Aplikasi sedang mengimport Data Yang Sudah DiUpload, Mohon Untuk Menunggu Sampai Proses Selesai');
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('siswa.import')}}",
+                    data: formData,
+                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    enctype: 'multipart/form-data',
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        if(data.success == false) {
+                            removeLoadingBig();
+                            oAlert("red","Error",data.message);
+                        } else {
+                            removeLoadingBig();
+                            cAlert("green","Sukses",data.message,true);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                });
+            }
+            cConfirm("Perhatian","Apakah anda yakin untuk mengimport data siswa dengan format excel yang diupload ?",uploadExcel);
         });
     </script>
 @endsection

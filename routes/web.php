@@ -98,6 +98,7 @@ Route::resource('/siswa', SiswaController::class)->middleware(IsAdmin::class);
 Route::middleware(IsAdmin::class)->controller(SiswaController::class)->group(function () {
     Route::post('/siswa/{uuid}/reset/siswa', 'resetSiswa')->name('siswa.reset');
     Route::post('/siswa/{uuid}/reset/password', 'resetOrangtua')->name('siswa.resetOrtu');
+    Route::post('/siswa/importSiswa', 'import')->name('siswa.import');
 });
 
 //Admin - Halaman Data Pelajaran
@@ -185,11 +186,18 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::delete('/penilaian/manual/{uuid}/delete', 'manualDelete')->name('penilaian.admin.manual.delete');
     //P5
     Route::get('/penilaian/p5', 'projekIndex')->name('penilaian.p5.index');
+    Route::get('/penilaian/p5/tambah', 'projekCreate')->name('penilaian.p5.create');
+    Route::post('/penilaian/p5/store', 'projekStore')->name('penilaian.p5.store');
+    Route::get('/penilaian/p5/{uuid}/edit', 'projekEdit')->name('penilaian.p5.edit');
+    Route::put('/penilaian/p5/{uuid}/update', 'projekUpdate')->name('penilaian.p5.update');
     Route::get('/penilaian/p5/atur', 'projekAtur')->name('penilaian.p5.atur');
     Route::post('/penilaian/p5/atur/dimensi', 'projekTambahDimensi')->name('penilaian.p5.dimensi.tambah');
     Route::delete('/penilaian/p5/atur/dimensi/{uuid}/delete', 'projekDeleteDimensi')->name('penilaian.p5.dimensi.hapus');
     Route::post('/penilaian/p5/atur/elemen', 'projekTambahElemen')->name('penilaian.p5.elemen.tambah');
     Route::delete('/penilaian/p5/atur/elemen/{uuid}/delete', 'projekDeleteElemen')->name('penilaian.p5.elemen.hapus');
+    Route::get('/penilaian/p5/atur/elemen/{uuid}/elemen/get', 'projekGetElemen')->name('penilaian.p5.elemen.get');
+    Route::post('penilaian/p5/atur/elemen/subelemen', 'projekTambahSubElemen')->name('penilaian.p5.subelemen.tambah');
+    Route::get('/penilaian/p5/{uuid}/config', 'projekConfig')->name('penilaian.p5.config');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -230,7 +238,7 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/materi/{uuid}/updateTupe/', 'materiUpdateTupe')->name('penilaian.materi.updateTupe');
     Route::delete('/bukuguru/materi/{uuid}/deleteTupe/', 'materiDeleteTupe')->name('penilaian.materi.deleteTupe');
     //formatif
-    Route::put('/bukuguru/formatif/edit', 'formatifEdit')->name('penilaian.formatif.edit');
+    Route::post('/bukuguru/formatif/edit', 'formatifEdit')->name('penilaian.formatif.edit');
     //Sumatif
     Route::put('/bukuguru/sumatif/edit', 'sumatifEdit')->name('penilaian.sumatif.edit');
     //pts
