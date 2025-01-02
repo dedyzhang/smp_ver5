@@ -259,7 +259,7 @@
             });
             var url = "{{route('penilaian.formatif.edit')}}";
             $.ajax({
-                type: "put",
+                type: "post",
                 url: url,
                 headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
                 data: {
