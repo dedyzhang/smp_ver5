@@ -14,7 +14,9 @@ use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\P5Dimensi;
 use App\Models\P5Elemen;
+use App\Models\P5Fasilitator;
 use App\Models\P5Proyek;
+use App\Models\P5ProyekDetail;
 use App\Models\P5Subelemen;
 use App\Models\PAS;
 use App\Models\Pelajaran;
@@ -1235,6 +1237,14 @@ class PenilaianController extends Controller
         return response()->json(['elemen' => $elemen]);
     }
     /**
+     * Projek - Projek Lihat Subelemen dari elemen yang
+     */
+    public function projekGetSubElemen(String $uuid)
+    {
+        $subelemen = P5Subelemen::where('id_elemen', $uuid)->get();
+        return response()->json(['subelemen' => $subelemen]);
+    }
+    /**
      * Projek - Projek tambah subelemen
      */
     public function projekTambahSubElemen(Request $request)
@@ -1254,9 +1264,76 @@ class PenilaianController extends Controller
     {
         $proyek = P5Proyek::findOrFail($uuid);
         $dimensi = P5Dimensi::all()->sortBy('created_by');
-        $elemen = P5Elemen::all()->sortBy('created_by')->toArray();
-        $subelemen = P5Subelemen::all()->sortBy('created_by')->toArray();
+        $proyekDetail = P5ProyekDetail::where('id_proyek', $uuid)->get();
 
-        return view('penilaian.projek.config', compact('proyek', 'dimensi', 'elemen', 'subelemen'));
+        return view('penilaian.projek.config', compact('proyek', 'dimensi', 'proyekDetail'));
+    }
+    /**
+     * Projek - Tambahkan Dimensi, elemen dan Subelemen pada setiap projek
+     */
+    public function projekConfigStore(Request $request, String $uuid)
+    {
+        P5ProyekDetail::create([
+            'id_proyek' => $uuid,
+            'id_dimensi' => $request->dimensi,
+            'id_elemen' => $request->elemen,
+            'id_subelemen' => $request->subelemen
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Projek - Hapus Dimensi, elemen dan Subelemen pada setiap projek
+     */
+    public function projekConfigDelete(String $uuid)
+    {
+        $proyekDetail = P5ProyekDetail::findOrFail($uuid);
+        $proyekDetail->delete();
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Projek - Halaman Fasilitator
+     */
+    public function projekFasilitator(String $uuid): View
+    {
+        $proyek = P5Proyek::findOrFail($uuid);
+        $guru = Guru::all()->sortBy('nama');
+        $kelas = Kelas::where('tingkat', $proyek->tingkat)->get();
+        $fasilitator = P5Fasilitator::where('id_proyek', $uuid)->get()->sortBy('kelas.kelas');
+
+        return view('penilaian.projek.fasilitator', compact('proyek', 'guru', 'kelas', 'fasilitator'));
+    }
+    /**
+     * Projek - Tambahkan Fasilitator
+     */
+    public function projekFasilitatorStore(Request $request, String $uuid)
+    {
+        $find = P5Fasilitator::where([
+            ['id_proyek', '=', $uuid],
+            ['id_kelas', '=', $request->kelas]
+        ])->first();
+
+        if ($find !== null) {
+            return response()->json(['success' => false, 'message' => 'Fasilitator Untuk kelas ini sudah ada']);
+        } else {
+            P5Fasilitator::create([
+                'id_proyek' => $uuid,
+                'id_guru' => $request->fasilitator,
+                'id_kelas' => $request->kelas
+            ]);
+
+            return response()->json(['success' => true]);
+        }
+    }
+    /**
+     * Projek - Hapus Fasilitator
+     */
+    public function projekFasilitatorDelete(String $uuid)
+    {
+        $fasilitator = P5Fasilitator::findOrFail($uuid);
+        $fasilitator->delete();
+
+        return response()->json(['success' => true]);
     }
 }

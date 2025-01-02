@@ -15,6 +15,6 @@ class P5Proyek extends Model
     protected $fillable = [
         'tingkat',
         'judul',
-        'deskripsi'
+        'deskripsi',
     ];
 }

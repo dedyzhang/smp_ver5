@@ -196,8 +196,14 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::post('/penilaian/p5/atur/elemen', 'projekTambahElemen')->name('penilaian.p5.elemen.tambah');
     Route::delete('/penilaian/p5/atur/elemen/{uuid}/delete', 'projekDeleteElemen')->name('penilaian.p5.elemen.hapus');
     Route::get('/penilaian/p5/atur/elemen/{uuid}/elemen/get', 'projekGetElemen')->name('penilaian.p5.elemen.get');
+    Route::get('/penilaian/p5/atur/elemen/{uuid}/subelemen/get', 'projekGetSubElemen')->name('penilaian.p5.subelemen.get');
     Route::post('penilaian/p5/atur/elemen/subelemen', 'projekTambahSubElemen')->name('penilaian.p5.subelemen.tambah');
     Route::get('/penilaian/p5/{uuid}/config', 'projekConfig')->name('penilaian.p5.config');
+    Route::post('/penilaian/p5/{uuid}/config/store', 'projekConfigStore')->name('penilaian.p5.config.store');
+    Route::delete('/penilaian/p5/{uuid}/config/delete', 'projekConfigDelete')->name('penilaian.p5.config.delete');
+    Route::get('/penilaian/p5/{uuid}/fasilitator', 'projekFasilitator')->name('penilaian.p5.fasilitator');
+    Route::post('/penilaian/p5/{uuid}/fasilitator/store', 'projekFasilitatorStore')->name('penilaian.p5.fasilitator.store');
+    Route::delete('/penilaian/p5/{uuid}/fasilitator/delete', 'projekFasilitatorDelete')->name('penilaian.p5.fasilitator.delete');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {

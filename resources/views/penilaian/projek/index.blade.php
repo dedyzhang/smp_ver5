@@ -32,6 +32,9 @@
                             <a href="{{route('penilaian.p5.edit',$item->uuid)}}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" data-bs-title="Edit Proyek" data-bs-placement="top">
                                 <i class="fas fa-pencil"></i>
                             </a>
+                            <a href="{{route('penilaian.p5.fasilitator',$item->uuid)}}" class="btn btn-sm btn-success" data-bs-toggle="tooltip" data-bs-title="Edit Fasilitator" data-bs-placement="top">
+                                <i class="fas fa-users"></i>
+                            </a>
                             <a href="{{route('penilaian.p5.config',$item->uuid)}}" class="btn btn-sm btn-warning text-warning-emphasis" data-bs-toggle="tooltip" data-bs-title="Atur Dimensi" data-bs-placement="top">
                                 <i class="fas fa-gear"></i>
                             </a>
