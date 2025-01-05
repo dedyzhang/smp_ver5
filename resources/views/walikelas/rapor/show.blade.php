@@ -240,7 +240,7 @@
                                         });
                                         if($rapor) {
                                             //Menghitung rentan Nilai
-                                            $kkm = $rapor->kkm;
+                                            $kkm = $ngajarEkskul->kkm;
                                             $interval = round((100 - $kkm) / 3, 0);
                                             $Cdown = $kkm;
                                             $Cup = $kkm + $interval - 1;
