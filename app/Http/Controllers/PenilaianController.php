@@ -12,9 +12,11 @@ use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\P5Deskripsi;
 use App\Models\P5Dimensi;
 use App\Models\P5Elemen;
 use App\Models\P5Fasilitator;
+use App\Models\P5Nilai;
 use App\Models\P5Proyek;
 use App\Models\P5ProyekDetail;
 use App\Models\P5Subelemen;
@@ -86,7 +88,9 @@ class PenilaianController extends Controller
             array_push($id_ngajar, $item->uuid);
         }
         $pts_array = array();
-        $pts = PTS::whereIn('id_ngajar', $id_ngajar)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pts = PTS::whereIn('id_ngajar', $id_ngajar)->where('semester', $sem)->get();
         foreach ($pts as $item) {
             $pts_array[$item->id_ngajar . "." . $item->id_siswa] = $item->nilai;
         }
@@ -117,7 +121,9 @@ class PenilaianController extends Controller
             array_push($id_ngajar, $item->uuid);
         }
         $pas_array = array();
-        $pas = PAS::whereIn('id_ngajar', $id_ngajar)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $pas = PAS::whereIn('id_ngajar', $id_ngajar)->where('semester', $sem)->get();
         foreach ($pas as $item) {
             $pas_array[$item->id_ngajar . "." . $item->id_siswa] = $item->nilai;
         }
@@ -148,7 +154,9 @@ class PenilaianController extends Controller
             array_push($id_ngajar, $item->uuid);
         }
         $rapor_array = array();
-        $rapor = Rapor::whereIn('id_ngajar', $id_ngajar)->get();
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $rapor = Rapor::whereIn('id_ngajar', $id_ngajar)->where('semester', $sem)->get();
         foreach ($rapor as $item) {
             $rapor_array[$item->id_ngajar . "." . $item->id_siswa] = array(
                 "nilai" => $item->nilai,
@@ -1119,7 +1127,8 @@ class PenilaianController extends Controller
     public function projekIndex()
     {
         $proyek = P5Proyek::all()->sortBy('tingkat')->sortBy('created_at');
-        return view('penilaian.projek.index', compact('proyek'));
+        $ifGuru = "no";
+        return view('penilaian.projek.index', compact('proyek', 'ifGuru'));
     }
     /**
      * Projek - Tambah Projek P5
@@ -1335,5 +1344,143 @@ class PenilaianController extends Controller
         $fasilitator->delete();
 
         return response()->json(['success' => true]);
+    }
+    /**
+     * P5 - Get Fasilitator Data
+     */
+    public function projekFasilitatorGet(String $uuid)
+    {
+        $fasilitator = P5Fasilitator::with('kelas', 'guru')->where('id_proyek', $uuid)->get();
+        return response()->json(['fasilitator' => $fasilitator]);
+    }
+    /**
+     * P5 - Halaman Nilai P5
+     */
+    public function projekNilai(String $uuid): View
+    {
+        $fasilitator = P5Fasilitator::findOrFail($uuid);
+        $proyek = P5Proyek::findOrFail($fasilitator->id_proyek);
+        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->get();
+        $id_siswa = $siswa->pluck('uuid');
+        $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $fasilitator->id_proyek)->get();
+        $id_detail = $proyekDetail->pluck('uuid');
+        $countDetail = $proyekDetail->count();
+
+        $nilai = P5Nilai::whereIn('id_siswa', $id_siswa)->whereIn('id_detail', $id_detail)->get();
+        $deskripsi = P5Deskripsi::whereIn('id_siswa', $id_siswa)->where('id_proyek', $fasilitator->id_proyek)->get();
+        $arrayNilai = array();
+        $arrayDeskripsi = array();
+        foreach ($nilai as $item) {
+            $arrayNilai[$item->id_siswa . "." . $item->id_detail] = array(
+                'uuid' => $item->uuid,
+                'nilai' => $item->nilai
+            );
+        }
+        foreach ($deskripsi as $item) {
+            $arrayDeskripsi[$item->id_siswa] = array(
+                'uuid' => $item->uuid,
+                'deskripsi' => $item->deskripsi
+            );
+        }
+        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi'));
+    }
+    /**
+     * P5 - Tambah Nilai P5
+     */
+    public function projekNilaiTambah(Request $request)
+    {
+        $siswa = Siswa::where('id_kelas', $request->idKelas)->get();
+        $proyek = P5Proyek::findOrFail($request->idProyek);
+        $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $request->idProyek)->get();
+        $arrayNilai = array();
+        $arrayDeskripsi = array();
+        foreach ($siswa as $item) {
+            foreach ($proyekDetail as $detail) {
+                $arrayNilai[] = array(
+                    'id_siswa' => $item->uuid,
+                    'id_detail' => $detail->uuid,
+                    'nilai' => 0
+                );
+            }
+            $arrayDeskripsi[] = array(
+                'id_proyek' => $proyek->uuid,
+                'id_siswa' => $item->uuid,
+                'deskripsi' => ''
+            );
+        }
+        P5Nilai::upsert($arrayNilai, ['uuid'], ['nilai']);
+        P5Deskripsi::upsert($arrayDeskripsi, ['uuid'], ['deskripsi']);
+        return response()->json(['success' => 'data berhasil ditambahkan']);
+    }
+    /**
+     * P5 - Simpan Nilai P5
+     */
+    public function projekNilaiStore(Request $request)
+    {
+        $nilai = $request->nilai;
+        $deskripsi = $request->deskripsi;
+
+        Batch::update(new P5Nilai, $nilai, 'uuid');
+        Batch::update(new P5Deskripsi, $deskripsi, 'uuid');
+    }
+    /**
+     * P5 - Hapus Nilai P5
+     */
+    public function projekNilaiHapus(Request $request)
+    {
+        $siswa = Siswa::where('id_kelas', $request->idKelas)->get();
+        $id_siswa = $siswa->pluck('uuid');
+        $proyek = P5Proyek::findOrFail($request->idProyek);
+        $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $request->idProyek)->get();
+        $id_detail = $proyekDetail->pluck('uuid');
+
+        $deleteNilai = P5Nilai::whereIn('id_siswa', $id_siswa)->whereIn('id_detail', $id_detail)->delete();
+        $deleteDeskripsi = P5Deskripsi::whereIn('id_siswa', $id_siswa)->where('id_proyek', $request->idProyek)->delete();
+        return response()->json(['success' => 'data berhasil dihapus']);
+    }
+    /**
+     * ---------------P5 Guru ----------------
+     */
+
+    /**
+     * P5 Guru - Index
+     */
+    public function guruProyekIndex(): View
+    {
+        $id = Auth::user()->uuid;
+        $guru = Guru::where('id_login', $id)->first();
+        $fasilitator = P5Fasilitator::with('kelas')->where('id_guru', $guru->uuid)->get()->sortBy('kelas.kelas')->sortBy('proyek.tingkat');
+        $fasilitator_proyek_id = $fasilitator->pluck('id_proyek');
+        $proyek = P5Proyek::whereIn('uuid', $fasilitator_proyek_id)->get();
+        $ifGuru = "yes";
+        return view('penilaian.projek.index', compact('proyek', 'ifGuru', 'fasilitator'));
+    }
+    public function guruProjekNilai(String $uuid): View
+    {
+        $fasilitator = P5Fasilitator::findOrFail($uuid);
+        $proyek = P5Proyek::findOrFail($fasilitator->id_proyek);
+        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->get();
+        $id_siswa = $siswa->pluck('uuid');
+        $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $fasilitator->id_proyek)->get();
+        $id_detail = $proyekDetail->pluck('uuid');
+        $countDetail = $proyekDetail->count();
+
+        $nilai = P5Nilai::whereIn('id_siswa', $id_siswa)->whereIn('id_detail', $id_detail)->get();
+        $deskripsi = P5Deskripsi::whereIn('id_siswa', $id_siswa)->where('id_proyek', $fasilitator->id_proyek)->get();
+        $arrayNilai = array();
+        $arrayDeskripsi = array();
+        foreach ($nilai as $item) {
+            $arrayNilai[$item->id_siswa . "." . $item->id_detail] = array(
+                'uuid' => $item->uuid,
+                'nilai' => $item->nilai
+            );
+        }
+        foreach ($deskripsi as $item) {
+            $arrayDeskripsi[$item->id_siswa] = array(
+                'uuid' => $item->uuid,
+                'deskripsi' => $item->deskripsi
+            );
+        }
+        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi'));
     }
 }
