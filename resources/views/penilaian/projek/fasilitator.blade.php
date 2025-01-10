@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('proyek-edit-fasilitator',$proyek)}}
     <div class="body-contain-customize col-12">
         <h5>Fasilitator Proyek</h5>
         <p>Halaman ini diperuntukkan admin dan kurikulum dalam pengaturan fasilitator proyek</p>
