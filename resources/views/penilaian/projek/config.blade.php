@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('proyek-edit-dimensi',$proyek)}}
     <div class="body-contain-customize col-12">
         <h5>Pengaturan Dimensi</h5>
         <p>Halaman untuk mengatur dimensi, elemen, subelemen dan pencapaian yang digunakan dalam proyek ini</p>

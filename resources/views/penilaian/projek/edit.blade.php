@@ -1,9 +1,10 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('proyek-edit',$proyek)}}
     <div class="body-contain-customize col-12">
-        <h5>Tambah Proyek</h5>
-        <p>Halaman ini diperuntukkan admin dan kurikulum untuk menambahkan data project per Tahun</p>
+        <h5>Edit Proyek</h5>
+        <p>Halaman ini diperuntukkan admin dan kurikulum untuk mengedit data project per Tahun</p>
     </div>
     <div class="body-contain-customize col-12 mt-3">
         <form method="POST" action="{{route('penilaian.p5.update',$proyek->uuid)}}">

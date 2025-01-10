@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{Breadcrumbs::render('proyek-tambah')}}
     <div class="body-contain-customize col-12">
         <h5>Tambah Proyek</h5>
         <p>Halaman ini diperuntukkan admin dan kurikulum untuk menambahkan data project per Tahun</p>
