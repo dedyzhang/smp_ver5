@@ -124,12 +124,14 @@ class AbsensiController extends Controller
                             $array_agenda[$agenda->uuid] = $agenda->id_jadwal;
                         }
                     }
+                } else {
+                    $jadwal = array();
                 }
             } else {
                 $adaTanggal = "tidak";
             }
-            return View('absensi.kehadiran.index', compact('account', 'adaTanggal', 'kehadiran_array', 'jadwal', 'array_agenda', 'auth'));
         }
+        return View('absensi.kehadiran.index', compact('account', 'adaTanggal', 'kehadiran_array', 'jadwal', 'array_agenda', 'auth'));
     }
 
     /**

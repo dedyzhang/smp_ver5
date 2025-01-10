@@ -13,6 +13,8 @@ use App\Models\JadwalWaktu;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\P5Fasilitator;
+use App\Models\P5Proyek;
 use App\Models\Pelajaran;
 use App\Models\PerangkatAjar;
 use App\Models\Ruang;
@@ -605,4 +607,39 @@ Breadcrumbs::for('ekskul-nilai', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('ekskul-nilai-show', function (BreadcrumbsTrail $trail, Ekskul $ekskul) {
     $trail->parent('ekskul-nilai');
     $trail->push($ekskul->ekskul, route('ekskul.nilai.show', $ekskul->uuid));
+});
+//Proyek.Breadcrumbs
+Breadcrumbs::for('proyek-index', function (BreadcrumbsTrail $trail) {
+    $trail->push('Proyek', route('penilaian.p5.index'));
+});
+Breadcrumbs::for('proyek-atur-dimensi', function (BreadcrumbsTrail $trail) {
+    $trail->parent('proyek-index');
+    $trail->push('Atur Dimensi', route('penilaian.p5.atur'));
+});
+Breadcrumbs::for('proyek-tambah', function (BreadcrumbsTrail $trail) {
+    $trail->parent('proyek-index');
+    $trail->push('Atur Dimensi', route('penilaian.p5.create'));
+});
+Breadcrumbs::for('proyek-edit', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek) {
+    $trail->parent('proyek-index');
+    $trail->push($p5Proyek->judul, route('penilaian.p5.edit', $p5Proyek->uuid));
+});
+Breadcrumbs::for('proyek-edit-fasilitator', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek) {
+    $trail->parent('proyek-index');
+    $trail->push("Fasilitator " . $p5Proyek->judul, route('penilaian.p5.fasilitator', $p5Proyek->uuid));
+});
+Breadcrumbs::for('proyek-edit-dimensi', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek) {
+    $trail->parent('proyek-index');
+    $trail->push("Dimensi " . $p5Proyek->judul, route('penilaian.p5.config', $p5Proyek->uuid));
+});
+Breadcrumbs::for('proyek-nilai', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek, P5Fasilitator $p5Fasilitator) {
+    $trail->parent('proyek-index');
+    $trail->push("Proyek " . $p5Proyek->judul . " " . $p5Fasilitator->kelas->tingkat . $p5Fasilitator->kelas->kelas, route('penilaian.p5.nilai', $p5Fasilitator->uuid));
+});
+Breadcrumbs::for('proyek-index-guru', function (BreadcrumbsTrail $trail) {
+    $trail->push('Proyek', route('penilaian.guru.proyek.index'));
+});
+Breadcrumbs::for('proyek-nilai-guru', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek, P5Fasilitator $p5Fasilitator) {
+    $trail->parent('proyek-index-guru');
+    $trail->push("Proyek " . $p5Proyek->judul . " " . $p5Fasilitator->kelas->tingkat . $p5Fasilitator->kelas->kelas, route('penilaian.guru.proyek.nilai', $p5Fasilitator->uuid));
 });
