@@ -204,6 +204,8 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/p5/{uuid}/fasilitator', 'projekFasilitator')->name('penilaian.p5.fasilitator');
     Route::post('/penilaian/p5/{uuid}/fasilitator/store', 'projekFasilitatorStore')->name('penilaian.p5.fasilitator.store');
     Route::delete('/penilaian/p5/{uuid}/fasilitator/delete', 'projekFasilitatorDelete')->name('penilaian.p5.fasilitator.delete');
+    Route::get('/penilaian/p5/{uuid}/fasilitator/get', 'projekFasilitatorGet')->name('penilaian.p5.fasilitator.get');
+    Route::get('/penilaian/p5/{uuid}/nilai', 'projekNilai')->name('penilaian.p5.nilai');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -233,6 +235,9 @@ Route::middleware(isNgajar::class)->controller(PenilaianController::class)->grou
     //Penjabaran
     Route::get('/bukuguru/penjabaran', 'penjabaranIndex')->name('penilaian.penjabaran.index');
     Route::get('/bukuguru/penjabaran/{uuid}/show', 'penjabaranShow')->name('penilaian.penjabaran.show');
+    //Proyek
+    Route::get('/bukuguru/p5', 'guruProyekIndex')->name('penilaian.guru.proyek.index');
+    Route::get('/bukuguru/p5/{uuid}/nilai', 'guruProjekNilai')->name('penilaian.guru.proyek.nilai');
 });
 //Admin - Guru - Action untuk Penilaian
 Route::middleware(isPenilaianController::class)->controller(PenilaianController::class)->group(function () {
@@ -264,6 +269,10 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/penjabaran/{uuid}/store', 'penjabaranStore')->name('penilaian.penjabaran.store');
     Route::put('/bukuguru/penjabaran/edit', 'penjabaranEdit')->name('penilaian.penjabaran.edit');
     Route::delete('/bukuguru/penjabaran/{uuid}/destroy', 'penjabaranDestroy')->name('penilaian.penjabaran.destroy');
+    //P5
+    Route::post('/penilaian/p5/nilai/tambah', 'projekNilaiTambah')->name('penilaian.p5.nilai.tambah');
+    Route::post('/penilaian/p5/nilai/store', 'projekNilaiStore')->name('penilaian.p5.nilai.store');
+    Route::delete('/penilaian/p5/nilai/hapus', 'projekNilaiHapus')->name('penilaian.p5.nilai.hapus');
 });
 
 //{---------------------------------------------------End------------------------------------------------------------------}
