@@ -188,4 +188,43 @@ class SettingController extends Controller
             ]);
         }
     }
+    /**
+     * Absensi - Atur Cara Absensi
+     */
+    public function setCaraAbsensi(Request $request)
+    {
+        $settingPelajaran = Setting::where('jenis', 'absensi_guru')->first();
+        $pilihan = $request->method;
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $pilihan
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'absensi_guru',
+                'nilai' => $pilihan
+            ]);
+        }
+    }
+    /**
+     * Absensi - Generate Ulang Barcode Absensi
+     */
+    public function setBarcodeAbsensi()
+    {
+        $settingPelajaran = Setting::where('jenis', 'absensi_token')->first();
+        $datang = fake()->regexify('[A-Za-z0-9]{50}');
+        $pulang = fake()->regexify('[A-Za-z0-9]{50}');
+        $token = $datang . "|" . $pulang;
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $token
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'absensi_token',
+                'nilai' => $token
+            ]);
+        }
+        return response()->json(['datang' => $datang, 'pulang' => $pulang]);
+    }
 }
