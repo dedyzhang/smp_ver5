@@ -122,6 +122,8 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/tanggalRapor', 'setTanggalRapor')->name('setting.rapor.tanggal');
     Route::post('/settings/koprapor', 'setKopRapor')->name('setting.rapor.kop');
     Route::post('/settings/fase', 'setFaseRapor')->name('setting.rapor.fase');
+    Route::post('/settings/absensi/guru', 'setCaraAbsensi')->name('setting.absensi.method');
+    Route::get('/settings/absensi/barcode', 'setBarcodeAbsensi')->name('setting.absensi.generateBarcode');
 });
 
 //Admin - Halaman Cetak Excel
