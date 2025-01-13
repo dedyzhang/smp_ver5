@@ -163,6 +163,133 @@
                             }
                         });
                     </script>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 mt-4">
+                        <div class="card">
+                            <div class="card-header">
+                                B. Pengaturan Absensi Kehadiran Guru
+                            </div>
+                            <div class="card-body">
+                                @php
+                                    $absensiGuru = $setting->first(function($item) {
+                                        if($item->jenis == "absensi_guru") {
+                                            return $item;
+                                        }
+                                    });
+                                    $tokenAbsensi = $setting->first(function($item) {
+                                        if($item->jenis == "absensi_token") {
+                                            return $item;
+                                        }
+                                    });
+                                    if($tokenAbsensi) {
+                                        $split = explode('|',$tokenAbsensi->nilai);
+                                        $datang = $split[0];
+                                        $pulang = $split[1];
+                                    } else {
+                                        $datang = "";
+                                        $pulang = "";
+                                    }
+                                @endphp
+                                <div class="row form-group m-0 p-0">
+                                    <div class="col-12 m-0 p-0">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="pilihan-absensi-guru" id="cetak-sendiri" @if ($absensiGuru && $absensiGuru->nilai == "cetak-sendiri") checked @endif value="cetak-sendiri"/>
+                                            <label class="form-check-label" for="cetak-sendiri"> <b>Absensi Qrcode Cetak</b></label>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 m-0 p-0 mb-4 cetak-barcode @if ($absensiGuru && $absensiGuru->nilai == "cetak-sendiri") d-block @else d-none @endif">
+                                        <label for="datang">Absensi Datang</label>
+                                        <input type="text" name="datang" id="datang" value="{{$datang}}" disabled class="form-control">
+                                        <label for="pulang">Absensi Pulang</label>
+                                        <input type="text" name="pulang" id="pulang" value="{{$pulang}}" disabled class="form-control">
+                                        <div class="col-12 d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex m-0 mt-3 p-0 gap-2">
+                                            <button class="btn btn-sm btn-success generate-barcode">
+                                                <i class="fas fa-recycle"></i> Generate Qrcode
+                                            </button>
+                                            <button class="btn btn-sm btn-warning print-barcode">
+                                                <i class="fas fa-print"></i> Print Qrcode
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 m-0 p-0">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="pilihan-absensi-guru" id="barcode-harian" @if ($absensiGuru && $absensiGuru->nilai == "automatis") checked @endif value="automatis" />
+                                            <label class="form-check-label" for="barcode-harian"> <b>Absensi Qrcode Otomatis</b></label>
+                                        </div>
+                                        <p class="fs-12">Qrcode Absensi Akan berubah setiap harinya. Akses Qrcode di link <a href="{{env('APP_URL')."qrcode"}}">{{env('APP_URL')."qrcode"}}</a> ini untuk mengakses barcodenya. <i>Link QR Code diharapkan agar dapat dirahasiakan demi menjaga keamanan dalam proses Absensi.</i></p>
+                                    </div>
+                                    <div class="modal fade in m-0 p-0" id="modal-print-barcode">
+                                        <div class="modal-dialog modal-fullscreen">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <p class="modal-title">Qr Code Absensi</p>
+                                                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="printable-absensi-qrcode">
+                                                        <img src="{{asset('img/barcode-absensi.jpg')}}" width="100%" height="auto">
+                                                        <div id="qrcode-datang"></div>
+                                                        <div id="qrcode-pulang"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button class="btn btn-sm btn-warning text-warning-emphasis" onclick="window.print()">
+                                                        <i class="fas fa-print"></i> Print Qr Code
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <script>
+                                        $('input[name="pilihan-absensi-guru"]').change(function() {
+                                            var pilihan = $('input[name="pilihan-absensi-guru"]:checked').val();
+                                            loading();
+                                            $.ajax({
+                                                type: "post",
+                                                url: "{{route('setting.absensi.method')}}",
+                                                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                data: {method : pilihan},
+                                                success: function(data) {
+                                                    removeLoading();
+                                                    if(pilihan == "cetak-sendiri") {
+                                                        $('.cetak-barcode').removeClass('d-none').addClass('d-block');
+                                                    } else {
+                                                        $('.cetak-barcode').removeClass('d-block').addClass('d-none');
+                                                    }
+                                                },error: function(data) {
+                                                    console.log(data.responseJSON.message);
+                                                }
+                                            })
+                                        });
+                                        $('.generate-barcode').click(function() {
+                                            var generateConfirm = function() {
+                                                loading();
+                                                $.ajax({
+                                                    type: "get",
+                                                    url: "{{route('setting.absensi.generateBarcode')}}",
+                                                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                    success: function(data) {
+                                                        removeLoading();
+                                                        $('#datang').val(data.datang);
+                                                        $('#pulang').val(data.pulang);
+                                                    }
+                                                })
+                                            };
+                                            cConfirm("Perhatian","Apakah anda yakin untuk mengenerate ulang barcode?",generateConfirm);
+                                        });
+                                        $('.print-barcode').click(function() {
+                                            $('#qrcode-datang').html('');
+                                            $('#qrcode-pulang').html('');
+                                            var datang = $('#datang').val();
+                                            var pulang = $('#pulang').val();
+                                            $('#qrcode-datang').qrcode({width: 300, height:300, text: datang});
+                                            $('#qrcode-pulang').qrcode({width: 300, height:300, text: pulang});
+                                            $('#modal-print-barcode').modal("show");
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div

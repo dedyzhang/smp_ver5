@@ -151,12 +151,40 @@ class AbsensiController extends Controller
             $guru = Guru::where('id_login', $auth->uuid)->first();
             $today = date('Y-m-d');
             $tanggal = TanggalAbsensi::where('tanggal', $today)->first();
+            $setting = Setting::all();
+
+            $settingJenisAbsensi = $setting->first(function ($item) {
+                if ($item->jenis == 'absensi_guru') {
+                    return $item;
+                }
+            });
+
+            if ($settingJenisAbsensi && $settingJenisAbsensi->nilai == "cetak-sendiri") {
+                $tokenAbsensi = $setting->first(function ($item) {
+                    if ($item->jenis == 'absensi_token') {
+                        return $item;
+                    }
+                });
+
+                if ($tokenAbsensi) {
+                    $tokenSplit = explode('|', $tokenAbsensi->nilai);
+                    $datang = $tokenSplit[0];
+                    $pulang = $tokenSplit[1];
+                } else {
+                    $datang = '42630aad83430ada2c8178afb9720a11';
+                    $pulang = '2e2dffe1521f8199ff389060f563ad45';
+                }
+            } else {
+                $tanggalqrcode = date('d/m/Y');
+                $datang = md5("datang" . $tanggalqrcode);
+                $pulang = md5("pulang" . $tanggalqrcode);
+            }
 
             if ($tanggal !== null) {
                 if ($jenis == "datang") {
-                    $token = '42630aad83430ada2c8178afb9720a11';
+                    $token = $datang;
                 } else {
-                    $token = '2e2dffe1521f8199ff389060f563ad45';
+                    $token = $pulang;
                 }
                 if ($request->message == $token) {
                     $kehadiran = AbsensiGuru::where([
@@ -265,7 +293,7 @@ class AbsensiController extends Controller
         $tanggal = TanggalAbsensi::where('tanggal', $today)->first();
 
         $tanggalqrcode = date('d/m/Y');
-        $generatemd5 = md5($tanggalqrcode);
+        $generatemd5 = md5("datang" . $tanggalqrcode);
 
         if ($tanggal !== null) {
             // if ($jenis == "datang") {
