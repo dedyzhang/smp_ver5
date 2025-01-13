@@ -51,15 +51,15 @@
     </style>
 </head>
 <body>
-    <marquee><b>BARCODE ABSENSI KEHADIRAN BAGI GURU DAN SISWA</b></marquee>
+    <marquee><b>QR CODE ABSENSI KEHADIRAN BAGI GURU DAN SISWA</b></marquee>
     <div class="row m-0 p-0 main-body">
         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center flex-wrap">
             <div id="qrcodedatang" class="qrcode"></div>
-            <div class="d-block mt-2"><p style="font-size:30px"><b>BARCODE DATANG</b></p></div>
+            <div class="d-block mt-2"><p style="font-size:30px"><b>QR CODE DATANG</b></p></div>
         </div>
         <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center flex-wrap">
             <div id="qrcodepulang" class="qrcode"></div>
-            <div class="d-block mt-2"><p style="font-size:30px"><b>BARCODE PULANG</b></p></div>
+            <div class="d-block mt-2"><p style="font-size:30px"><b>QR CODE PULANG</b></p></div>
         </div>
         {{-- <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
             <p><b>Tata Cara Absensi</b></p>

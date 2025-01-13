@@ -193,7 +193,7 @@
                                     <div class="col-12 m-0 p-0">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="pilihan-absensi-guru" id="cetak-sendiri" @if ($absensiGuru && $absensiGuru->nilai == "cetak-sendiri") checked @endif value="cetak-sendiri"/>
-                                            <label class="form-check-label" for="cetak-sendiri"> <b>Absensi Barcode Cetak</b></label>
+                                            <label class="form-check-label" for="cetak-sendiri"> <b>Absensi Qrcode Cetak</b></label>
                                         </div>
                                     </div>
                                     <div class="col-12 m-0 p-0 mb-4 cetak-barcode @if ($absensiGuru && $absensiGuru->nilai == "cetak-sendiri") d-block @else d-none @endif">
@@ -203,24 +203,25 @@
                                         <input type="text" name="pulang" id="pulang" value="{{$pulang}}" disabled class="form-control">
                                         <div class="col-12 d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex m-0 mt-3 p-0 gap-2">
                                             <button class="btn btn-sm btn-success generate-barcode">
-                                                <i class="fas fa-recycle"></i> Generate Barcode
+                                                <i class="fas fa-recycle"></i> Generate Qrcode
                                             </button>
                                             <button class="btn btn-sm btn-warning print-barcode">
-                                                <i class="fas fa-print"></i> Print Barcode
+                                                <i class="fas fa-print"></i> Print Qrcode
                                             </button>
                                         </div>
                                     </div>
                                     <div class="col-12 m-0 p-0">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="pilihan-absensi-guru" id="barcode-harian" @if ($absensiGuru && $absensiGuru->nilai == "automatis") checked @endif value="automatis" />
-                                            <label class="form-check-label" for="barcode-harian"> <b>Absensi Barcode Otomatis</b></label>
+                                            <label class="form-check-label" for="barcode-harian"> <b>Absensi Qrcode Otomatis</b></label>
                                         </div>
+                                        <p class="fs-12">Qrcode Absensi Akan berubah setiap harinya. Akses Qrcode di link <a href="{{env('APP_URL')."qrcode"}}">{{env('APP_URL')."qrcode"}}</a> ini untuk mengakses barcodenya. <i>Link QR Code diharapkan agar dapat dirahasiakan demi menjaga keamanan dalam proses Absensi.</i></p>
                                     </div>
                                     <div class="modal fade in m-0 p-0" id="modal-print-barcode">
                                         <div class="modal-dialog modal-fullscreen">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <p class="modal-title">Barcode Absensi</p>
+                                                    <p class="modal-title">Qr Code Absensi</p>
                                                     <button class="btn-close" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body">
@@ -232,7 +233,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button class="btn btn-sm btn-warning text-warning-emphasis" onclick="window.print()">
-                                                        <i class="fas fa-print"></i> Print Barcode
+                                                        <i class="fas fa-print"></i> Print Qr Code
                                                     </button>
                                                 </div>
                                             </div>
