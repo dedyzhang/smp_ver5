@@ -15,10 +15,10 @@
             background-color: #F3FDFE;
         }
         .main-body {
-            min-height:70vh;
+            min-height:100vh;
         }
         .main-body::before {
-            content: 'a';
+            content: ' ';
             width: 100%;
             height: 100%;
             opacity: 0.3;
@@ -30,45 +30,60 @@
             background-size: 300px;
             background-position: bottom 0 right 0;
         }
-        #qrcode {
+        marquee {
+            font-size:50px;
+            margin-top:10px;
+            margin-bottom:30px;
+        }
+        .qrcode {
             width:100%;
             display: flex;
             justify-content: center;
         }
-        #qrcode canvas {
-            width:50%;
+        .qrcode canvas {
+            width:70%;
         }
         @media screen and (max-width:900px) {
-            #qrcode canvas {
+            .qrcode {
                 display:none;
             }
         }
     </style>
 </head>
 <body>
-    <h1 class="mt-3 mb-5" style="text-align: center;"><b>Absensi Kehadiran Siswa</b></h1>
+    <marquee><b>BARCODE ABSENSI KEHADIRAN BAGI GURU DAN SISWA</b></marquee>
     <div class="row m-0 p-0 main-body">
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center">
-            <div id="qrcode"></div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center flex-wrap">
+            <div id="qrcodedatang" class="qrcode"></div>
+            <div class="d-block mt-2"><p style="font-size:30px"><b>BARCODE DATANG</b></p></div>
         </div>
-        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
-            <p><b>Tata Cara Absensi Siswa</b></p>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 d-flex justify-content-center flex-wrap">
+            <div id="qrcodepulang" class="qrcode"></div>
+            <div class="d-block mt-2"><p style="font-size:30px"><b>BARCODE PULANG</b></p></div>
+        </div>
+        {{-- <div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6">
+            <p><b>Tata Cara Absensi</b></p>
             <ol>
                 <li>Buka Aplikasi website ataupun kunjungi website "https://smpmaitreyawiratpi.sch.id"</li>
-                <li>Setelah itu login menggunakan NIS dan Password Masing-masing</li>
-                <li>Masuk ke menu absensi siswa > Absen Kehadiran dan klik tombol hijau bertulisan "Absen Kehadiran"</li>
+                <li>Setelah itu login menggunakan NIS ( Siswa ) dan NIK ( Guru ) dan Password Masing-masing</li>
+                <li>Masuk ke menu absensi > Absen Kehadiran dan klik tombol hijau bertulisan "Absen Kehadiran"</li>
                 <li>Scan Barcode Diatas, pastikan sudah mengizinkan permission pada kamera</li>
             </ol>
-        </div>
+        </div> --}}
     </div>
 </body>
 <script>
     var date = moment().format('DD/MM/YYYY');
-    console.log(date);
-    var md = $.md5(date);
-    console.log(md);
-    var qrcode = new QRCode(document.getElementById("qrcode"), {
-        text: md,
+    var datang = $.md5("datang"+date);
+    var pulang = $.md5("pulang"+date);
+    var qrcodeDatang = new QRCode(document.getElementById("qrcodedatang"), {
+        text: datang,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    var qrcodePulang = new QRCode(document.getElementById("qrcodepulang"), {
+        text: pulang,
         colorDark : "#000000",
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
