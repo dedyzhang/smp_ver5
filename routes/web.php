@@ -124,6 +124,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/fase', 'setFaseRapor')->name('setting.rapor.fase');
     Route::post('/settings/absensi/guru', 'setCaraAbsensi')->name('setting.absensi.method');
     Route::get('/settings/absensi/barcode', 'setBarcodeAbsensi')->name('setting.absensi.generateBarcode');
+    Route::post('/settings/walikelas/harian', 'setAksesHarianWalikelas')->name('setting.walikelas.harian');
 });
 
 //Admin - Halaman Cetak Excel
@@ -436,6 +437,8 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/pts', 'nilaiPTS')->name('walikelas.nilai.pts');
     Route::get('/walikelas/nilai/pas', 'nilaiPAS')->name('walikelas.nilai.pas');
     Route::get('/walikelas/nilai/olahan', 'nilaiOlahan')->name('walikelas.nilai.olahan');
+    Route::get('/walikelas/nilai/harian', 'nilaiHarian')->name('walikelas.nilai.harian');
+    Route::get('/walikelas/nilai/harian/{uuid}/get', 'nilaiHarianGet')->name('walikelas.nilai.harian.get');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

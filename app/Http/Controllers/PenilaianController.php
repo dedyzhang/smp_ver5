@@ -53,8 +53,9 @@ class PenilaianController extends Controller
     public function index(): View
     {
         $pelajaran = Pelajaran::get()->sortBy('urutan');
+        $akses_walikelas = false;
 
-        return view('penilaian.index', compact('pelajaran'));
+        return view('penilaian.index', compact('pelajaran', 'akses_walikelas'));
     }
     /**
      * Penilaian Index Get Pelajaran

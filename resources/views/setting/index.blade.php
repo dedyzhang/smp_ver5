@@ -39,6 +39,20 @@
             <li class="nav-item" role="presentation">
                 <button
                     class="nav-link"
+                    id="penilaian-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#penilaian"
+                    type="button"
+                    role="tab"
+                    aria-controls="penilaian"
+                    aria-selected="false"
+                >
+                    Penilaian
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
                     id="profile-tab"
                     data-bs-toggle="tab"
                     data-bs-target="#profile"
@@ -659,6 +673,53 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div
+                class="tab-pane p-2"
+                id="penilaian"
+                role="tabpanel"
+                aria-labelledby="penilaian-tab"
+            >
+                <div class="row m-0 p-0 pt-2">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0">
+                        <div class="card">
+                            <div class="card-header">
+                                Nilai Harian Untuk Walikelas
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Aktifkan fitur di bawah ini untuk memberikan akses kepada wali kelas agar dapat melihat nilai harian.</p>
+                                <div class="row m-0 p-0">
+                                    <div class="form-check form-switch col-12">
+                                        <input class="form-check-input" name="harian-walikelas" type="checkbox" role="switch" id="harian-walikelas">
+                                        <label class="form-check-label" for="harian-walikelas">Fitur Akses Walikelas</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    $('input[name="harian-walikelas"]').change(function() {
+                        if($(this).is(':checked')) {
+                            var akses = 1;
+                        } else {
+                            var akses = 0;
+                        }
+                        loading();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{route('setting.walikelas.harian')}}",
+                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                            data: {akses},
+                            success: function(data) {
+                                removeLoading();
+                            },
+                            error: function(data) {
+                                console.log(data.responseJSON.message);
+                            }
+                        })
+                    })
+                </script>
             </div>
             <div
                 class="tab-pane p-2"

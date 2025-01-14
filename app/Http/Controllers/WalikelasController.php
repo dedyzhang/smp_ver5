@@ -16,6 +16,7 @@ use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Ngajar;
 use App\Models\PAS;
+use App\Models\Pelajaran;
 use App\Models\Poin;
 use App\Models\PoinTemp;
 use App\Models\PTS;
@@ -535,7 +536,8 @@ class WalikelasController extends Controller
         $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
         $idKelas = $guru->walikelas->id_kelas;
         $kelas = Kelas::with('siswa')->findOrFail($idKelas);
-        return view('walikelas.nilai.index', compact('kelas'));
+        $setting = Setting::all();
+        return view('walikelas.nilai.index', compact('kelas', 'setting'));
     }
     /**
      * Menampilkan Halaman Nilai PTS
@@ -618,5 +620,41 @@ class WalikelasController extends Controller
         }
         $siswa = Siswa::where('id_kelas', $kelas->uuid)->orderBy('nama', 'ASC')->get();
         return view('penilaian.rapor.all', compact('ngajar', 'kelas', 'siswa', 'rapor_array'));
+    }
+    /**
+     * Menampilkan Nilai Olahan
+     */
+    public function nilaiHarian(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+        $pelajaran = Pelajaran::get()->sortBy('urutan');
+        $setting = Setting::all();
+        $akses_nilai = $setting->first(function ($elem) {
+            return $elem->jenis == "akses_harian_walikelas";
+        });
+        $akses_walikelas = true;
+
+        if ($akses_nilai && $akses_nilai->nilai == 1) {
+            return view('penilaian.index', compact('pelajaran', 'akses_walikelas'));
+        } else {
+            return view('home.index');
+        }
+    }
+    public function nilaiHarianGet(String $uuid)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $kelas = Kelas::with('siswa')->findOrFail($idKelas);
+        $semester = Semester::first();
+        $ngajar = Ngajar::with('kelas', 'pelajaran', 'guru')->where([
+            ['id_pelajaran', '=', $uuid],
+            ['id_kelas', '=', $kelas->uuid]
+        ])->get();
+        return response()->json(["success" => true, "data" => $ngajar]);
     }
 }
