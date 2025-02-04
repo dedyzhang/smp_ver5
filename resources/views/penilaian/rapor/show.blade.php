@@ -106,15 +106,17 @@
                                 //Menghitung rata rata formatif
                                 $array_list_nilai = [];
                                 foreach ($tupeArray as $tupe) {
-                                    $nilaiFormatif += $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'];
-                                    array_push($array_list_nilai, [
-                                        'uuid' => $tupe['uuid'],
-                                        'tupe' => $tupe['tupe'],
-                                        'nilai' => $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'],
-                                    ]);
-                                    $jumlah++;
+                                    if(isset($formatif_array[$tupe['uuid'] . '.' . $siswa->uuid])) {
+                                        $nilaiFormatif += $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'];
+                                        array_push($array_list_nilai, [
+                                            'uuid' => $tupe['uuid'],
+                                            'tupe' => $tupe['tupe'],
+                                            'nilai' => $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'],
+                                        ]);
+                                        $jumlah++;
+                                    }
                                 }
-                                if (count($tupeArray) > 0) {
+                                if (count($tupeArray) > 0 && $jumlah > 0) {
                                     $rata2Formatif = round($nilaiFormatif / $jumlah, 0);
                                     //Mencari Deskripsi Tertinggi dan terendah
                                     array_multisort(

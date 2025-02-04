@@ -84,18 +84,24 @@
                                 @endphp
                                 @foreach ($tupeArray as $tupe)
                                     @if ($tupe['id_materi'] === $item['uuid'])
-                                        @php
-                                            $jumlah += $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'];
-                                            $countMateri += 1;
-                                        @endphp
-                                        <td width="5%" data-formatif="{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['uuid']}}" contenteditable="true" class="text-center subtab subtab_{{$tupe['id_materi']}} nilai_{{$tupe['id_materi']}} nilai editable @if ($formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm)
-                                        text-danger bg-danger-subtle
-                                        @endif">{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                        @if (isset($formatif_array[$tupe['uuid'].".".$siswa->uuid]))
+                                            @php
+                                                $jumlah += $formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'];
+                                                $countMateri += 1;
+                                            @endphp
+                                            <td width="5%" data-formatif="{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['uuid']}}" contenteditable="true" class="text-center subtab subtab_{{$tupe['id_materi']}} nilai_{{$tupe['id_materi']}} nilai editable @if ($formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                        @else
+                                            <td width="5%" class="text-center subtab subtab_{{$tupe['id_materi']}} null-nilai">-</td>
+                                        @endif
                                     @endif
                                 @endforeach
-                                    <td width="5%" class="text-center nilai_{{$item['uuid']}} end-cell @if (round($jumlah / $countMateri ,0) < $ngajar->kkm)
+                                    @if ($countMateri > 0)
+                                        <td width="5%" class="text-center nilai_{{$item['uuid']}} end-cell @if (round($jumlah / $countMateri ,0) < $ngajar->kkm)
                                         text-danger bg-danger-subtle
-                                    @endif">{{round($jumlah / $countMateri,0)}}</td>
+                                        @endif">{{round($jumlah / $countMateri,0)}}</td>
+                                    @else
+                                        <td width="5%">-</td>
+                                    @endif
                             @endforeach
                         </tr>
                     @endforeach
@@ -119,7 +125,7 @@
             $(this).selectText();
         });
         $('.nilai.editable').on('focusout',function(){
-            if($(this).is(':empty')) {
+            if($(this).is(':empty') || $(this).html() == '<br>') {
                 $(this).html(0);
             } else if(parseInt($(this).text()) > 100) {
                 $(this).html(100);
@@ -179,14 +185,16 @@
                 $(ini).closest('td').addClass('text-danger').addClass('bg-danger-subtle');
             }
             //Ambil Semua Nilai didalam Materi Tersebut
-            var allNilai = $(ini).closest('tr').find('.nilai_'+SecIndex).not('.end-cell');
+            var allNilai = $(ini).closest('tr').find('.nilai_'+SecIndex).not('.end-cell','.null-nilai');
 
             var rata2 = 0;
             var jumlahMateri;
             //Pembagian rata rata semua nilai
             $.each(allNilai,function(i,val){
-                rata2 += parseInt(allNilai.eq(i).text());
-                jumlahMateri = i+1;
+                if(allNilai.eq(i).text() != "-") {
+                    rata2 += parseInt(allNilai.eq(i).text());
+                    jumlahMateri = i+1;
+                }
             });
             var rataRata = Math.round(rata2 / parseInt(jumlahMateri));
             //masukkan nilai kedalam table

@@ -275,7 +275,11 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $sem = $semester->semester;
         $materi = Materi::with('tupe')->where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
-        return view("penilaian.materi.show", compact('ngajar', 'materi'));
+        $listNgajar = Ngajar::with('pelajaran', 'kelas')->where([
+            ['id_pelajaran', '=', $ngajar->id_pelajaran],
+            ['id_guru', '=', $ngajar->id_guru]
+        ])->get();
+        return view("penilaian.materi.show", compact('ngajar', 'materi', 'listNgajar'));
     }
     /**
      * Materi - Tambah Materi
@@ -297,24 +301,11 @@ class PenilaianController extends Controller
             $tupe_array = array();
             for ($i = 1; $i <= $request->tupe; $i++) {
                 array_push($tupe_array, array(
-                    "id_materi" => $materi->uuid
+                    "id_materi" => $materi->uuid,
+                    "show" => 0,
                 ));
             }
             $tupe = Tupe::upsert($tupe_array, ['uuid']);
-
-            $getTupe = Tupe::where('id_materi', $materi->uuid)->get();
-            $formatif_array = array();
-            for ($i = 0; $i < $request->tupe; $i++) {
-                foreach ($ngajar->siswa as $siswa) {
-                    array_push($formatif_array, array(
-                        "id_materi" => $materi->uuid,
-                        "id_tupe" => $getTupe[$i]->uuid,
-                        "id_siswa" => $siswa->uuid,
-                        'nilai' => 0
-                    ));
-                }
-            }
-            $formatif = Formatif::upsert($formatif_array, ['uuid'], ['id_materi', 'id_tupe', 'id_siswa', 'nilai']);
             $sumatif_array = array();
 
             foreach ($ngajar->siswa as $siswa) {
@@ -359,23 +350,13 @@ class PenilaianController extends Controller
     public function materiCreateTupe(Request $request, String $uuid)
     {
         $tupe = Tupe::create([
-            "id_materi" => $uuid
+            "id_materi" => $uuid,
+            "show" => 0,
         ]);
         $newTupe = $request->tupe + 1;
         $materi = Materi::findOrFail($uuid)->update([
             "tupe" => $newTupe
         ]);
-        $formatif_array = array();
-        $ngajar = Ngajar::with('siswa')->findOrFail($request->idNgajar);
-        foreach ($ngajar->siswa as $siswa) {
-            array_push($formatif_array, array(
-                "id_materi" => $uuid,
-                "id_tupe" => $tupe->uuid,
-                "id_siswa" => $siswa->uuid,
-                'nilai' => 0
-            ));
-        }
-        $formatif = Formatif::upsert($formatif_array, ['uuid'], ['id_materi', 'id_tupe', 'id_siswa', 'nilai']);
         return response()->json(["success" => true]);
     }
     /**
@@ -407,6 +388,93 @@ class PenilaianController extends Controller
             $tupe->delete();
             $formatif = Formatif::where('id_tupe', $uuid)->delete();
 
+            return response()->json(["success" => true]);
+        }
+    }
+    /**
+     * Materi - Update Nilai Formatif pada Materi
+     */
+    public function materiTambahkanFormatif(Request $request)
+    {
+        $id_materi = $request->idMateri;
+        $id_tupe = $request->idTupe;
+        $id_ngajar = $request->idNgajar;
+
+        $ngajar = Ngajar::with('siswa')->findOrFail($id_ngajar);
+        $array_insert = array();
+        foreach ($ngajar->siswa as $siswa) {
+            array_push($array_insert, array(
+                "id_materi" => $id_materi,
+                "id_tupe" => $id_tupe,
+                "id_siswa" => $siswa->uuid,
+                'nilai' => 0
+            ));
+        }
+        $formatif = Formatif::upsert($array_insert, ['uuid'], ['id_materi', 'id_tupe', 'id_siswa', 'nilai']);
+
+        $tupe = Tupe::findOrFail($id_tupe)->update([
+            'show' => 1
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Materi - Hapus Tujuan Pembelajaran pada halaman materi
+     */
+    public function materiHapusFormatif(Request $request)
+    {
+        $id_materi = $request->idMateri;
+        $id_tupe = $request->idTupe;
+
+        $formatif = Formatif::where([
+            ['id_materi', '=', $id_materi],
+            ['id_tupe', '=', $id_tupe]
+        ]);
+
+        $formatif->delete();
+
+        $tupe = Tupe::findOrFail($id_tupe)->update([
+            'show' => 0
+        ]);
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Materi - Duplikat Materi Ke Kelas Lain
+     */
+    public function materiDuplikatMateri(Request $request)
+    {
+        $smt = Semester::first();
+        $ngajar = Ngajar::with('siswa')->find($request->ngajar);
+        $materi = Materi::with('Tupe')->findOrFail($request->materi);
+        $semester = $smt->semester;
+        if ($ngajar->siswa->count() === 0) {
+            return response()->json(["success" => false, "message" => 'Data Ngajar belum memiliki siswa']);
+        } else {
+            $materi_insert = Materi::create([
+                "id_ngajar" => $ngajar->uuid,
+                "materi" => $materi->materi,
+                "tupe" => $materi->tupe,
+                "semester" => $semester
+            ]);
+            $tupe_array = array();
+            foreach ($materi->Tupe as $tupe) {
+                array_push($tupe_array, array(
+                    "id_materi" => $materi_insert->uuid,
+                    'tupe' => $tupe->tupe,
+                    "show" => 0,
+                ));
+            }
+            $tupe = Tupe::upsert($tupe_array, ['uuid']);
+            $sumatif_array = array();
+
+            foreach ($ngajar->siswa as $siswa) {
+                array_push($sumatif_array, array(
+                    "id_materi" => $materi_insert->uuid,
+                    "id_siswa" => $siswa->uuid,
+                    "nilai" => 0
+                ));
+            }
+            $sumatif = Sumatif::upsert($sumatif_array, ['uuid'], ['id_materi', 'id_siswa', 'nilai']);
             return response()->json(["success" => true]);
         }
     }
