@@ -40,6 +40,7 @@
     <div class="row ms-0 ps-0 gy-3">
         <div class="body-contain-customize col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto">
             <button class="btn btn-sm btn-warning text-light" data-bs-toggle="modal" data-bs-target="#modal-tambah-materi"><i class="fas fa-plus"></i> Tambah Materi</button>
+            <button class="btn btn-sm btn-primary text-light" data-bs-toggle="modal" data-bs-target="#modal-duplikat-materi"><i class="fas fa-copy"></i> Duplikat Materi</button>
         </div>
         <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <p><b>List Materi</b></p>
@@ -49,6 +50,7 @@
                         <tr>
                             <td>Nama Materi</td>
                             <td colspan="2">Tujuan Pembelajaran</td>
+                            <td>#</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,12 +60,23 @@
                                     <tr data-materi="{{$mtri->uuid}}" data-tupe="{{$tupe->uuid}}" data-jumlahtupe="{{$mtri->tupe}}">
                                         <td width="25%" class="materi-view" style="min-width: 150px; cursor: pointer;" rowspan="{{$mtri->tupe}}">{{$mtri->materi}}</td>
                                         <td width="7%" class="text-center">F0{{$loop->iteration}}</td>
-                                        <td width="68%" class="tupe-view" style="min-width: 200px;cursor: pointer;">{{$tupe->tupe}}</td>
+                                        <td width="58%" class="tupe-view" style="min-width: 200px;cursor: pointer;">{{$tupe->tupe}}</td>
+                                        @if ($tupe->show == 0)
+                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
+                                        @else
+                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
+                                        @endif
+
                                     </tr>
                                 @else
                                     <tr data-materi="{{$mtri->uuid}}" data-tupe="{{$tupe->uuid}}">
                                         <td class="text-center">F0{{$loop->iteration}}</td>
                                         <td class="tupe-view" style="cursor: pointer">{{$tupe->tupe}}</td>
+                                        @if ($tupe->show == 0)
+                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
+                                        @else
+                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
+                                        @endif
                                     </tr>
                                 @endif
                             @endforeach
@@ -143,6 +156,41 @@
                 <div class="modal-footer">
                     <button class="btn btn-sm btn-warning simpan-tupe text-warning-emphasis"><i class="fa-solid fa-save"></i> Simpan</button>
                     <button class="btn btn-sm btn-danger hapus-tupe"><i class="fa-solid fa-trash-can"></i> Hapus</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade in" tabindex="-1" id="modal-duplikat-materi">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Duplikat Materi</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row m-0 p-0">
+                        <div class="form-group col-12 p-0">
+                            <label for="duplikat-materi">Materi</label>
+                            <select name="duplikat-materi" class="form-control" id="duplikat-materi">
+                                <option value="">Pilih Salah Satu</option>
+                                @foreach ($materi as $elemen)
+                                    <option value="{{$elemen->uuid}}">{{$elemen->materi}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group col-12 p-0">
+                            <label for="ke-kelas">Ke Kelas</label>
+                            <select name="ke-kelas" class="form-control" id="ke-kelas">
+                                <option value="">Pilih Salah Satu</option>
+                                @foreach ($listNgajar as $elemen)
+                                    <option value="{{$elemen->uuid}}">{{$elemen->pelajaran->pelajaran_singkat." (".$elemen->kelas->tingkat.$elemen->kelas->kelas.")"}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-sm btn-warning duplikat-tupe text-warning-emphasis"><i class="fa-solid fa-save"></i> Simpan</button>
                 </div>
             </div>
         </div>
@@ -353,6 +401,72 @@
             }
             cConfirm("Perhatian","Yakin untuk menghapus seluruh materi ?",hapusMateri);
         });
+        $('.tambahkan-nilai').click(function() {
+            var idTupe = $(this).closest('tr').data('tupe');
+            var idMateri = $(this).closest('tr').data('materi');
+            var idNgajar = '{{$ngajar->uuid}}';
+
+            var confirmTambahkanNilai = function() {
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{route('penilaian.materi.tambahFormatif')}}",
+                    data: {idTupe: idTupe, idMateri: idMateri,idNgajar : idNgajar},
+                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    success: function(data) {
+                        removeLoading();
+                        console.log(data);
+                        cAlert("green","Berhasil","Tujuan Pembelajaran berhasil ditambahkan",true);
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            }
+            cConfirm("Perhatian","Apakah anda yakin untuk menambahkan tujuan pembelajaran ini kedalam buku nilai formatif ?",confirmTambahkanNilai);
+        });
+        $('.hapus-nilai').click(function() {
+            var idTupe = $(this).closest('tr').data('tupe');
+            var idMateri = $(this).closest('tr').data('materi');
+            var idNgajar = '{{$ngajar->uuid}}';
+
+            var confirmHapusNilai = function() {
+                loading();
+                $.ajax({
+                    type: "post",
+                    url: "{{route('penilaian.materi.hapusFormatif')}}",
+                    data: {idTupe: idTupe, idMateri: idMateri,idNgajar : idNgajar},
+                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    success: function(data) {
+                        removeLoading();
+                        cAlert("green","Berhasil","Tujuan Pembelajaran berhasil Dihapus",true);
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            }
+            cConfirm("Perhatian","Apakah anda yakin untuk menambahkan tujuan pembelajaran ini kedalam buku nilai formatif ?",confirmHapusNilai);
+        });
+        $('.duplikat-tupe').click(function() {
+            var materi = $('#duplikat-materi').val();
+            var ngajar = $('#ke-kelas').val();
+
+            loading();
+            $.ajax({
+                type: "POST",
+                url: "{{route('penilaian.materi.duplikat')}}",
+                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                data: {materi: materi, ngajar: ngajar},
+                success: function(data) {
+                    removeLoading();
+                    console.log(data);
+                },
+                error: function(data) {
+                    console.log(data.responseJSON.message);
+                }
+            })
+        })
     </script>
 @endsection
 

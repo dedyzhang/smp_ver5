@@ -53,4 +53,10 @@ class AppController extends Controller
 
         return $result->text();
     }
+    public function ppdb()
+    {
+        $url = env('APP_URL') . "ppdb";
+
+        return Redirect::to($url);
+    }
 }

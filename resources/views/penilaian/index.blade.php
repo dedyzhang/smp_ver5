@@ -106,6 +106,6 @@
                 }
             })
 
-        })
+        });
     </script>
 @endsection
