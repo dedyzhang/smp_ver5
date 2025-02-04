@@ -71,6 +71,8 @@ Route::middleware('auth')->controller(ProfileController::class)->group(function 
 });
 //Ujian App
 Route::get('/redirectUjian', [AppController::class, 'ujian'])->name('ujian.index')->middleware('auth');
+//ppdb App
+Route::get('/ppdb', [AppController::class, 'ppdb'])->name('ppdb.index');
 
 //Admin - Halaman Data Guru
 Route::resource('/guru', \App\Http\Controllers\GuruController::class)->middleware(IsAdmin::class);
@@ -251,6 +253,9 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/materi/{uuid}/createTupe/', 'materiCreateTupe')->name('penilaian.materi.createTupe');
     Route::post('/bukuguru/materi/{uuid}/updateTupe/', 'materiUpdateTupe')->name('penilaian.materi.updateTupe');
     Route::delete('/bukuguru/materi/{uuid}/deleteTupe/', 'materiDeleteTupe')->name('penilaian.materi.deleteTupe');
+    Route::post('/bukuguru/materi/tambahFormatif', 'materiTambahkanFormatif')->name('penilaian.materi.tambahFormatif');
+    Route::post('/bukuguru/materi/hapusFormatif', 'materiHapusFormatif')->name('penilaian.materi.hapusFormatif');
+    Route::post('/bukuguru/materi/duplikatMateri', 'materiDuplikatMateri')->name('penilaian.materi.duplikat');
     //formatif
     Route::post('/bukuguru/formatif/edit', 'formatifEdit')->name('penilaian.formatif.edit');
     //Sumatif
@@ -439,6 +444,10 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/olahan', 'nilaiOlahan')->name('walikelas.nilai.olahan');
     Route::get('/walikelas/nilai/harian', 'nilaiHarian')->name('walikelas.nilai.harian');
     Route::get('/walikelas/nilai/harian/{uuid}/get', 'nilaiHarianGet')->name('walikelas.nilai.harian.get');
+    Route::get('/walikelas/nilai/harian/{uuid}/materi', 'nilaiMateriShow')->name('walikelas.nilai.materi');
+    Route::get('/walikelas/nilai/harian/{uuid}/formatif', 'nilaiFormatifShow')->name('walikelas.nilai.formatif');
+    Route::get('/walikelas/nilai/harian/{uuid}/sumatif', 'nilaiSumatifShow')->name('walikelas.nilai.sumatif');
+    Route::get('/walikelas/nilai/harian/{uuid}/penjabaran', 'nilaiPenjabaranShow')->name('walikelas.nilai.penjabaran');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

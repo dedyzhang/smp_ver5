@@ -10,10 +10,12 @@ use App\Models\ClassroomJawaban;
 use App\Models\ClassroomSiswa;
 use App\Models\Ekskul;
 use App\Models\EkskulSiswa;
+use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\JabarInggris;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
+use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
 use App\Models\Pelajaran;
@@ -28,6 +30,7 @@ use App\Models\Sekretaris;
 use App\Models\Semester;
 use App\Models\Setting;
 use App\Models\Siswa;
+use App\Models\Sumatif;
 use App\Models\TanggalAbsensi;
 use App\Models\Walikelas;
 use Carbon\Carbon;
@@ -636,14 +639,16 @@ class WalikelasController extends Controller
         $akses_nilai = $setting->first(function ($elem) {
             return $elem->jenis == "akses_harian_walikelas";
         });
-        $akses_walikelas = true;
 
         if ($akses_nilai && $akses_nilai->nilai == 1) {
-            return view('penilaian.index', compact('pelajaran', 'akses_walikelas'));
+            return view('walikelas.nilai.harian.index', compact('pelajaran'));
         } else {
             return view('home.index');
         }
     }
+    /**
+     * Mengambil data nilai Ngajar Guru
+     */
     public function nilaiHarianGet(String $uuid)
     {
         $auth = Auth::user();
@@ -656,5 +661,174 @@ class WalikelasController extends Controller
             ['id_kelas', '=', $kelas->uuid]
         ])->get();
         return response()->json(["success" => true, "data" => $ngajar]);
+    }
+    /**
+     * Menampilkan Materi
+     */
+    public function nilaiMateriShow(String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+        $setting = Setting::all();
+        $akses_nilai = $setting->first(function ($elem) {
+            return $elem->jenis == "akses_harian_walikelas";
+        });
+
+        if ($akses_nilai && $akses_nilai->nilai == 1) {
+            return view("walikelas.nilai.harian.materi", compact('ngajar', 'materi'));
+        } else {
+            return view('home.index');
+        }
+    }
+    /**
+     * Menampilkan Formatif
+     */
+    public function nilaiFormatifShow(String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+        $materiArray = array();
+        $tupeArray = array();
+
+        $count = 0;
+        foreach ($materi as $item) {
+            array_push($materiArray, array(
+                "uuid" => $item->uuid,
+                "materi" => $item->materi,
+                "jumlahTupe" => $item->tupe
+            ));
+            foreach ($item->tupe()->get() as $tupe) {
+                array_push($tupeArray, array(
+                    "uuid" => $tupe->uuid,
+                    "id_materi" => $tupe->id_materi,
+                    "tupe" => $tupe->tupe
+                ));
+                $count++;
+            }
+            $count++;
+        }
+        $uuidMateri = array();
+        foreach ($materiArray as $item) {
+            array_push($uuidMateri, $item["uuid"]);
+        }
+        $formatif = Formatif::whereIn('id_materi', $uuidMateri)->get();
+        $formatif_array = array();
+        foreach ($formatif as $item) {
+            $formatif_array[$item->id_tupe . "." . $item->id_siswa] = array(
+                'uuid' => $item->uuid,
+                'nilai' => $item->nilai
+            );
+        }
+        $setting = Setting::all();
+        $akses_nilai = $setting->first(function ($elem) {
+            return $elem->jenis == "akses_harian_walikelas";
+        });
+
+        if ($akses_nilai && $akses_nilai->nilai == 1) {
+            return view("walikelas.nilai.harian.formatif", compact('ngajar', 'materi', 'count', 'formatif_array', 'materiArray', 'tupeArray'));
+        } else {
+            return view('home.index');
+        }
+    }
+    /**
+     * Menampilkan Sumatif
+     */
+    public function nilaiSumatifShow(String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $materi = Materi::with('tupe')->where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+        $materiArray = array();
+        $tupeArray = array();
+
+        $count = 0;
+        foreach ($materi as $item) {
+            array_push($materiArray, array(
+                "uuid" => $item->uuid,
+                "materi" => $item->materi,
+                "jumlahTupe" => $item->tupe
+            ));
+            $count++;
+        }
+        $uuidMateri = array();
+        foreach ($materiArray as $item) {
+            array_push($uuidMateri, $item["uuid"]);
+        }
+        $sumatif = Sumatif::whereIn('id_materi', $uuidMateri)->get();
+        $sumatif_array = array();
+        foreach ($sumatif as $item) {
+            $sumatif_array[$item->id_materi . "." . $item->id_siswa] = array(
+                'uuid' => $item->uuid,
+                'nilai' => $item->nilai
+            );
+        }
+        $setting = Setting::all();
+        $akses_nilai = $setting->first(function ($elem) {
+            return $elem->jenis == "akses_harian_walikelas";
+        });
+
+        if ($akses_nilai && $akses_nilai->nilai == 1) {
+            return view("walikelas.nilai.harian.sumatif", compact('ngajar', 'materi', 'count', 'sumatif_array', 'materiArray'));
+        } else {
+            return view('home.index');
+        }
+    }
+    /**
+     * Menampilkan Nilai Penjabaran
+     */
+    public function nilaiPenjabaranShow(String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $has_penjabaran = $ngajar->pelajaran->has_penjabaran;
+
+        if ($has_penjabaran == 1) {
+            $jabaran = 'inggris';
+            $penjabaran = JabarInggris::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+            $penjabaran_array = array();
+            foreach ($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar . "." . $jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'listening' => $jabar->listening,
+                    'speaking' => $jabar->speaking,
+                    'writing' => $jabar->writing,
+                    'reading' => $jabar->reading,
+                    'grammar' => $jabar->grammar,
+                    'vocabulary' => $jabar->vocabulary,
+                    'singing' => $jabar->singing
+                );
+            }
+        } else if ($has_penjabaran == 2) {
+            $jabaran = 'mandarin';
+            $penjabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+            $penjabaran_array = array();
+            foreach ($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar . "." . $jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'listening' => $jabar->listening,
+                    'speaking' => $jabar->speaking,
+                    'writing' => $jabar->writing,
+                    'reading' => $jabar->reading,
+                    'vocabulary' => $jabar->vocabulary,
+                    'singing' => $jabar->singing
+                );
+            }
+        }
+        $setting = Setting::all();
+        $akses_nilai = $setting->first(function ($elem) {
+            return $elem->jenis == "akses_harian_walikelas";
+        });
+
+        if ($akses_nilai && $akses_nilai->nilai == 1) {
+            return View("walikelas.nilai.harian.penjabaran", compact('ngajar', 'penjabaran', 'jabaran', 'penjabaran_array'));
+        } else {
+            return view('home.index');
+        }
     }
 }

@@ -681,6 +681,11 @@
                 aria-labelledby="penilaian-tab"
             >
                 <div class="row m-0 p-0 pt-2">
+                    @php
+                        $settingAksesWalikelas = $setting->first(function($elem) {
+                            return $elem->jenis == "akses_harian_walikelas";
+                        })
+                    @endphp
                     <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0">
                         <div class="card">
                             <div class="card-header">
@@ -690,7 +695,7 @@
                                 <p class="fs-12">Aktifkan fitur di bawah ini untuk memberikan akses kepada wali kelas agar dapat melihat nilai harian.</p>
                                 <div class="row m-0 p-0">
                                     <div class="form-check form-switch col-12">
-                                        <input class="form-check-input" name="harian-walikelas" type="checkbox" role="switch" id="harian-walikelas">
+                                        <input class="form-check-input" @if($settingAksesWalikelas && $settingAksesWalikelas->nilai == 1) checked @endif name="harian-walikelas" type="checkbox" role="switch" id="harian-walikelas">
                                         <label class="form-check-label" for="harian-walikelas">Fitur Akses Walikelas</label>
                                     </div>
                                 </div>

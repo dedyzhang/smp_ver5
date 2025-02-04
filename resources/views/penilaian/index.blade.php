@@ -37,11 +37,7 @@
         $('.lihat-penilaian').click(function() {
             loading();
             var uuid = $(this).closest('.card').data('uuid');
-            @if($akses_walikelas == true)
-                var url = "{{route('walikelas.nilai.harian.get',':id')}}";
-            @else
-                var url = "{{route('penilaian.admin.get',':id')}}";
-            @endif
+            var url = "{{route('penilaian.admin.get',':id')}}";
             url = url.replace(':id',uuid);
             $.ajax({
                 type: "get",
