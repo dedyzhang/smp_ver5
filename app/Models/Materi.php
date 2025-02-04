@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Materi extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
 
     protected $primaryKey = 'uuid';
     protected $table = 'nilai_materi';
@@ -19,7 +19,8 @@ class Materi extends Model
         'semester',
     ];
 
-    public function tupe() {
-        return $this->hasMany(Tupe::class,'id_materi','uuid');
+    public function Tupe()
+    {
+        return $this->hasMany(Tupe::class, 'id_materi', 'uuid');
     }
 }

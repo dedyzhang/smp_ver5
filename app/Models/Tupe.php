@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tupe extends Model
 {
-    use HasFactory,HasUuids;
+    use HasFactory, HasUuids;
 
     protected $primaryKey = 'uuid';
     protected $table = 'nilai_tujuan_pembelajaran';
     protected $fillable = [
         'id_materi',
-        'tupe'
+        'tupe',
+        'show',
     ];
 }
