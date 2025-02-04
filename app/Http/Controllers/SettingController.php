@@ -227,4 +227,19 @@ class SettingController extends Controller
         }
         return response()->json(['datang' => $datang, 'pulang' => $pulang]);
     }
+    public function setAksesHarianWalikelas(Request $request)
+    {
+        $akses = $request->akses;
+        $settingPelajaran = Setting::where('jenis', 'akses_harian_walikelas')->first();
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $akses
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'akses_harian_walikelas',
+                'nilai' => $akses
+            ]);
+        }
+    }
 }

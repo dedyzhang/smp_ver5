@@ -4,6 +4,7 @@
 /public/hot
 /public/storage
 /public/ujian
+/public/ppdb
 /storage/*.key
 /vendor
 .env
