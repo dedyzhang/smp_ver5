@@ -12,16 +12,16 @@ class PelajaranController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index() : View
+    public function index(): View
     {
         $pelajaran = Pelajaran::get()->sortBy('urutan');
-        return view('pelajaran.index',compact('pelajaran'));
+        return view('pelajaran.index', compact('pelajaran'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create() : View
+    public function create(): View
     {
         return view('pelajaran.create');
     }
@@ -29,18 +29,18 @@ class PelajaranController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) : RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $pelajaran = $request->validate([
             'pelajaran' => 'required',
             'pelajaran_singkat' => 'required|alpha:ascii',
-        ],[
+        ], [
             'pelajaran_singkat.required' => 'Nama singkat pelajaran wajib diisi',
             'pelajran_singkat.alpha:ascii' => 'Nama Singkat pelajaran tidak boleh mengandung simbol1'
         ]);
 
         $urutan = Pelajaran::get();
-        if($urutan->count() > 0) {
+        if ($urutan->count() > 0) {
             $urut = 1 + $urutan->count();
         } else {
             $urut = 1;
@@ -66,23 +66,23 @@ class PelajaranController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(String $id) : View
+    public function edit(String $id): View
     {
         $pelajaran = Pelajaran::findOrFail($id);
 
-        return view('pelajaran.edit',compact('pelajaran'));
+        return view('pelajaran.edit', compact('pelajaran'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, String $id) : RedirectResponse
+    public function update(Request $request, String $id): RedirectResponse
     {
         $pelajaran = Pelajaran::findOrFail($id);
         $validation = $request->validate([
             'pelajaran' => 'required',
             'pelajaran_singkat' => 'required|alpha:ascii',
-        ],[
+        ], [
             'pelajaran_singkat.required' => 'Nama singkat pelajaran wajib diisi',
             'pelajran_singkat.alpha:ascii' => 'Nama Singkat pelajaran tidak boleh mengandung simbol1'
         ]);
@@ -92,7 +92,7 @@ class PelajaranController extends Controller
             'pelajaran_singkat' => $request->pelajaran_singkat
         ]);
 
-        return redirect()->route('pelajaran.index')->with(['success' => $request->pelajaran.' Berhasil Diedit']);
+        return redirect()->route('pelajaran.index')->with(['success' => $request->pelajaran . ' Berhasil Diedit']);
     }
 
     /**
@@ -108,20 +108,20 @@ class PelajaranController extends Controller
     /**
      * Sort Pelajaran View
      */
-    public function sort() : View
+    public function sort(): View
     {
         $pelajaran = Pelajaran::get()->sortBy('urutan');
 
-        return view('pelajaran.sort',compact('pelajaran'));
+        return view('pelajaran.sort', compact('pelajaran'));
     }
     /**
      * Sorting Function Executed
      */
-    public function sorting(Request $request) : RedirectResponse
+    public function sorting(Request $request): RedirectResponse
     {
         $pelajaran_array = $request->urutan;
 
-        Pelajaran::upsert($pelajaran_array,'uuid',['urutan']);
+        Pelajaran::upsert($pelajaran_array, 'uuid', ['urutan']);
 
         return redirect()->route('pelajaran.sort')->with(['success' => "Pelajaran berhasil diurut kembali"]);
     }
@@ -130,12 +130,13 @@ class PelajaranController extends Controller
      */
     public function getPenjabaran()
     {
-        $english = Pelajaran::where('has_penjabaran',1)->get();
-        $mandarin = Pelajaran::where('has_penjabaran',2)->get();
-        if($english->isEmpty() && $mandarin->isEmpty()) {
+        $english = Pelajaran::where('has_penjabaran', 1)->get();
+        $mandarin = Pelajaran::where('has_penjabaran', 2)->get();
+        $komputer = Pelajaran::where('has_penjabaran', 3)->get();
+        if ($english->isEmpty() && $mandarin->isEmpty() && $komputer->isEmpty()) {
             return response()->json(["success" => false]);
         } else {
-            return response()->json(["success"=> true, "english" => $english,"mandarin" => $mandarin]);
+            return response()->json(["success" => true, "english" => $english, "mandarin" => $mandarin, "komputer" => $komputer]);
         }
     }
     /**
@@ -145,8 +146,9 @@ class PelajaranController extends Controller
     {
         $inggris = $request->english;
         $mandarin = $request->mandarin;
+        $komputer = $request->komputer;
 
-        $allPelajaran = Pelajaran::where('has_penjabaran','>','0')->update([
+        $allPelajaran = Pelajaran::where('has_penjabaran', '>', '0')->update([
             "has_penjabaran" => 0
         ]);
 
@@ -157,6 +159,10 @@ class PelajaranController extends Controller
 
         $mandarin_query->update([
             "has_penjabaran" => 2
+        ]);
+
+        $komputer_query = Pelajaran::findOrFail($komputer)->update([
+            'has_penjabaran' => 3
         ]);
     }
 }

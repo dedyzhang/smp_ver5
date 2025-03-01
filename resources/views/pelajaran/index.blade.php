@@ -124,6 +124,21 @@
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group col-12 m-0">
+                        <label for="komputer">Penjabaran Komputer</label>
+                        <select
+                            name="komputer"
+                            id="komputer"
+                            class="form-control"
+                        >
+                            <option value="">Pilihlah Salah Satu</option>
+                            @foreach ($pelajaran as $plj)
+                            <option value="{{ $plj->uuid }}">
+                                {{ $plj->pelajaran }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -198,6 +213,7 @@
                 if(data.success) {
                     $('#inggris').val(data.english[0].uuid);
                     $('#mandarin').val(data.mandarin[0].uuid);
+                    $('#komputer').val(data.komputer[0].uuid);
                     removeLoading();
                     $('#modal-penjabaran').modal("show");
                 } else {
@@ -211,8 +227,9 @@
     $(".edit-penjabaran").click(function() {
         var mandarin = $('#mandarin').val();
         var english = $('#inggris').val();
-        if(mandarin == "" || inggris == "") {
-            oAlert("blue","Perhatian","penjabaran English dan Mandarin tidak boleh kosong");
+        var komputer = $('#komputer').val();
+        if(mandarin == "" || inggris == "" || komputer == "") {
+            oAlert("blue","Perhatian","penjabaran English, Mandarin dan Komputer tidak boleh kosong");
         } else {
             var penjabaranAdd = () => {
                 loading();
@@ -220,7 +237,7 @@
                     type: "POST",
                     url: "{{route('pelajaran.penjabaran')}}",
                     headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
-                    data: { english : english, mandarin: mandarin},
+                    data: { english : english, mandarin: mandarin, komputer: komputer},
                     success: function(data) {
                         removeLoading();
                         cAlert("green","Sukses","Sukses Mengedit Penjabaran",true);

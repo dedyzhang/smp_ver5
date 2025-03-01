@@ -93,6 +93,7 @@
                                 $nilaiFormatif = 0;
                                 $nilaiSumatif = 0;
                                 $jumlah = 0;
+                                $jumlahSeluruhnya = 0;
                                 $kkm = $ngajar->kkm;
                                 //Menghitung rentan Nilai
                                 $interval = round((100 - $kkm) / 3, 0);
@@ -107,17 +108,25 @@
                                 $array_list_nilai = [];
                                 foreach ($tupeArray as $tupe) {
                                     if(isset($formatif_array[$tupe['uuid'] . '.' . $siswa->uuid])) {
-                                        $nilaiFormatif += $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'];
-                                        array_push($array_list_nilai, [
-                                            'uuid' => $tupe['uuid'],
-                                            'tupe' => $tupe['tupe'],
-                                            'nilai' => $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'],
-                                        ]);
-                                        $jumlah++;
+                                        if($tupe['show'] == 1) {
+                                            $nilaiFormatif += $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'];
+                                            array_push($array_list_nilai, [
+                                                'uuid' => $tupe['uuid'],
+                                                'tupe' => $tupe['tupe'],
+                                                'nilai' => $formatif_array[$tupe['uuid'] . '.' . $siswa->uuid]['nilai'],
+                                            ]);
+                                            $jumlah++;
+                                        }
                                     }
                                 }
                                 if (count($tupeArray) > 0 && $jumlah > 0) {
-                                    $rata2Formatif = round($nilaiFormatif / $jumlah, 0);
+                                    if ($rumus == "jumlahDulu") {
+                                        $rata2Formatif = $nilaiFormatif;
+                                        $jumlahSeluruhnya += $jumlah;
+                                    } else {
+                                        $rata2Formatif = round($nilaiFormatif / $jumlah, 0);
+                                    }
+
                                     //Mencari Deskripsi Tertinggi dan terendah
                                     array_multisort(
                                         array_column($array_list_nilai, 'nilai'),
@@ -226,22 +235,44 @@
                                 $jumlah = 0;
                                 //menghitung rata rata sumatif
                                 foreach ($materiArray as $item) {
-                                    $nilaiSumatif += $sumatif_array[$item['uuid'] . '.' . $siswa->uuid]['nilai'];
-                                    $jumlah++;
+                                    if(isset($sumatif_array[$item['uuid'] . '.' . $siswa->uuid])) {
+                                        $nilaiSumatif += $sumatif_array[$item['uuid'] . '.' . $siswa->uuid]['nilai'];
+                                        $jumlah++;
+                                    }
                                 }
-                                if (count($materiArray) > 0) {
-                                    $rata2Sumatif = round($nilaiSumatif / $jumlah, 0);
+                                if (count($materiArray) > 0 && $jumlah > 0) {
+                                    if ($rumus == "jumlahDulu") {
+                                        $rata2Sumatif = $nilaiSumatif;
+                                        $jumlahSeluruhnya += $jumlah;
+                                    } else {
+                                        $rata2Sumatif = round($nilaiSumatif / $jumlah, 0);
+                                    }
                                 } else {
                                     $rata2Sumatif = 0;
                                 }
                                 //Mengambil Nilai PAS
                                 if (isset($pas_array[$ngajar->uuid . '.' . $siswa->uuid])) {
                                     $rata2Pas = $pas_array[$ngajar->uuid . '.' . $siswa->uuid]['nilai'];
+                                    if($rumus == "jumlahDulu"){
+                                        $jumlahSeluruhnya++;
+                                    }
                                 } else {
                                     $rata2Pas = 0;
                                 }
                                 //Menghitung Nilai Rapor
-                                $totalRapor = round((2 * $rata2Formatif + $rata2Sumatif + $rata2Pas) / 4, 0);
+                                if ($rumus == "bagi4") {
+                                    $totalRapor = round((2 * $rata2Formatif + $rata2Sumatif + $rata2Pas) / 4, 0);
+                                } elseif ($rumus == "bagi3") {
+                                    $totalRapor = round(($rata2Formatif + $rata2Sumatif + $rata2Pas) / 3, 0);
+                                } elseif ($rumus == "jumlahDulu") {
+                                    if($jumlahSeluruhnya > 0){
+                                        $totalRapor = round(($rata2Formatif + $rata2Sumatif + $rata2Pas) / $jumlahSeluruhnya, 0);
+                                    } else {
+                                        $totalRapor = 0;
+                                    }
+                                } else {
+                                    $totalRapor = round((2 * $rata2Formatif + $rata2Sumatif + $rata2Pas) / 4, 0);
+                                }
 
                                 //Mengambil Nilai Dari Temp
                                 $id_siswa = $siswa->uuid;

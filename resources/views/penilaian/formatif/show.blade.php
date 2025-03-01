@@ -91,7 +91,11 @@
                                             @endphp
                                             <td width="5%" data-formatif="{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['uuid']}}" contenteditable="true" class="text-center subtab subtab_{{$tupe['id_materi']}} nilai_{{$tupe['id_materi']}} nilai editable @if ($formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$formatif_array[$tupe['uuid'].".".$siswa->uuid]['nilai']}}</td>
                                         @else
-                                            <td width="5%" class="text-center subtab subtab_{{$tupe['id_materi']}} null-nilai">-</td>
+                                            @if ($tupe['show'] == 1)
+                                                <td width="5%" class="text-center subtab subtab_{{$tupe['id_materi']}} null-nilai"><button data-tupe="{{$tupe['uuid']}}" data-siswa="{{$siswa->uuid}}" data-materi="{{$tupe['id_materi']}}" class="btn btn-sm btn-success pt-0 pb-0 tambah-nilai"><i class="fas fa-plus fs-12"></i></button></td>
+                                            @else
+                                                <td width="5%" class="text-center subtab subtab_{{$tupe['id_materi']}} null-nilai">-</td>
+                                            @endif
                                         @endif
                                     @endif
                                 @endforeach
@@ -280,6 +284,27 @@
                 },
                 error: function(data) {
                     console.log(data.responseJSON);
+                }
+            })
+        });
+        $('.tambah-nilai').click(function() {
+            var materi = $(this).data('materi');
+            var tupe = $(this).data('tupe');
+            var siswa = $(this).data('siswa');
+            loading();
+            $.ajax({
+                type: "POST",
+                url: "{{route('penilaian.formatif.tambah')}}",
+                data: {materi: materi,tupe: tupe,siswa: siswa},
+                headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                success: function(data) {
+                    if(data.success) {
+                        removeLoading();
+                        location.reload();
+                    }
+                },
+                error: function(data) {
+                    console.log(data.responseJSON.message);
                 }
             })
         });

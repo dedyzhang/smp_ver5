@@ -33,7 +33,7 @@
                     <select name="siswa" id="siswa" class="form-group w-100 @error('siswa') is-invalid @enderror" data-toggle="select">
                         <option value="">Pilih Salah Satu</option>
                         @foreach ($siswa as $item)
-                            <option @if(old('siswa') == $item->uuid) selected @endif value="{{$item->uuid}}">{{$item->nama}} - {{$item->nis}} ({{$item->kelas->tingkat.$item->kelas->kelas}})</option>
+                            <option @if(old('siswa') == $item->uuid) selected @endif value="{{$item->uuid}}">{{$item->nama}} - {{$item->nis}} @if(isset($item->kelas)) ({{$item->kelas->tingkat.$item->kelas->kelas}}) @else - @endif</option>
                         @endforeach
                     </select>
                     @error('siswa')

@@ -127,6 +127,8 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/absensi/guru', 'setCaraAbsensi')->name('setting.absensi.method');
     Route::get('/settings/absensi/barcode', 'setBarcodeAbsensi')->name('setting.absensi.generateBarcode');
     Route::post('/settings/walikelas/harian', 'setAksesHarianWalikelas')->name('setting.walikelas.harian');
+    Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
+    Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
 });
 
 //Admin - Halaman Cetak Excel
@@ -256,10 +258,14 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/materi/tambahFormatif', 'materiTambahkanFormatif')->name('penilaian.materi.tambahFormatif');
     Route::post('/bukuguru/materi/hapusFormatif', 'materiHapusFormatif')->name('penilaian.materi.hapusFormatif');
     Route::post('/bukuguru/materi/duplikatMateri', 'materiDuplikatMateri')->name('penilaian.materi.duplikat');
+    Route::post('/bukuguru/materi/{uuid}/aktifkan/', 'materiAktifkan')->name('penilaian.materi.aktifkan');
+    Route::post('/bukuguru/materi/{uuid}/nonaktifkan/', 'materiNonaktifkan')->name('penilaian.materi.nonaktifkan');
     //formatif
     Route::post('/bukuguru/formatif/edit', 'formatifEdit')->name('penilaian.formatif.edit');
+    Route::post('/bukuguru/formatif/tambah', 'formatifTambah')->name('penilaian.formatif.tambah');
     //Sumatif
     Route::put('/bukuguru/sumatif/edit', 'sumatifEdit')->name('penilaian.sumatif.edit');
+    Route::post('/bukuguru/sumatif/tambah', 'sumatifTambah')->name('penilaian.sumatif.tambah');
     //pts
     Route::post('/bukuguru/pts/{uuid}/store', 'ptsStore')->name('penilaian.pts.store');
     Route::put('/bukuguru/pts/edit', 'ptsEdit')->name('penilaian.pts.edit');
