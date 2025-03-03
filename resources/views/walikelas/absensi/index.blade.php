@@ -17,6 +17,24 @@
             </a>
         </div>
         <div class="body-contain-customize col-12 mt-3">
+            <div class="row d-flex align-items-end m-0 p-0 mb-3">
+                <div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                    <p>Pencarian Absensi berdasarkan Tanggal</p>
+                </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 form-group fs-12">
+                    <label for="tanggal-mulai">Tanggal Mulai</label>
+                    <input type="date" class="form-control" id="tanggal-mulai" name="tanggal-mulai" />
+                </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 form-group fs-12">
+                    <label for="tanggal-akhir">Tanggal Akhir</label>
+                    <input type="date" class="form-control" id="tanggal-akhir" name="tanggal-akhir" value="{{date('Y-m-d')}}" />
+                </div>
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 form-group fs-12 mt-2 mt-sm-2 mt-md-2 mt-lg-0 mt-xl-0">
+                    <button class="btn btn-sm btn-warning text-warning-emphasis lihat-absensi">
+                        <i class="fas fa-eye"></i> Lihat Absensi
+                    </button>
+                </div>
+            </div>
             <div class="table-responsive">
                 <table class="table table-bordered table-striped fs-12" id="table-absensi">
                     <thead>
@@ -49,6 +67,24 @@
                 </table>
             </div>
         </div>
+        <script>
+            $('.lihat-absensi').click(function() {
+                let tanggalMulai = $('#tanggal-mulai').val();
+                let tanggalAkhir = $('#tanggal-akhir').val();
+                if (tanggalMulai === '' || tanggalAkhir === '') {
+                    alert('Tanggal Mulai dan Tanggal Akhir harus diisi');
+                } else {
+                    loading();
+                    $.ajax({
+                        url: '{{route("walikelas.absensi.getAbsen.byDate")}}',
+                        type: 'GET',
+                        data: {mulai : tanggalMulai, akhir: tanggalAkhir,kelas: '{{$kelas->uuid}}'},
+                        success: function(data) {
+                            console.log(data);
+                        }
+                }
+            })
+        </script>
     @endif
 
 @endsection

@@ -751,6 +751,82 @@
                     </table>
                 </div>
             </div>
+            @if ($jabarKomputer !== null)
+                <div class="row mt-0 mb-0">
+                    @php
+                        $pKomputer = $ngajar->first(function($elem) {
+                            return $elem->pelajaran->has_penjabaran == 3;
+                        });
+                    @endphp
+                    <div class="col-12 mt-1"><p class="m-0">Ketuntasan Minimal Belajar : {{$pKomputer ? $pKomputer->kkm : 0}}</p></div>
+                    <div class="col-12">
+                        @php
+                            $no_urut = 1;
+                            $jumlah_komputer = 0;
+                            $total_komputer = 0;
+                        @endphp
+                        <table class="table table-bordered fs-12 penjabaran" style="border:1px solid #3f3f3f">
+                            <tr class="table-primary">
+                                <td colspan="4"><b>C. Komputer</b></td>
+                            </tr>
+                            {{-- Pengetahuan --}}
+                            @if ($jabarKomputer !== null && $jabarKomputer->pengetahuan !== 0)
+                                <tr class="transback">
+                                    <td width="5%">{{$no_urut}}</td>
+                                    <td width="30%">听力 (tīng lì) Mendengarkan</td>
+                                    <td width="10%" class="text-center">{{$jabarKomputer->pengetahuan}}</td>
+                                    <td width="45%">
+                                        @if ($jabarKomputer->pengetahuan < $pKomputer->kkm)
+                                            @if ($semester->semester == 1) Belum Tuntas
+                                            @else Tidak Tuntas
+                                            @endif
+                                        @elseif ($jabarKomputer->pengetahuan == $pKomputer->kkm) Tuntas
+                                        @else Terlampaui
+                                        @endif
+                                    </td>
+                                </tr>
+                                @php
+                                    $no_urut++;
+                                    $jumlah_komputer++;
+                                    $total_komputer += $jabarKomputer->pengetahuan;
+                                @endphp
+                            @endif
+                            {{-- Keterampilan --}}
+                            @if ($jabarKomputer !== null && $jabarKomputer->keterampilan !== 0)
+                                <tr class="transback">
+                                    <td width="5%">{{$no_urut}}</td>
+                                    <td width="30%">听力 (tīng lì) Mendengarkan</td>
+                                    <td width="10%" class="text-center">{{$jabarKomputer->keterampilan}}</td>
+                                    <td width="45%">
+                                        @if ($jabarKomputer->keterampilan < $pKomputer->kkm)
+                                            @if ($semester->semester == 1) Belum Tuntas
+                                            @else Tidak Tuntas
+                                            @endif
+                                        @elseif ($jabarKomputer->keterampilan == $pKomputer->kkm) Tuntas
+                                        @else Terlampaui
+                                        @endif
+                                    </td>
+                                </tr>
+                                @php
+                                    $no_urut++;
+                                    $jumlah_komputer++;
+                                    $total_komputer += $jabarKomputer->keterampilan;
+                                @endphp
+                            @endif
+                            <tr>
+                                <td colspan="2" class="table-info"><b>Jumlah</b></td>
+                                <td class="text-center transback"><b>{{$total_komputer}}</b></td>
+                                <td class="transback"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="table-primary"><b>Rata-rata</b></td>
+                                <td class="text-center transback"><b>{{$jumlah_komputer !== 0 ? round($total_komputer/$jumlah_komputer,2) : 0}}</b></td>
+                                <td class="transback"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            @endif
             <div class="row mt-1 mb-1" style="position:absolute;bottom:30px; width:90%;">
                 <div class="col-5">
                     <p class="m-0">Mengetahui</p>

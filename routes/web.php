@@ -281,6 +281,7 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::delete('/bukuguru/rapor/{uuid}/konfirmasi', 'hapusRaporKonfirmasi')->name('penilaian.rapor.konfirmasi');
     //Penjabaran
     Route::post('/bukuguru/penjabaran/{uuid}/store', 'penjabaranStore')->name('penilaian.penjabaran.store');
+    Route::post('/bukuguru/penjabaran/{uuid}/invidual/store', 'penjabaranInvidualStore')->name('penilaian.penjabaran.invidual.store');
     Route::put('/bukuguru/penjabaran/edit', 'penjabaranEdit')->name('penilaian.penjabaran.edit');
     Route::delete('/bukuguru/penjabaran/{uuid}/destroy', 'penjabaranDestroy')->name('penilaian.penjabaran.destroy');
     //P5
@@ -423,6 +424,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/absensi/create', 'absensiCreate')->name('walikelas.absensi.create');
     Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
     Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
+    Route::get('/walikelas/absensi/getAbsen/byDate', 'absensiGetByDate')->name('walikelas.absensi.getAbsen.byDate');
     Route::get('/walikelas/siswa', 'siswa')->name('walikelas.siswa');
     Route::get('/walikelas/siswa/{uuid}', 'siswaShow')->name('walikelas.siswa.show');
     Route::post('/walikelas/siswa/{uuid}/reset/', 'resetSiswa')->name('walikelas.siswa.reset');

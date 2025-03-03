@@ -96,114 +96,129 @@
                         <tr class="siswa" data-ngajar="{{$ngajar->uuid}}" data-siswa="{{$siswa->uuid}}">
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
-                            @if (isset($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]) && ($jabaran == "inggris" || $jabaran == "mandarin"))
-                                <td
-                                    data-penjabaran="{{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}"
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['listening'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('listening',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['listening']}}
-                                </td>
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['speaking'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('speaking',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['speaking']}}
-                                </td>
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['writing'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('writing',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['writing']}}
-                                </td>
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['reading'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('reading',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['reading']}}
-                                </td>
-                                @if ($jabaran == "inggris")
+                            @if (count($penjabaran) !== 0)
+                                @if (isset($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]) && ($jabaran == "inggris" || $jabaran == "mandarin"))
+                                    <td
+                                        data-penjabaran="{{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}"
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['listening'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('listening',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['listening']}}
+                                    </td>
                                     <td
                                         class="nilai editable text-center
-                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['grammar'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('grammar',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['grammar']}}
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['speaking'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('speaking',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['speaking']}}
                                     </td>
+                                    <td
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['writing'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('writing',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['writing']}}
+                                    </td>
+                                    <td
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['reading'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('reading',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['reading']}}
+                                    </td>
+                                    @if ($jabaran == "inggris")
+                                        <td
+                                            class="nilai editable text-center
+                                            @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['grammar'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                            @if (isset($rata2Penjabaran[$jabaran]) && in_array('grammar',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                            {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['grammar']}}
+                                        </td>
+                                    @endif
+                                    <td
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['vocabulary'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('vocabulary',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['vocabulary']}}
+                                    </td>
+                                    <td
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['singing'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('singing',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['singing']}}
+                                    </td>
+                                    {{-- Rata-Rata --}}
+                                    @php
+                                        $getrata2 = $rata2Penjabaran[$jabaran];
+                                        if(isset($getrata2)) {
+                                            $rata2 = 0;
+                                            $jumlahMateri = 0;
+                                            foreach($getrata2 as $rata) {
+                                                if($penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata] != 0) {
+                                                    $rata2 += $penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata];
+                                                    $jumlahMateri++;
+                                                }
+                                            }
+                                            if($jumlahMateri != 0) {
+                                                $rataRata = round($rata2 / $jumlahMateri,0);
+                                            } else {
+                                                $rataRata = 0;
+                                            }
+                                        } else {
+                                            $rataRata = 0;
+                                        }
+                                    @endphp
+                                    <td class="nilai text-center final-rata
+                                    @if ($rataRata < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                    ">{{$rataRata}}</td>
+                                @elseif(isset($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]) && $jabaran == "komputer")
+                                    <td
+                                        data-penjabaran="{{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}"
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['pengetahuan'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('pengetahuan',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['pengetahuan']}}
+                                    </td>
+                                    <td
+                                        class="nilai editable text-center
+                                        @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['keterampilan'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                        @if (isset($rata2Penjabaran[$jabaran]) && in_array('keterampilan',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
+                                        {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['keterampilan']}}
+                                    </td>
+                                    {{-- Rata-Rata --}}
+                                    @php
+                                        $getrata2 = $rata2Penjabaran[$jabaran];
+                                        if(isset($getrata2)) {
+                                            $rata2 = 0;
+                                            $jumlahMateri = 0;
+                                            foreach($getrata2 as $rata) {
+                                                if($penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata] != 0) {
+                                                    $rata2 += $penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata];
+                                                    $jumlahMateri++;
+                                                }
+                                            }
+                                            if($jumlahMateri != 0) {
+                                                $rataRata = round($rata2 / $jumlahMateri,0);
+                                            } else {
+                                                $rataRata = 0;
+                                            }
+                                        } else {
+                                            $rataRata = 0;
+                                        }
+                                    @endphp
+                                    <td class="nilai text-center final-rata
+                                    @if ($rataRata < $ngajar->kkm) text-danger bg-danger-subtle @endif
+                                    ">{{$rataRata}}</td>
+                                @else
+                                    @php
+                                        if($jabaran == "inggris") {
+                                            $jumlah = 8;
+                                        } elseif($jabaran == "mandarin") {
+                                            $jumlah = 7;
+                                        } else {
+                                            $jumlah = 3;
+                                        }
+                                    @endphp
+                                    <td width="5%" colspan="{{$jumlah}}" class="text-center"><button data-siswa="{{$siswa->uuid}}" class="btn btn-sm btn-success pt-0 pb-0 tambah-nilai-individual"><i class="fas fa-plus fs-12"></i></button></td>
                                 @endif
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['vocabulary'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('vocabulary',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['vocabulary']}}
-                                </td>
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['singing'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('singing',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['singing']}}
-                                </td>
-                                {{-- Rata-Rata --}}
-                                @php
-                                    $getrata2 = $rata2Penjabaran[$jabaran];
-                                    if(isset($getrata2)) {
-                                        $rata2 = 0;
-                                        $jumlahMateri = 0;
-                                        foreach($getrata2 as $rata) {
-                                            if($penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata] != 0) {
-                                                $rata2 += $penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata];
-                                                $jumlahMateri++;
-                                            }
-                                        }
-                                        if($jumlahMateri != 0) {
-                                            $rataRata = round($rata2 / $jumlahMateri,0);
-                                        } else {
-                                            $rataRata = 0;
-                                        }
-                                    } else {
-                                        $rataRata = 0;
-                                    }
-                                @endphp
-                                <td class="nilai text-center final-rata
-                                @if ($rataRata < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                ">{{$rataRata}}</td>
-                            @elseif(isset($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]) && $jabaran == "komputer")
-                                <td
-                                    data-penjabaran="{{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['uuid']}}"
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['pengetahuan'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('pengetahuan',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['pengetahuan']}}
-                                </td>
-                                <td
-                                    class="nilai editable text-center
-                                    @if ($penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['keterampilan'] < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                    @if (isset($rata2Penjabaran[$jabaran]) && in_array('keterampilan',$rata2Penjabaran[$jabaran])) diratakan @endif" contenteditable="true">
-                                    {{$penjabaran_array[$ngajar->uuid.".".$siswa->uuid]['keterampilan']}}
-                                </td>
-                                {{-- Rata-Rata --}}
-                                @php
-                                    $getrata2 = $rata2Penjabaran[$jabaran];
-                                    if(isset($getrata2)) {
-                                        $rata2 = 0;
-                                        $jumlahMateri = 0;
-                                        foreach($getrata2 as $rata) {
-                                            if($penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata] != 0) {
-                                                $rata2 += $penjabaran_array[$ngajar->uuid.".".$siswa->uuid][$rata];
-                                                $jumlahMateri++;
-                                            }
-                                        }
-                                        if($jumlahMateri != 0) {
-                                            $rataRata = round($rata2 / $jumlahMateri,0);
-                                        } else {
-                                            $rataRata = 0;
-                                        }
-                                    } else {
-                                        $rataRata = 0;
-                                    }
-                                @endphp
-                                <td class="nilai text-center final-rata
-                                @if ($rataRata < $ngajar->kkm) text-danger bg-danger-subtle @endif
-                                ">{{$rataRata}}</td>
+                            @else
+                                <td></td>
                             @endif
                         </tr>
                     @endforeach
@@ -241,6 +256,32 @@
                 })
             }
             cConfirm("Perhatian","Tambahkan Nilai Penjabaran untuk semester ini?",tambahpenjabaran);
+        });
+        $('.tambah-nilai-individual').click(function() {
+            var tambahpenjabaranInvidual = () => {
+                BigLoading('Nilai Sedang Ditambahkan, Mohon untuk tidak menutup halaman sebelum nilai tersimpan dengan lengkap');
+                var siswa = $(this).data('siswa');
+                var uuid = "{{$ngajar->uuid}}";
+                var url = "{{route('penilaian.penjabaran.invidual.store',':id')}}";
+                url = url.replace(':id',uuid);
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                    data : {'penjabaran': '{{$jabaran}}','siswa': siswa},
+                    success: function (data) {
+                        setTimeout(() => {
+                            removeLoadingBig();
+                            cAlert('green','Berhasil','Nilai Berhasil Ditambah',true);
+                        },500);
+                        console.log(data);
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                });
+            }
+            cConfirm("Perhatian","Tambahkan Nilai Penjabaran untuk siswa bersangkutan di semester ini?",tambahpenjabaranInvidual);
         });
         $('.hapus-nilai').click(function() {
             var hapusPenjabaran = () => {
@@ -384,53 +425,59 @@
             if(jabaran == "inggris") {
                 $('.siswa').each(function() {
                     var uuid = $(this).children().eq(2).data('penjabaran');
-                    var listening = $(this).children().eq(2).text();
-                    var speaking = $(this).children().eq(3).text();
-                    var writing = $(this).children().eq(4).text();
-                    var reading = $(this).children().eq(5).text();
-                    var grammar = $(this).children().eq(6).text();
-                    var vocabulary = $(this).children().eq(7).text();
-                    var singing = $(this).children().eq(8).text();
-                    arrayNilai.push({
-                        "uuid": uuid,
-                        "listening": listening,
-                        "speaking": speaking,
-                        "writing": writing,
-                        "reading": reading,
-                        "grammar": grammar,
-                        "vocabulary": vocabulary,
-                        "singing": singing,
-                    });
+                    if(uuid != undefined) {
+                        var listening = $(this).children().eq(2).text();
+                        var speaking = $(this).children().eq(3).text();
+                        var writing = $(this).children().eq(4).text();
+                        var reading = $(this).children().eq(5).text();
+                        var grammar = $(this).children().eq(6).text();
+                        var vocabulary = $(this).children().eq(7).text();
+                        var singing = $(this).children().eq(8).text();
+                        arrayNilai.push({
+                            "uuid": uuid,
+                            "listening": listening,
+                            "speaking": speaking,
+                            "writing": writing,
+                            "reading": reading,
+                            "grammar": grammar,
+                            "vocabulary": vocabulary,
+                            "singing": singing,
+                        });
+                    }
                 });
             } else if(jabaran == "mandarin") {
                 $('.siswa').each(function() {
                     var uuid = $(this).children().eq(2).data('penjabaran');
-                    var listening = $(this).children().eq(2).text();
-                    var speaking = $(this).children().eq(3).text();
-                    var writing = $(this).children().eq(4).text();
-                    var reading = $(this).children().eq(5).text();
-                    var vocabulary = $(this).children().eq(6).text();
-                    var singing = $(this).children().eq(7).text();
-                    arrayNilai.push({
-                        "uuid": uuid,
-                        "listening": listening,
-                        "speaking": speaking,
-                        "writing": writing,
-                        "reading": reading,
-                        "vocabulary": vocabulary,
-                        "singing": singing,
-                    });
+                    if(uuid != undefined) {
+                        var listening = $(this).children().eq(2).text();
+                        var speaking = $(this).children().eq(3).text();
+                        var writing = $(this).children().eq(4).text();
+                        var reading = $(this).children().eq(5).text();
+                        var vocabulary = $(this).children().eq(6).text();
+                        var singing = $(this).children().eq(7).text();
+                        arrayNilai.push({
+                            "uuid": uuid,
+                            "listening": listening,
+                            "speaking": speaking,
+                            "writing": writing,
+                            "reading": reading,
+                            "vocabulary": vocabulary,
+                            "singing": singing,
+                        });
+                    }
                 });
             } else {
                 $('.siswa').each(function() {
                     var uuid = $(this).children().eq(2).data('penjabaran');
-                    var pengetahuan = $(this).children().eq(2).text();
-                    var keterampilan = $(this).children().eq(3).text();
-                    arrayNilai.push({
-                        "uuid": uuid,
-                        "pengetahuan": pengetahuan,
-                        "keterampilan": keterampilan,
-                    });
+                    if(uuid != undefined) {
+                        var pengetahuan = $(this).children().eq(2).text();
+                        var keterampilan = $(this).children().eq(3).text();
+                        arrayNilai.push({
+                            "uuid": uuid,
+                            "pengetahuan": pengetahuan,
+                            "keterampilan": keterampilan,
+                        });
+                    }
                 });
             }
             var url = "{{route('penilaian.penjabaran.edit')}}";

@@ -201,6 +201,11 @@ class PenilaianController extends Controller
         });
         $jabarMandarin = JabarMandarin::where([['id_ngajar', '=', $pMandarin->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
 
+        $pKomputer = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 3;
+        });
+        $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
         });
@@ -220,7 +225,7 @@ class PenilaianController extends Controller
             $tanggal = "";
         }
 
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
     }
 
 
@@ -1129,6 +1134,68 @@ class PenilaianController extends Controller
                         'keterampilan' => 0
                     ));
                 }
+                JabarKomputer::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'pengetahuan', 'keterampilan']);
+            }
+        }
+    }
+    /**
+     * Penjabaran - Penambahan Penjabaran Per Invidual Murid
+     */
+    public function penjabaranInvidualStore(Request $request, String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $jabaran = $request->penjabaran;
+        if ($jabaran == 'inggris') {
+            $penjabaran = JabarInggris::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'listening' => 0,
+                    'speaking' => 0,
+                    'writing' => 0,
+                    'reading' => 0,
+                    'grammar' => 0,
+                    'vocabulary' => 0,
+                    'singing' => 0
+                ));
+                JabarInggris::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'grammar', 'vocabulary', 'singing']);
+            }
+        } else if ($jabaran == "mandarin") {
+            $penjabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'listening' => 0,
+                    'speaking' => 0,
+                    'writing' => 0,
+                    'reading' => 0,
+                    'vocabulary' => 0,
+                    'singing' => 0
+                ));
+                JabarMandarin::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'vocabulary', 'singing']);
+            }
+        } else {
+            $penjabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'pengetahuan' => 0,
+                    'keterampilan' => 0
+                ));
                 JabarKomputer::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'pengetahuan', 'keterampilan']);
             }
         }
