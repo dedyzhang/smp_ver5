@@ -13,6 +13,7 @@ use App\Models\EkskulSiswa;
 use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\JabarInggris;
+use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
@@ -83,6 +84,46 @@ class WalikelasController extends Controller
             }
         }
         return view('walikelas.absensi.index', compact('iswalikelas', 'kelas', 'jumlahAbsensi', 'absensi_array'));
+    }
+    /**
+     * Get Absensi By Date
+     */
+    public function absensiGetByDate(Request $request)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $dataSekolah = Semester::first();
+        $semester = $dataSekolah->semester;
+
+        $kelas = Kelas::with('siswa')->findOrFail($guru->walikelas->id_kelas);
+        $tanggalAbsensi = TanggalAbsensi::where([
+            ['ada_siswa', '=', 1],
+            ['semester', '=', $semester]
+        ])->whereBetween('tanggal', [$request->mulai, $request->akhir])->get();
+        $tanggalID = array();
+        foreach ($tanggalAbsensi as $tanggal) {
+            array_push($tanggalID, $tanggal->uuid);
+        }
+        $jumlahAbsensi = $tanggalAbsensi->count();
+        $siswaID = array();
+        foreach ($kelas->siswa as $siswa) {
+            array_push($siswaID, $siswa->uuid);
+        };
+        $absensi = AbsensiSiswa::whereIn('id_tanggal', $tanggalID)->whereIn('id_siswa', $siswaID)->get();
+        $absensi_array = array();
+        foreach ($absensi as $item) {
+            if (isset($absensi_array[$item->id_siswa][$item->absensi])) {
+                $absensi_array[$item->id_siswa][$item->absensi] += 1;
+            } else {
+                $absensi_array[$item->id_siswa][$item->absensi] = 1;
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'absensi' => $absensi_array,
+            'siswa' => $kelas->siswa,
+            'jumlahAbsensi' => $jumlahAbsensi
+        ]);
     }
     /**
      * Tambah Absensi Siswa
@@ -504,6 +545,11 @@ class WalikelasController extends Controller
         });
         $jabarMandarin = JabarMandarin::where([['id_ngajar', '=', $pMandarin->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
 
+        $pKomputer = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 3;
+        });
+        $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
         });
@@ -523,7 +569,7 @@ class WalikelasController extends Controller
             $tanggal = "";
         }
 
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
     }
 
     /**
@@ -751,7 +797,8 @@ class WalikelasController extends Controller
             array_push($materiArray, array(
                 "uuid" => $item->uuid,
                 "materi" => $item->materi,
-                "jumlahTupe" => $item->tupe
+                "jumlahTupe" => $item->tupe,
+                "show" => $item->show
             ));
             $count++;
         }
@@ -787,6 +834,17 @@ class WalikelasController extends Controller
         $semester = Semester::first();
         $sem = $semester->semester;
         $has_penjabaran = $ngajar->pelajaran->has_penjabaran;
+        $setting = Setting::where('jenis', 'penjabaran_rata')->first();
+
+        if ($setting) {
+            $rata2Penjabaran = unserialize($setting->nilai);
+        } else {
+            $rata2Penjabaran = array(
+                'inggris' => array(),
+                'mandarin' => array(),
+                'komputer' => array()
+            );
+        }
 
         if ($has_penjabaran == 1) {
             $jabaran = 'inggris';
@@ -819,14 +877,26 @@ class WalikelasController extends Controller
                     'singing' => $jabar->singing
                 );
             }
+        } else if ($has_penjabaran == 3) {
+            $jabaran = 'komputer';
+            $penjabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+            $penjabaran_array = array();
+            foreach ($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar . "." . $jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'pengetahuan' => $jabar->pengetahuan,
+                    'keterampilan' => $jabar->keterampilan,
+                );
+            }
         }
+
         $setting = Setting::all();
         $akses_nilai = $setting->first(function ($elem) {
             return $elem->jenis == "akses_harian_walikelas";
         });
 
         if ($akses_nilai && $akses_nilai->nilai == 1) {
-            return View("walikelas.nilai.harian.penjabaran", compact('ngajar', 'penjabaran', 'jabaran', 'penjabaran_array'));
+            return View("walikelas.nilai.harian.penjabaran", compact('ngajar', 'penjabaran', 'jabaran', 'penjabaran_array', 'rata2Penjabaran'));
         } else {
             return view('home.index');
         }

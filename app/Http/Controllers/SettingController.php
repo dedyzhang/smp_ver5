@@ -242,4 +242,47 @@ class SettingController extends Controller
             ]);
         }
     }
+    /**
+     * Setting - Penjabaran set Rata-rata
+     */
+    public function setPenjabaran(Request $request)
+    {
+        $inggris = $request->inggris;
+        $mandarin = $request->mandarin;
+        $komputer = $request->komputer;
+
+        $penjabaran = array(
+            'inggris' => $inggris,
+            'mandarin' => $mandarin,
+            'komputer' => $komputer
+        );
+        $rerataPenjabaran = serialize($penjabaran);
+
+        $settingPelajaran = Setting::where('jenis', 'penjabaran_rata')->first();
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $rerataPenjabaran
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'penjabaran_rata',
+                'nilai' => $rerataPenjabaran
+            ]);
+        }
+    }
+    public function setRumusRapor(Request $request)
+    {
+        $rumus = $request->rumus;
+        $settingPelajaran = Setting::where('jenis', 'rumus_rapor')->first();
+        if ($settingPelajaran !== null) {
+            $settingPelajaran->update([
+                'nilai' => $rumus
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'rumus_rapor',
+                'nilai' => $rumus
+            ]);
+        }
+    }
 }
