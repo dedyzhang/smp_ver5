@@ -67,7 +67,13 @@
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
                             @foreach ($materiArray as $item)
-                                <td width="5%" data-sumatif="{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['uuid']}}" contenteditable="true" class="text-center nilai_{{$item['uuid']}} nilai editable @if ($sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                @if (isset($sumatif_array[$item['uuid'].".".$siswa->uuid]))
+                                    <td width="5%" data-sumatif="{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['uuid']}}" contenteditable="true" class="text-center nilai_{{$item['uuid']}} nilai editable @if ($sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                @elseif($item['show'] == 0)
+                                    <td width="5%" class="text-center">-</td>
+                                @else
+                                    <td width="5%" class="text-center"><button data-siswa="{{$siswa->uuid}}" data-materi="{{$item['uuid']}}" class="btn btn-sm btn-success pt-0 pb-0 tambah-nilai"><i class="fas fa-plus fs-12"></i></button></td></td>
+                                @endif
                             @endforeach
                         </tr>
                     @endforeach
@@ -150,38 +156,6 @@
             }
 
         };
-        // $('.open-close-tab').click(function(){
-        //     var show = $(this).attr('class').split(' ');
-        //     var showNo = show[1].split('_').pop();
-        //     var jumlahColspan = $(this).data('tupe');
-        //     $('.subtab').css('display','none');
-        //     $('.open-close-tab').attr('colspan','1');
-        //     $(this).attr('colspan','1');
-        //     // $('.save').attr('colspan','1');
-        //     if($(this).hasClass('bg-warning-subtle')) {
-        //         $('.open-close-tab').removeClass('bg-success-subtle').addClass('bg-warning-subtle');
-        //         $(this).removeClass('bg-warning-subtle').addClass('bg-success-subtle');
-        //         // $(this).removeClass('text-danger').addClass('text-primary');
-        //         // $(this).html('<i class="mdi mdi-18px mdi-minus-box"></i>');
-
-        //         $(this).attr('colspan',jumlahColspan + 1);
-        //         $('.mainNilaiCell').attr('colspan',$('.mainNilaiCell').attr('colspan') + jumlahColspan + 1);
-        //         $('.subtab_'+showNo).css('display','table-cell');
-
-        //         // $('.save-'+showNo).attr('colspan',jumlahColspan + 1);
-        //     } else {
-        //         $('.open-close-tab').removeClass('bg-success-subtle').addClass('bg-warning-subtle');
-        //         $(this).removeClass('bg-success-subtle').addClass('bg-warning-subtle');
-        //         // $(this).removeClass('text-primary').addClass('text-danger');
-        //         // $(this).html('<i class="mdi mdi-18px mdi-plus-box"></i>');
-        //         // $('.kd-'+showNo).attr('colspan','1');
-        //         $('.mainNilaiCell').attr('colspan',$('.mainNilaiCell').attr('colspan') - jumlahColspan + 1);
-        //         $(this).attr('colspan','1');
-        //         $('.subtab_'+showNo).css('display','none');
-        //         // $('.save-'+showNo).attr('colspan','1');
-        //     }
-
-        // });
         $('.simpan-nilai').click(function() {
             var alertLoading = $.alert({
                 icon: "fas fa-gear fa-spin",
@@ -225,5 +199,25 @@
                 }
             })
         });
+        $('.tambah-nilai').click(function() {
+            var siswa = $(this).data('siswa');
+            var materi = $(this).data('materi');
+
+            loading();
+            $.ajax({
+                type: "POST",
+                url : "{{route('penilaian.sumatif.tambah')}}",
+                headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                data: {'siswa': siswa,'materi': materi},
+                success: function(data) {
+                    if(data.success) {
+                        removeLoading();
+                        location.reload();
+                    }
+                },error: function(data) {
+                    console.log(data.responseJSON.message);
+                }
+            })
+        })
     </script>
 @endsection

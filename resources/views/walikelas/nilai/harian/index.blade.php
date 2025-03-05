@@ -58,7 +58,7 @@
                             }
                         });
                         pelajaran.forEach(item => {
-                            if(item.pelajaran.has_penjabaran == 1 || item.pelajaran.has_penjabaran == 2) {
+                            if(item.pelajaran.has_penjabaran == 1 || item.pelajaran.has_penjabaran == 2 || item.pelajaran.has_penjabaran == 3) {
                                 var link = `
                                 <a href="{{route('walikelas.nilai.materi',':id')}}" class="list-group-item list-group-item-action">Materi</a>
                                 <a href="{{route('walikelas.nilai.formatif',':id')}}" class="list-group-item list-group-item-action">Nilai Formatif</a>

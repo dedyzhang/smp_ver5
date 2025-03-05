@@ -55,7 +55,13 @@
                             <td>{{$loop->iteration}}</td>
                             <td class="sticky">{{$siswa->nama}}</td>
                             @foreach ($materiArray as $item)
-                                <td width="5%" data-sumatif="{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['uuid']}}" class="text-center nilai_{{$item['uuid']}} nilai editable @if ($sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                @if (isset($sumatif_array[$item['uuid'].".".$siswa->uuid]))
+                                    <td width="5%" data-sumatif="{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['uuid']}}" class="text-center nilai_{{$item['uuid']}} nilai editable @if ($sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai'] < $ngajar->kkm) text-danger bg-danger-subtle @endif">{{$sumatif_array[$item['uuid'].".".$siswa->uuid]['nilai']}}</td>
+                                @elseif($item['show'] == 0)
+                                    <td width="5%" class="text-center">-</td>
+                                @else
+                                    <td width="5%" class="text-center"><button data-siswa="{{$siswa->uuid}}" data-materi="{{$item['uuid']}}" class="btn btn-sm btn-success pt-0 pb-0 tambah-nilai"><i class="fas fa-plus fs-12"></i></button></td></td>
+                                @endif
                             @endforeach
                         </tr>
                     @endforeach
