@@ -86,6 +86,46 @@ class WalikelasController extends Controller
         return view('walikelas.absensi.index', compact('iswalikelas', 'kelas', 'jumlahAbsensi', 'absensi_array'));
     }
     /**
+     * Get Absensi By Date
+     */
+    public function absensiGetByDate(Request $request)
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $dataSekolah = Semester::first();
+        $semester = $dataSekolah->semester;
+
+        $kelas = Kelas::with('siswa')->findOrFail($guru->walikelas->id_kelas);
+        $tanggalAbsensi = TanggalAbsensi::where([
+            ['ada_siswa', '=', 1],
+            ['semester', '=', $semester]
+        ])->whereBetween('tanggal', [$request->mulai, $request->akhir])->get();
+        $tanggalID = array();
+        foreach ($tanggalAbsensi as $tanggal) {
+            array_push($tanggalID, $tanggal->uuid);
+        }
+        $jumlahAbsensi = $tanggalAbsensi->count();
+        $siswaID = array();
+        foreach ($kelas->siswa as $siswa) {
+            array_push($siswaID, $siswa->uuid);
+        };
+        $absensi = AbsensiSiswa::whereIn('id_tanggal', $tanggalID)->whereIn('id_siswa', $siswaID)->get();
+        $absensi_array = array();
+        foreach ($absensi as $item) {
+            if (isset($absensi_array[$item->id_siswa][$item->absensi])) {
+                $absensi_array[$item->id_siswa][$item->absensi] += 1;
+            } else {
+                $absensi_array[$item->id_siswa][$item->absensi] = 1;
+            }
+        }
+        return response()->json([
+            'success' => true,
+            'absensi' => $absensi_array,
+            'siswa' => $kelas->siswa,
+            'jumlahAbsensi' => $jumlahAbsensi
+        ]);
+    }
+    /**
      * Tambah Absensi Siswa
      */
     public function absensiCreate(): View
