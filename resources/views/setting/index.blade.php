@@ -702,6 +702,137 @@
                             </div>
                         </div>
                     </div>
+                    {{-- Pengaturan Penjabaran yang ingin dirata-ratakan --}}
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
+                        @php
+                            $settingPenjabaranRata = $setting->first(function($elem) {
+                                return $elem->jenis == "penjabaran_rata";
+                            });
+                            if($settingPenjabaranRata) {
+                                $array_penjabaran = unserialize($settingPenjabaranRata->nilai);
+                            } else {
+                                $array_penjabaran = array();
+                            }
+                        @endphp
+                        <div class="card">
+                            <div class="card-header">
+                                Perhitungan Rata-Rata Penjabaran
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Centang nilai apa saja yang akan dirata-ratakan</p>
+                                <div class="row m-0 p-0 mt-2">
+                                    <b class="mb-2">Bahasa Inggris</b>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-listening" value="listening" @if (isset($array_penjabaran['inggris']) && in_array('listening',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-listening">Listening</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-speaking" value="speaking" @if (isset($array_penjabaran['inggris']) && in_array('speaking',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-speaking">Speaking</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-writing" value="writing" @if (isset($array_penjabaran['inggris']) && in_array('writing',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-writing">Writing</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-reading" value="reading" @if (isset($array_penjabaran['inggris']) && in_array('reading',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-reading">Reading</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-grammar" value="grammar" @if (isset($array_penjabaran['inggris']) && in_array('grammar',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-grammar">Grammar</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-vocabulary" value="vocabulary" @if (isset($array_penjabaran['inggris']) && in_array('vocabulary',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-vocabulary">Vocabulary</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="inggris" id="ing-singing" value="singing" @if (isset($array_penjabaran['inggris']) && in_array('singing',$array_penjabaran['inggris'])) checked @endif/>
+                                        <label for="ing-singing">Singing</label>
+                                    </div>
+                                </div>
+                                <div class="row m-0 p-0 mt-2">
+                                    <b class="mb-2">Mandarin</b>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-listening" value="listening" @if (isset($array_penjabaran['mandarin']) && in_array('listening',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-listening">听力</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-speaking" value="speaking" @if (isset($array_penjabaran['mandarin']) && in_array('speaking',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-speaking">会话</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-writing" value="writing" @if (isset($array_penjabaran['mandarin']) && in_array('writing',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-writing">书写</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-reading" value="reading" @if (isset($array_penjabaran['mandarin']) && in_array('reading',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-reading">阅读</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-vocabulary" value="vocabulary" @if (isset($array_penjabaran['mandarin']) && in_array('vocabulary',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-vocabulary">词汇</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="mandarin" id="man-singing" value="singing" @if (isset($array_penjabaran['mandarin']) && in_array('singing',$array_penjabaran['mandarin'])) checked @endif/>
+                                        <label for="man-singing">唱歌</label>
+                                    </div>
+                                </div>
+                                <div class="row m-0 p-0 mt-2">
+                                    <b class="mb-2">Komputer</b>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="komputer" id="pengetahuan" value="pengetahuan" @if (isset($array_penjabaran['komputer']) && in_array('pengetahuan',$array_penjabaran['komputer'])) checked @endif/>
+                                        <label for="pengetahuan">Pengetahuan</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 form-check-inline">
+                                        <input type="checkbox" name="komputer" id="keterampilan" value="keterampilan" @if (isset($array_penjabaran['komputer']) && in_array('keterampilan',$array_penjabaran['komputer'])) checked @endif />
+                                        <label for="keterampilan">Keterampilan</label>
+                                    </div>
+                                </div>
+                                <div class="row m-0 p-0 mt-2">
+                                    <div class="col-12">
+                                        <button class="btn btn-sm btn-warning text-warning-emphasis simpan-rata-penjabaran"><i class="fas fa-save"></i> Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- Pengaturan Rumus Nilai Untuk Nilai Rapor --}}
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
+                        @php
+                            $settingRumusRapor = $setting->first(function($elem) {
+                                return $elem->jenis == "rumus_rapor";
+                            });
+                        @endphp
+                        <div class="card">
+                            <div class="card-header">
+                                Perhitungan Nilai Rapor
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Centang Rumus nilai yang akan digunakan</p>
+                                <div class="row m-0 p-0 mt-2">
+                                    <div class="form-check col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 form-check-inline">
+                                        <input type="radio" name="rumus" id="bagi4" value="bagi4" @if (isset($settingRumusRapor) && $settingRumusRapor->nilai == "bagi4") checked @endif>
+                                        <label for="bagi4">((2 x Rata-Rata Formatif ) + Rata-Rata Sumatif + Nilai Sumatif Akhir Semester ) / 4</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 form-check-inline">
+                                        <input type="radio" name="rumus" id="bagi3" value="bagi3" @if (isset($settingRumusRapor) && $settingRumusRapor->nilai == "bagi3") checked @endif/>
+                                        <label for="bagi3">(Rata-Rata Formatif + Rata-Rata Sumatif + Nilai Sumatif Akhir Semester ) / 3</label>
+                                    </div>
+                                    <div class="form-check col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 form-check-inline">
+                                        <input type="radio" name="rumus" id="jumlahDulu" value="jumlahDulu" @if (isset($settingRumusRapor) && $settingRumusRapor->nilai == "jumlahDulu") checked @endif/>
+                                        <label for="jumlahDulu">(Nilai Formatif + Nilai Sumatif + Nilai Sumatif Akhir Semester ) / Total Nilai</label>
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 p-0 mt-2">
+                                    <div class="col-12">
+                                        <button class="btn btn-sm btn-warning text-warning-emphasis simpan-rumus-nilai-rapor"><i class="fas fa-save"></i> Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <script>
                     $('input[name="harian-walikelas"]').change(function() {
@@ -723,7 +854,49 @@
                                 console.log(data.responseJSON.message);
                             }
                         })
+                    });
+                    $('.simpan-rata-penjabaran').click(function() {
+                        var inggris = $('input[name="inggris"]:checked').map(function() {
+                            return $(this).val();
+                        }).get();
+                        var mandarin = $('input[name="mandarin"]:checked').map(function() {
+                            return $(this).val();
+                        }).get();
+                        var komputer = $('input[name="komputer"]:checked').map(function() {
+                            return $(this).val();
+                        }).get();
+
+                        var url = "{{route('setting.penjabaran')}}";
+                        loading();
+                        $.ajax({
+                            type: "post",
+                            url: url,
+                            data: {inggris: inggris, mandarin: mandarin, komputer: komputer},
+                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                            success: function(data) {
+                                removeLoading();
+                            },
+                            error: function(data) {
+                                console.log(data.responseJSON.message);
+                            }
+                        })
                     })
+                    $('.simpan-rumus-nilai-rapor').click(function() {
+                        var rumus = $('input[name="rumus"]:checked').val();
+                        loading();
+                        $.ajax({
+                            type: "post",
+                            url: '{{route("setting.penilaian.rumus.rapor")}}',
+                            data: {rumus: rumus},
+                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                            success: function(data) {
+                                removeLoading();
+                            },
+                            error: function(data) {
+                                console.log(data.responseJSON.message);
+                            }
+                        });
+                    });
                 </script>
             </div>
             <div

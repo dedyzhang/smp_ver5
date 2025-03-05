@@ -17,6 +17,7 @@ class Materi extends Model
         'materi',
         'tupe',
         'semester',
+        'show',
     ];
 
     public function Tupe()

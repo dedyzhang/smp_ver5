@@ -44,6 +44,7 @@
         </div>
         <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
             <p><b>List Materi</b></p>
+            <p><span class="badge text-bg-warning">Table</span> Table berwarna kuning artinya materi belum diaktifkan. silahkan klik nama materi yang sudah ditambah dan klik tombol aktifkan materi.</p>
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -57,25 +58,25 @@
                         @foreach ($materi as $mtri)
                             @foreach ($mtri->tupe()->get() as $tupe)
                                 @if ($loop->iteration == 1)
-                                    <tr data-materi="{{$mtri->uuid}}" data-tupe="{{$tupe->uuid}}" data-jumlahtupe="{{$mtri->tupe}}">
+                                    <tr data-materi="{{$mtri->uuid}}" data-show="{{$mtri->show}}" data-tupe="{{$tupe->uuid}}" data-jumlahtupe="{{$mtri->tupe}}" class="@if ($mtri->show == 0) table-warning @endif">
                                         <td width="25%" class="materi-view" style="min-width: 150px; cursor: pointer;" rowspan="{{$mtri->tupe}}">{{$mtri->materi}}</td>
                                         <td width="7%" class="text-center">F0{{$loop->iteration}}</td>
                                         <td width="58%" class="tupe-view" style="min-width: 200px;cursor: pointer;">{{$tupe->tupe}}</td>
                                         @if ($tupe->show == 0)
-                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
+                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" @if ($mtri->show == 0) disabled @endif data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
                                         @else
-                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
+                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" @if ($mtri->show == 0) disabled @endif data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
                                         @endif
 
                                     </tr>
                                 @else
-                                    <tr data-materi="{{$mtri->uuid}}" data-tupe="{{$tupe->uuid}}">
+                                    <tr data-materi="{{$mtri->uuid}}" data-tupe="{{$tupe->uuid}}" class="@if ($mtri->show == 0) table-warning @endif">
                                         <td class="text-center">F0{{$loop->iteration}}</td>
                                         <td class="tupe-view" style="cursor: pointer">{{$tupe->tupe}}</td>
                                         @if ($tupe->show == 0)
-                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
+                                            <td width="10%"><button class="btn btn-sm btn-success tambahkan-nilai" @if ($mtri->show == 0) disabled @endif data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Masukkan ke Formatif"><i class="fa fa-sign-in-alt"></i></button></td>
                                         @else
-                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
+                                            <td width="10%"><button class="btn btn-sm btn-danger hapus-nilai" @if ($mtri->show == 0) disabled @endif data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Hapus dari Formatif"><i class="fa fa-trash-can"></i></button></td>
                                         @endif
                                     </tr>
                                 @endif
@@ -129,6 +130,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button class="btn btn-sm btn-primary aktifkan-materi" data-show="0"><i class="fas fa-lock"></i> Aktifkan Materi</button>
                     <button class="btn btn-sm btn-warning text-warning-emphasis tambah-tupe"><i class="fas fa-add"></i> Tambah tupe</button>
                     <button class="btn btn-sm btn-danger delete-materi"><i class="fas fa-trash-can"></i> Delete</button>
                     <button class="btn btn-sm btn-success simpan-materi"><i class="fas fa-save"></i> Edit</button>
@@ -242,6 +244,18 @@
         });
         $('.materi-view').click(function() {
             idmateri = $(this).closest('tr').data('materi');
+            var show = $(this).closest('tr').data('show');
+            if(show == 0) {
+                $('.aktifkan-materi').attr('data-show',"0");
+                $('.aktifkan-materi').text("Aktifkan Materi");
+                $('.aktifkan-materi').removeClass('btn-danger').addClass('btn-success');
+                $('.aktifkan-materi').prepend('<i class="fas fa-unlock"></i> ');
+            } else {
+                $('.aktifkan-materi').attr('data-show',"1");
+                $('.aktifkan-materi').text("Nonaktifkan Materi");
+                $('.aktifkan-materi').removeClass('btn-success').addClass('btn-danger');
+                $('.aktifkan-materi').prepend('<i class="fas fa-lock"></i> ');
+            }
             var materi = $(this).text();
             ini = this;
             $('#viewMateri').val(materi);
@@ -466,6 +480,55 @@
                     console.log(data.responseJSON.message);
                 }
             })
+        });
+        $('.aktifkan-materi').click(function() {
+            var show = $(this).data('show');
+            console.log(show);
+            var aktifkanMateri = () => {
+                loading();
+                if(show == 0) {
+                    var url = "{{route('penilaian.materi.aktifkan',':id')}}";
+                    url = url.replace(':id',idmateri);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                        success: function(data) {
+                            if(data.success) {
+                                removeLoading();
+                                cAlert("green","Berhasil","Materi berhasil diaktifkan",true);
+                            }
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON);
+                        }
+                    });
+                } else {
+                    var url = "{{route('penilaian.materi.nonaktifkan',':id')}}";
+                    url = url.replace(':id',idmateri);
+                    $.ajax({
+                        type: "post",
+                        url: url,
+                        headers: {'X-CSRF-TOKEN': "{{csrf_token()}}"},
+                        success: function(data) {
+                            if(data.success) {
+                                removeLoading();
+                                cAlert("green","Berhasil","Materi berhasil dinonaktifkan",true);
+                            }
+                        },
+                        error: function(data) {
+                            console.log(data.responseJSON);
+                        }
+                    });
+                }
+            }
+            if(show == 0) {
+                var bahasa = "Apakah anda yakin untuk mengaktifkan materi ini ?";
+            } else {
+                var bahasa = "Apakah anda yakin untuk menonaktifkan materi ini?<p class='fs-11'>Nilai Formatif dan Sumatif yang sudah dimasukkan akan otomatis terhapus</p>";
+            }
+            var bahasa =
+            cConfirm("Perhatian",bahasa,aktifkanMateri);
         })
     </script>
 @endsection

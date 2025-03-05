@@ -25,8 +25,14 @@
                     <tr class="fs-12">
                         <td>{{$loop->iteration}}</td>
                         <td>{{date('d M Y',strtotime($item->tanggal))}}</td>
-                        <td>{{$item->siswa->nama}}</td>
-                        <td>{{$item->siswa->kelas->tingkat.$item->siswa->kelas->kelas}}</td>
+                        @if (isset($item->siswa))
+                            <td>{{$item->siswa->nama}}</td>
+                            <td>{{$item->siswa->kelas->tingkat.$item->siswa->kelas->kelas}}</td>
+                        @else
+                            <td><i class="text-warning">Sudah Pindah</i></td>
+                            <td><i class="text-warning">-</i></td>
+                        @endif
+
                         <td class="{{$item->aturan->jenis == "kurang" ? "text-danger" : "text-success"}}">{{$item->aturan->kode."-".$item->aturan->aturan}}</td>
                         <td>{{$item->aturan->poin}}</td>
                         <td>{{isset($all_name[$item->id_input]) ? $all_name[$item->id_input] : "" }}</td>
