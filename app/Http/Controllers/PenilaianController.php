@@ -8,6 +8,7 @@ use App\Models\EkskulSiswa;
 use App\Models\Formatif;
 use App\Models\Guru;
 use App\Models\JabarInggris;
+use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Materi;
@@ -200,6 +201,11 @@ class PenilaianController extends Controller
         });
         $jabarMandarin = JabarMandarin::where([['id_ngajar', '=', $pMandarin->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
 
+        $pKomputer = $ngajar->first(function ($elem) {
+            return $elem->pelajaran->has_penjabaran == 3;
+        });
+        $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
         });
@@ -219,7 +225,7 @@ class PenilaianController extends Controller
             $tanggal = "";
         }
 
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'tanggal'));
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
     }
 
 
@@ -296,7 +302,8 @@ class PenilaianController extends Controller
                 "id_ngajar" => $uuid,
                 "materi" => $request->materi,
                 "tupe" => $request->tupe,
-                "semester" => $semester
+                "semester" => $semester,
+                "show" => 0,
             ]);
             $tupe_array = array();
             for ($i = 1; $i <= $request->tupe; $i++) {
@@ -306,16 +313,6 @@ class PenilaianController extends Controller
                 ));
             }
             $tupe = Tupe::upsert($tupe_array, ['uuid']);
-            $sumatif_array = array();
-
-            foreach ($ngajar->siswa as $siswa) {
-                array_push($sumatif_array, array(
-                    "id_materi" => $materi->uuid,
-                    "id_siswa" => $siswa->uuid,
-                    "nilai" => 0
-                ));
-            }
-            $sumatif = Sumatif::upsert($sumatif_array, ['uuid'], ['id_materi', 'id_siswa', 'nilai']);
             return response()->json(["success" => true]);
         }
     }
@@ -344,6 +341,43 @@ class PenilaianController extends Controller
 
         return response()->json(["success" => true]);
     }
+    /**
+     * Materi - Aktifkan Materi dan tambahkan sumatif
+     */
+    public function materiAktifkan(String $uuid)
+    {
+        $materi = Materi::findOrFail($uuid);
+        $ngajar = Ngajar::with('siswa')->findOrFail($materi->id_ngajar);
+        $array_insert = array();
+        foreach ($ngajar->siswa as $siswa) {
+            array_push($array_insert, array(
+                "id_materi" => $uuid,
+                "id_siswa" => $siswa->uuid,
+                "nilai" => 0
+            ));
+        }
+        $sumatif = Sumatif::upsert($array_insert, ['uuid'], ['id_materi', 'id_siswa', 'nilai']);
+        $materi->update([
+            "show" => 1
+        ]);
+
+        return response()->json(["success" => true]);
+    }
+    /**
+     * Materi - Nonaktifkan Materi dan hapus sumatif
+     */
+    public function materiNonaktifkan(String $uuid)
+    {
+        $materi = Materi::findOrFail($uuid);
+        $sumatif = Sumatif::where('id_materi', $uuid)->delete();
+        $formatif = Formatif::where('id_materi', $uuid)->delete();
+        $materi->update([
+            "show" => 0
+        ]);
+
+        return response()->json(["success" => true]);
+    }
+
     /**
      * Materi - Tambah Tujuan Pembelajaran
      */
@@ -454,6 +488,7 @@ class PenilaianController extends Controller
                 "id_ngajar" => $ngajar->uuid,
                 "materi" => $materi->materi,
                 "tupe" => $materi->tupe,
+                "show" => 0,
                 "semester" => $semester
             ]);
             $tupe_array = array();
@@ -465,16 +500,7 @@ class PenilaianController extends Controller
                 ));
             }
             $tupe = Tupe::upsert($tupe_array, ['uuid']);
-            $sumatif_array = array();
 
-            foreach ($ngajar->siswa as $siswa) {
-                array_push($sumatif_array, array(
-                    "id_materi" => $materi_insert->uuid,
-                    "id_siswa" => $siswa->uuid,
-                    "nilai" => 0
-                ));
-            }
-            $sumatif = Sumatif::upsert($sumatif_array, ['uuid'], ['id_materi', 'id_siswa', 'nilai']);
             return response()->json(["success" => true]);
         }
     }
@@ -518,7 +544,8 @@ class PenilaianController extends Controller
                 array_push($tupeArray, array(
                     "uuid" => $tupe->uuid,
                     "id_materi" => $tupe->id_materi,
-                    "tupe" => $tupe->tupe
+                    "tupe" => $tupe->tupe,
+                    "show" => $tupe->show
                 ));
                 $count++;
             }
@@ -547,6 +574,20 @@ class PenilaianController extends Controller
         Batch::update(new Formatif, $nilai, 'uuid');
     }
     /**
+     * Formatif - Tambah Nilai Yang Ketinggalan
+     */
+    public function formatifTambah(Request $request)
+    {
+        Formatif::create([
+            'id_materi' => $request->materi,
+            'id_tupe' => $request->tupe,
+            'id_siswa' => $request->siswa,
+            'nilai' => 0
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+    /**
      * Sumatif = Show Index Sumatif
      */
     public function sumatifIndex(): View
@@ -564,7 +605,7 @@ class PenilaianController extends Controller
         return view("penilaian.sumatif.index", compact('ngajar'));
     }
     /**
-     * Formatif - Menampilkan isi dari penilaian Sumatif Per Kelas
+     * Sumatif - Menampilkan isi dari penilaian Sumatif Per Kelas
      */
     public function sumatifShow(String $uuid): View
     {
@@ -580,7 +621,8 @@ class PenilaianController extends Controller
             array_push($materiArray, array(
                 "uuid" => $item->uuid,
                 "materi" => $item->materi,
-                "jumlahTupe" => $item->tupe
+                "jumlahTupe" => $item->tupe,
+                "show" => $item->show
             ));
             $count++;
         }
@@ -606,6 +648,16 @@ class PenilaianController extends Controller
         $nilai = $request->nilai;
 
         Batch::update(new Sumatif, $nilai, 'uuid');
+    }
+    public function sumatifTambah(Request $request)
+    {
+        Sumatif::create([
+            'id_materi' => $request->materi,
+            'id_siswa' => $request->siswa,
+            'nilai' => 0
+        ]);
+
+        return response()->json(['success' => true]);
     }
     /**
      * PTS - Show Index PTS
@@ -802,6 +854,12 @@ class PenilaianController extends Controller
         $raporManual = RaporManual::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
         $materiArray = array();
         $tupeArray = array();
+        $rumus_rapor = Setting::where('jenis', 'rumus_rapor')->first();
+        if ($rumus_rapor) {
+            $rumus = $rumus_rapor->nilai;
+        } else {
+            $rumus = "bagi4";
+        }
 
         $count = 0;
         foreach ($materi as $item) {
@@ -814,7 +872,8 @@ class PenilaianController extends Controller
                 array_push($tupeArray, array(
                     "uuid" => $tupe->uuid,
                     "id_materi" => $tupe->id_materi,
-                    "tupe" => $tupe->tupe
+                    "tupe" => $tupe->tupe,
+                    "show" => $tupe->show
                 ));
                 $count++;
             }
@@ -875,7 +934,7 @@ class PenilaianController extends Controller
             $sudah_konfirmasi = "belum";
         }
 
-        return View("penilaian.rapor.show", compact('ngajar', 'formatif_array', 'sumatif_array', 'pas_array', 'temp_array', 'tupeArray', 'materiArray', 'semester', 'sudah_konfirmasi', 'manual_array'));
+        return View("penilaian.rapor.show", compact('ngajar', 'formatif_array', 'sumatif_array', 'pas_array', 'temp_array', 'tupeArray', 'materiArray', 'semester', 'sudah_konfirmasi', 'manual_array', 'rumus'));
     }
     /**
      * Rapor Temp- Edit Rapor Temp Nilai
@@ -938,7 +997,7 @@ class PenilaianController extends Controller
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
             ->join('kelas', 'id_kelas', '=', 'kelas.uuid')
             ->where('id_guru', $guru->uuid)
-            ->whereIn('pelajaran.has_penjabaran', array('1', '2'))
+            ->whereIn('pelajaran.has_penjabaran', array('1', '2', '3'))
             ->orderByRaw('length(pelajaran.urutan), pelajaran.urutan')
             ->orderByRaw('length(kelas.tingkat), kelas.tingkat')
             ->orderByRaw('length(kelas.kelas), kelas.kelas')
@@ -954,6 +1013,17 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $sem = $semester->semester;
         $has_penjabaran = $ngajar->pelajaran->has_penjabaran;
+        $setting = Setting::where('jenis', 'penjabaran_rata')->first();
+
+        if ($setting) {
+            $rata2Penjabaran = unserialize($setting->nilai);
+        } else {
+            $rata2Penjabaran = array(
+                'inggris' => array(),
+                'mandarin' => array(),
+                'komputer' => array()
+            );
+        }
 
         if ($has_penjabaran == 1) {
             $jabaran = 'inggris';
@@ -986,9 +1056,19 @@ class PenilaianController extends Controller
                     'singing' => $jabar->singing
                 );
             }
+        } else if ($has_penjabaran == 3) {
+            $jabaran = 'komputer';
+            $penjabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+            $penjabaran_array = array();
+            foreach ($penjabaran as $jabar) {
+                $penjabaran_array[$jabar->id_ngajar . "." . $jabar->id_siswa] = array(
+                    'uuid' => $jabar->uuid,
+                    'pengetahuan' => $jabar->pengetahuan,
+                    'keterampilan' => $jabar->keterampilan,
+                );
+            }
         }
-
-        return View("penilaian.penjabaran.show", compact('ngajar', 'penjabaran', 'jabaran', 'penjabaran_array'));
+        return View("penilaian.penjabaran.show", compact('ngajar', 'penjabaran', 'jabaran', 'penjabaran_array', 'rata2Penjabaran'));
     }
     /**
      * Penjabaran - Penjabaran Store
@@ -1020,7 +1100,7 @@ class PenilaianController extends Controller
                 }
                 JabarInggris::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'grammar', 'vocabulary', 'singing']);
             }
-        } else {
+        } else if ($jabaran == "mandarin") {
             $penjabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
             if ($penjabaran->count() === 0) {
 
@@ -1040,6 +1120,84 @@ class PenilaianController extends Controller
                 }
                 JabarMandarin::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'vocabulary', 'singing']);
             }
+        } else {
+            $penjabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                foreach ($ngajar->siswa as $siswa) {
+                    array_push($nilai_array, array(
+                        'id_ngajar' => $ngajar->uuid,
+                        'id_siswa' => $siswa->uuid,
+                        'semester' => $sem,
+                        'pengetahuan' => 0,
+                        'keterampilan' => 0
+                    ));
+                }
+                JabarKomputer::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'pengetahuan', 'keterampilan']);
+            }
+        }
+    }
+    /**
+     * Penjabaran - Penambahan Penjabaran Per Invidual Murid
+     */
+    public function penjabaranInvidualStore(Request $request, String $uuid)
+    {
+        $ngajar = Ngajar::with('pelajaran', 'kelas', 'guru', 'siswa')->findOrFail($uuid);
+        $semester = Semester::first();
+        $sem = $semester->semester;
+        $jabaran = $request->penjabaran;
+        if ($jabaran == 'inggris') {
+            $penjabaran = JabarInggris::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'listening' => 0,
+                    'speaking' => 0,
+                    'writing' => 0,
+                    'reading' => 0,
+                    'grammar' => 0,
+                    'vocabulary' => 0,
+                    'singing' => 0
+                ));
+                JabarInggris::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'grammar', 'vocabulary', 'singing']);
+            }
+        } else if ($jabaran == "mandarin") {
+            $penjabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'listening' => 0,
+                    'speaking' => 0,
+                    'writing' => 0,
+                    'reading' => 0,
+                    'vocabulary' => 0,
+                    'singing' => 0
+                ));
+                JabarMandarin::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'listening', 'speaking', 'writing', 'reading', 'vocabulary', 'singing']);
+            }
+        } else {
+            $penjabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['id_siswa', '=', $request->siswa], ['semester', '=', $sem]])->get();
+            if ($penjabaran->count() === 0) {
+
+                $nilai_array = array();
+                array_push($nilai_array, array(
+                    'id_ngajar' => $ngajar->uuid,
+                    'id_siswa' => $request->siswa,
+                    'semester' => $sem,
+                    'pengetahuan' => 0,
+                    'keterampilan' => 0
+                ));
+                JabarKomputer::upsert($nilai_array, ['uuid'], ['id_ngajar', 'id_siswa', 'semester', 'pengetahuan', 'keterampilan']);
+            }
         }
     }
     /**
@@ -1052,8 +1210,10 @@ class PenilaianController extends Controller
 
         if ($penjabaran == "inggris") {
             Batch::update(new JabarInggris, $nilai, 'uuid');
-        } else {
+        } else if ($penjabaran == "mandarin") {
             Batch::update(new JabarMandarin, $nilai, 'uuid');
+        } else {
+            Batch::update(new JabarKomputer, $nilai, 'uuid');
         }
     }
     /**
@@ -1067,8 +1227,10 @@ class PenilaianController extends Controller
 
         if ($penjabaran == "inggris") {
             $jabaran = JabarInggris::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]]);
-        } else {
+        } else if ($penjabaran == "mandarin") {
             $jabaran = JabarMandarin::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]]);
+        } else {
+            $jabaran = JabarKomputer::where([['id_ngajar', '=', $uuid], ['semester', '=', $sem]]);
         }
         $jabaran->delete();
     }

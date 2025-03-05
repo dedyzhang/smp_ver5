@@ -162,7 +162,7 @@
         $('.simpan-dimensi').click(function() {
             var error = 0;
 
-            $('.validate-dimensi').each(function() {
+            $('.-dimensi').each(function() {
                 if($(this).val() == '') {
                     $(this).addClass('is-invalid');
                     error++;

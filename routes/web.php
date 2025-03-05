@@ -127,6 +127,8 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/absensi/guru', 'setCaraAbsensi')->name('setting.absensi.method');
     Route::get('/settings/absensi/barcode', 'setBarcodeAbsensi')->name('setting.absensi.generateBarcode');
     Route::post('/settings/walikelas/harian', 'setAksesHarianWalikelas')->name('setting.walikelas.harian');
+    Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
+    Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
 });
 
 //Admin - Halaman Cetak Excel
@@ -256,10 +258,14 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/bukuguru/materi/tambahFormatif', 'materiTambahkanFormatif')->name('penilaian.materi.tambahFormatif');
     Route::post('/bukuguru/materi/hapusFormatif', 'materiHapusFormatif')->name('penilaian.materi.hapusFormatif');
     Route::post('/bukuguru/materi/duplikatMateri', 'materiDuplikatMateri')->name('penilaian.materi.duplikat');
+    Route::post('/bukuguru/materi/{uuid}/aktifkan/', 'materiAktifkan')->name('penilaian.materi.aktifkan');
+    Route::post('/bukuguru/materi/{uuid}/nonaktifkan/', 'materiNonaktifkan')->name('penilaian.materi.nonaktifkan');
     //formatif
     Route::post('/bukuguru/formatif/edit', 'formatifEdit')->name('penilaian.formatif.edit');
+    Route::post('/bukuguru/formatif/tambah', 'formatifTambah')->name('penilaian.formatif.tambah');
     //Sumatif
     Route::put('/bukuguru/sumatif/edit', 'sumatifEdit')->name('penilaian.sumatif.edit');
+    Route::post('/bukuguru/sumatif/tambah', 'sumatifTambah')->name('penilaian.sumatif.tambah');
     //pts
     Route::post('/bukuguru/pts/{uuid}/store', 'ptsStore')->name('penilaian.pts.store');
     Route::put('/bukuguru/pts/edit', 'ptsEdit')->name('penilaian.pts.edit');
@@ -275,6 +281,7 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::delete('/bukuguru/rapor/{uuid}/konfirmasi', 'hapusRaporKonfirmasi')->name('penilaian.rapor.konfirmasi');
     //Penjabaran
     Route::post('/bukuguru/penjabaran/{uuid}/store', 'penjabaranStore')->name('penilaian.penjabaran.store');
+    Route::post('/bukuguru/penjabaran/{uuid}/invidual/store', 'penjabaranInvidualStore')->name('penilaian.penjabaran.invidual.store');
     Route::put('/bukuguru/penjabaran/edit', 'penjabaranEdit')->name('penilaian.penjabaran.edit');
     Route::delete('/bukuguru/penjabaran/{uuid}/destroy', 'penjabaranDestroy')->name('penilaian.penjabaran.destroy');
     //P5
@@ -417,6 +424,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/absensi/create', 'absensiCreate')->name('walikelas.absensi.create');
     Route::post('/walikelas/absensi/create', 'absensiStore')->name('walikelas.absensi.create');
     Route::get('/walikelas/absensi/getAbsen', 'absensiGet')->name('walikelas.absensi.getAbsen');
+    Route::get('/walikelas/absensi/getAbsen/byDate', 'absensiGetByDate')->name('walikelas.absensi.getAbsen.byDate');
     Route::get('/walikelas/siswa', 'siswa')->name('walikelas.siswa');
     Route::get('/walikelas/siswa/{uuid}', 'siswaShow')->name('walikelas.siswa.show');
     Route::post('/walikelas/siswa/{uuid}/reset/', 'resetSiswa')->name('walikelas.siswa.reset');
