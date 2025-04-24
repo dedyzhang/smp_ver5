@@ -1732,7 +1732,7 @@ class PenilaianController extends Controller
             $rentang = array();
         }
         // $siswa = Siswa::where('id_kelas', $uuid)->get();
-        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail'));
+        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail','array_nilai','array_deskripsi'));
     }
     /**
      * P5 - Projek Rapor Print Per Siswa
