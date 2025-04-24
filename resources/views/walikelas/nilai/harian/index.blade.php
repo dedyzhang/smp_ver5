@@ -38,7 +38,7 @@
             loading();
             var uuid = $(this).closest('.card').data('uuid');
             var url = "{{route('walikelas.nilai.harian.get',':id')}}";
-            url = url.replace(':id',uuid);
+            url = url.replace(':id',uuid);            
             $.ajax({
                 type: "get",
                 url : url,

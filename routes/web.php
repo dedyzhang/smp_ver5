@@ -457,6 +457,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/pas', 'nilaiPAS')->name('walikelas.nilai.pas');
     Route::get('/walikelas/nilai/olahan', 'nilaiOlahan')->name('walikelas.nilai.olahan');
     Route::get('/walikelas/nilai/harian', 'nilaiHarian')->name('walikelas.nilai.harian');
+    Route::get('/walikelas/nilai/p5','nilaiProyek')->name('walikelas.nilai.proyek');
     Route::get('/walikelas/nilai/harian/{uuid}/get', 'nilaiHarianGet')->name('walikelas.nilai.harian.get');
     Route::get('/walikelas/nilai/harian/{uuid}/materi', 'nilaiMateriShow')->name('walikelas.nilai.materi');
     Route::get('/walikelas/nilai/harian/{uuid}/formatif', 'nilaiFormatifShow')->name('walikelas.nilai.formatif');
