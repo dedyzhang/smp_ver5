@@ -662,3 +662,15 @@ Breadcrumbs::for('proyek-nilai-guru', function (BreadcrumbsTrail $trail, P5Proye
     $trail->parent('proyek-index-guru');
     $trail->push("Proyek " . $p5Proyek->judul . " " . $p5Fasilitator->kelas->tingkat . $p5Fasilitator->kelas->kelas, route('penilaian.guru.proyek.nilai', $p5Fasilitator->uuid));
 });
+Breadcrumbs::for('proyek-rapor', function (BreadcrumbsTrail $trail) {
+    $trail->parent('proyek-index');
+    $trail->push('Rapor', route('penilaian.p5.rapor'));
+});
+Breadcrumbs::for('proyek-rapor-kelas', function (BreadcrumbsTrail $trail, Kelas $kelas) {
+    $trail->parent('proyek-rapor');
+    $trail->push($kelas->tingkat . $kelas->kelas, route('penilaian.p5.rapor.show', $kelas->uuid));
+});
+Breadcrumbs::for('proyek-rapor-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('proyek-rapor-kelas', $siswa->kelas);
+    $trail->push($siswa->nama, route('penilaian.p5.rapor.print', $siswa->uuid));
+});

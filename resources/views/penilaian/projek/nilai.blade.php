@@ -46,10 +46,10 @@
     <div class="body-contain-customize col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4 mt-3">
         <p><b>Kriteria Penilaian</b></p>
         <ul>
-            <li>1 : BB ( Belum Berkembang )</li>
-            <li>2 : MB ( Mulai Berkembang )</li>
-            <li>3 : BSH ( Berkembang Sesuai Harapan )</li>
-            <li>4 : SB ( Sangat Berkembang )</li>
+            <li>1 : {!! $rentang && $rentang[1] !== null ? $rentang[1]['singkat'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} ( {!! $rentang && $rentang[1] !== null ? $rentang[1]['rentang'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} )</li>
+            <li>2 : {!! $rentang && $rentang[2] !== null ? $rentang[2]['singkat'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} ( {!! $rentang && $rentang[2] !== null ? $rentang[2]['rentang'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} )</li>
+            <li>3 : {!! $rentang && $rentang[3] !== null ? $rentang[3]['singkat'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} ( {!! $rentang && $rentang[3] !== null ? $rentang[3]['rentang'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} )</li>
+            <li>4 : {!! $rentang && $rentang[4] !== null ? $rentang[4]['singkat'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} ( {!! $rentang && $rentang[4] !== null ? $rentang[4]['rentang'] : "<i data-bs-toggle='tooltip' data-bs-title='Kalimat Rentang Penilaian Belum dibuat' class='text-danger fs-10'>Belum Disetting</i>" !!} )</li>
         </ul>
     </div>
     <div class="body-contain-customize col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 mt-3">

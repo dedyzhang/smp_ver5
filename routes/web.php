@@ -129,6 +129,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/walikelas/harian', 'setAksesHarianWalikelas')->name('setting.walikelas.harian');
     Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
     Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
+    Route::post('/settings/penilaian/rentangproyek', 'setRentangPenilaianProyek')->name('setting.penilaian.rentang.proyek');
 });
 
 //Admin - Halaman Cetak Excel
@@ -150,6 +151,8 @@ Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(fun
     Route::get('/cetak/olahan/{params}', 'cetakOlahan')->name('cetak.olahan.excel');
     Route::get('/cetak/penjabaran', 'penjabaran')->name('cetak.penjabaran.index');
     Route::get('/cetak/penjabaran/{params}', 'cetakPenjabaran')->name('cetak.penjabaran.excel');
+    Route::get('/cetak/proyek', 'proyek')->name('cetak.proyek.index');
+    Route::get('/cetak/proyek/{params}', 'cetakProyek')->name('cetak.proyek.excel');
 });
 
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
@@ -213,6 +216,9 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::delete('/penilaian/p5/{uuid}/fasilitator/delete', 'projekFasilitatorDelete')->name('penilaian.p5.fasilitator.delete');
     Route::get('/penilaian/p5/{uuid}/fasilitator/get', 'projekFasilitatorGet')->name('penilaian.p5.fasilitator.get');
     Route::get('/penilaian/p5/{uuid}/nilai', 'projekNilai')->name('penilaian.p5.nilai');
+    Route::get('/penilaian/p5/rapor', 'projekRapor')->name('penilaian.p5.rapor');
+    Route::get('/penilaian/p5/rapor/{uuid}/show', 'projekRaporShow')->name('penilaian.p5.rapor.show');
+    Route::get('/penilaian/p5/rapor/{uuid}/print', 'projekRaporPrint')->name('penilaian.p5.rapor.print');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {

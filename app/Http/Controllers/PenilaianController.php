@@ -204,7 +204,11 @@ class PenilaianController extends Controller
         $pKomputer = $ngajar->first(function ($elem) {
             return $elem->pelajaran->has_penjabaran == 3;
         });
-        $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+        if ($pKomputer) {
+            $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
+        } else {
+            $jabarKomputer = "";
+        }
 
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
@@ -1612,7 +1616,13 @@ class PenilaianController extends Controller
                 'deskripsi' => $item->deskripsi
             );
         }
-        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi'));
+        $settingRentang = Setting::where('jenis', 'rentang_penilaian_proyek')->first();
+        if ($settingRentang) {
+            $rentang = unserialize($settingRentang->nilai);
+        } else {
+            $rentang = array();
+        }
+        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi', 'rentang'));
     }
     /**
      * P5 - Tambah Nilai P5
@@ -1667,6 +1677,129 @@ class PenilaianController extends Controller
         $deleteNilai = P5Nilai::whereIn('id_siswa', $id_siswa)->whereIn('id_detail', $id_detail)->delete();
         $deleteDeskripsi = P5Deskripsi::whereIn('id_siswa', $id_siswa)->where('id_proyek', $request->idProyek)->delete();
         return response()->json(['success' => 'data berhasil dihapus']);
+    }
+    /**
+     * P5 - Projek Rapor
+     */
+    public function projekRapor(): View
+    {
+        $kelas = Kelas::orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
+        return view('penilaian.projek.rapor.index', compact('kelas'));
+    }
+    /**
+     * P5 - Projek Rapor Show Per Kelas
+     */
+    public function projekRaporShow(String $uuid): View
+    {
+        $setting = Setting::all();
+        $kelas = Kelas::with('siswa')->findOrFail($uuid);
+        $siswa = $kelas->siswa;
+        $proyek = P5Fasilitator::with('proyek')->where('id_kelas', $kelas->uuid)->get();
+        $id_proyek = $proyek->pluck('id_proyek')->toArray();
+        $proyek_detail = P5ProyekDetail::with('proyek', 'dimensi', 'elemen', 'subelemen')->whereIn('id_proyek', $id_proyek)->get();
+        $proyek_detail_uuid = $proyek_detail->pluck('uuid')->toArray();
+        $array_proyek_detail = array();
+        foreach ($proyek_detail as $detail) {
+            if (empty($array_proyek_detail[$detail->id_proyek])) {
+                $array_proyek_detail[$detail->id_proyek] = array();
+                array_push($array_proyek_detail[$detail->id_proyek], array(
+                    'id_detail' => $detail->uuid,
+                    'dimensi' => $detail->dimensi->dimensi,
+                    'capaian' => $detail->subelemen->capaian
+                ));
+            } else {
+                array_push($array_proyek_detail[$detail->id_proyek], array(
+                    'id_detail' => $detail->uuid,
+                    'dimensi' => $detail->dimensi->dimensi,
+                    'capaian' => $detail->subelemen->capaian
+                ));
+            }
+        }
+        $nilai_proyek = P5Nilai::whereIn('id_detail', $proyek_detail_uuid)->get();
+        $array_nilai = array();
+        foreach ($nilai_proyek as $nilai) {
+            $array_nilai[$nilai->id_detail . "." . $nilai->id_siswa] = $nilai->nilai;
+        }
+        $deskripsi_proyek = P5Deskripsi::whereIn('id_proyek', $id_proyek)->get();
+        $array_deskripsi = array();
+        foreach ($deskripsi_proyek as $nilai) {
+            $array_deskripsi[$nilai->id_proyek . "." . $nilai->id_siswa] = $nilai->deskripsi;
+        }
+        $settingRentang = Setting::where('jenis', 'rentang_penilaian_proyek')->first();
+        if ($settingRentang) {
+            $rentang = unserialize($settingRentang->nilai);
+        } else {
+            $rentang = array();
+        }
+        // $siswa = Siswa::where('id_kelas', $uuid)->get();
+        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail'));
+    }
+    /**
+     * P5 - Projek Rapor Print Per Siswa
+     */
+    public function projekRaporPrint(String $uuid): View
+    {
+        $setting = Setting::all();
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $semester = Semester::first();
+        $walikelas = Walikelas::with('Guru')->where('id_kelas', $siswa->kelas->uuid)->first();
+
+        $tanggal_rapor = $setting->first(function ($item) {
+            return $item->jenis == 'tanggal_rapor';
+        });
+        $kepalaSekolah = $setting->first(function ($elem) {
+            return $elem->jenis == 'kepala_sekolah';
+        });
+
+        if ($kepalaSekolah) {
+            $kepala_sekolah = Guru::findOrFail($kepalaSekolah->nilai);
+        } else {
+            $kepala_sekolah = "";
+        }
+
+        if ($tanggal_rapor != null) {
+            $tanggal = Carbon::parse($tanggal_rapor->nilai)->isoFormat('D MMMM Y');
+        } else {
+            $tanggal = "";
+        }
+        $proyek = P5Fasilitator::with('proyek')->where('id_kelas', $siswa->kelas->uuid)->get();
+        $id_proyek = $proyek->pluck('id_proyek')->toArray();
+        $proyek_detail = P5ProyekDetail::with('proyek', 'dimensi', 'elemen', 'subelemen')->whereIn('id_proyek', $id_proyek)->get();
+        $proyek_detail_uuid = $proyek_detail->pluck('uuid')->toArray();
+        $array_proyek_detail = array();
+        foreach ($proyek_detail as $detail) {
+            if (empty($array_proyek_detail[$detail->id_proyek])) {
+                $array_proyek_detail[$detail->id_proyek] = array();
+                array_push($array_proyek_detail[$detail->id_proyek], array(
+                    'id_detail' => $detail->uuid,
+                    'dimensi' => $detail->dimensi->dimensi,
+                    'capaian' => $detail->subelemen->capaian
+                ));
+            } else {
+                array_push($array_proyek_detail[$detail->id_proyek], array(
+                    'id_detail' => $detail->uuid,
+                    'dimensi' => $detail->dimensi->dimensi,
+                    'capaian' => $detail->subelemen->capaian
+                ));
+            }
+        }
+        $nilai_proyek = P5Nilai::where('id_siswa', $siswa->uuid)->whereIn('id_detail', $proyek_detail_uuid)->get();
+        $array_nilai = array();
+        foreach ($nilai_proyek as $nilai) {
+            $array_nilai[$nilai->id_detail . "." . $nilai->id_siswa] = $nilai->nilai;
+        }
+        $deskripsi_proyek = P5Deskripsi::whereIn('id_proyek', $id_proyek)->get();
+        $array_deskripsi = array();
+        foreach ($deskripsi_proyek as $nilai) {
+            $array_deskripsi[$nilai->id_proyek . "." . $nilai->id_siswa] = $nilai->deskripsi;
+        }
+        $settingRentang = Setting::where('jenis', 'rentang_penilaian_proyek')->first();
+        if ($settingRentang) {
+            $rentang = unserialize($settingRentang->nilai);
+        } else {
+            $rentang = array();
+        }
+        return view('penilaian.projek.rapor.print', compact('setting', 'siswa', 'semester', 'tanggal', 'walikelas', 'kepala_sekolah', 'proyek', 'rentang', 'array_proyek_detail', 'array_nilai', 'array_deskripsi'));
     }
     /**
      * ---------------P5 Guru ----------------
