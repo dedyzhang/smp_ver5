@@ -833,6 +833,71 @@
                             </div>
                         </div>
                     </div>
+                    {{-- Pengaturan Rentang Penilaian Proyek --}}
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 p-0 mt-3">
+                        @php
+                            $settingRentangProyek = $setting->first(function($elem) {
+                                return $elem->jenis == "rentang_penilaian_proyek";
+                            });
+                            if($settingRentangProyek) {
+                                $array_proyek = unserialize($settingRentangProyek->nilai);
+                            } else {
+                                $array_proyek = array();
+                            }
+                        @endphp
+                        <div class="card">
+                            <div class="card-header">
+                               Pengaturan Bahasa Rentang Proyek
+                            </div>
+                            <div class="card-body">
+                                <p class="fs-12">Masukkan Kalimat Rentang Penilaian Proyek</p>
+                                <div class="row m-0 p-0 mt-2">
+                                    <div class="input-group form-group fs-11 col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+                                        <span class="input-group-text" id="basic-addon1">1</span>
+                                        <input type="text" class="form-control" placeholder="Kalimat Singkat" name="singkat-1" id="singkat-1" aria-describedby="basic-addon1" value="{{$array_proyek && $array_proyek[1] !== null ? $array_proyek[1]['singkat'] : ""}}">
+                                        <input type="text" class="form-control" placeholder="Kalimat Rentang Penilaian" name="rentang-1" id="rentang-1" aria-describedby="basic-addon1" value="{{$array_proyek && $array_proyek[1] !== null ? $array_proyek[1]['rentang'] : ""}}">
+                                    </div>
+                                    <div class="form-group pt-0 mb-1 mb-4">
+                                        <label for="deskripsi-1">Deskripsi Rentang 1</label>
+                                        <input type="text" class="form-control" placeholder="Masukkan Deskripsi Rentang Nilai" name="deskripsi-1" id="deskripsi-1" value="{{$array_proyek && $array_proyek[1] !== null ? $array_proyek[1]['deskripsi'] : ""}}">
+                                    </div>
+                                    <div class="input-group form-group fs-11 col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+                                        <span class="input-group-text" id="basic-addon2">2</span>
+                                        <input type="text" class="form-control" placeholder="Kalimat Singkat" name="singkat-2" id="singkat-2" aria-describedby="basic-addon2" value="{{$array_proyek && $array_proyek[2] !== null ? $array_proyek[2]['singkat'] : ""}}">
+                                        <input type="text" class="form-control" placeholder="Kalimat Rentang Penilaian" name="rentang-2" id="rentang-2" aria-describedby="basic-addon2" value="{{$array_proyek && $array_proyek[2] !== null ? $array_proyek[2]['rentang'] : ""}}">
+                                    </div>
+                                    <div class="form-group pt-0 mb-1 mb-4">
+                                        <label for="deskripsi-2">Deskripsi Rentang 2</label>
+                                        <input type="text" class="form-control" placeholder="Masukkan Deskripsi Rentang Nilai" name="deskripsi-2" id="deskripsi-2" value="{{$array_proyek && $array_proyek[2] !== null ? $array_proyek[2]['deskripsi'] : ""}}">
+                                    </div>
+                                    <div class="input-group form-group fs-11 col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+                                        <span class="input-group-text" id="basic-addon3">3</span>
+                                        <input type="text" class="form-control" placeholder="Kalimat Singkat" name="singkat-3" id="singkat-3" aria-describedby="basic-addon3" value="{{$array_proyek && $array_proyek[3] !== null ? $array_proyek[3]['singkat'] : ""}}">
+                                        <input type="text" class="form-control" placeholder="Kalimat Rentang Penilaian" name="rentang-3" id="rentang-3" aria-describedby="basic-addon3" value="{{$array_proyek && $array_proyek[3] !== null ? $array_proyek[3]['rentang'] : ""}}">
+                                    </div>
+                                    <div class="form-group pt-0 mb-1 mb-4">
+                                        <label for="deskripsi-3">Deskripsi Rentang 3</label>
+                                        <input type="text" class="form-control" placeholder="Masukkan Deskripsi Rentang Nilai" name="deskripsi-3" id="deskripsi-3" value="{{$array_proyek && $array_proyek[3] !== null ? $array_proyek[3]['deskripsi'] : ""}}">
+                                    </div>
+                                    <div class="input-group form-group fs-11 col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6">
+                                        <span class="input-group-text" id="basic-addon4">4</span>
+                                        <input type="text" class="form-control" placeholder="Kalimat Singkat" name="singkat-4" id="singkat-4" aria-describedby="basic-addon4" value="{{$array_proyek && $array_proyek[4] !== null ? $array_proyek[4]['singkat'] : ""}}">
+                                        <input type="text" class="form-control" placeholder="Kalimat Rentang Penilaian" name="rentang-4" id="rentang-4" aria-describedby="basic-addon4" value="{{$array_proyek && $array_proyek[4] !== null ? $array_proyek[4]['rentang'] : ""}}">
+                                    </div>
+                                     <div class="form-group pt-0 mb-1 mb-4">
+                                        <label for="deskripsi-4">Deskripsi Rentang 4</label>
+                                        <input type="text" class="form-control" placeholder="Masukkan Deskripsi Rentang Nilai" name="deskripsi-4" id="deskripsi-4" value="{{$array_proyek && $array_proyek[4] !== null ? $array_proyek[4]['deskripsi'] : ""}}">
+                                    </div>
+                                </div>
+
+                                <div class="row m-0 p-0 mt-2">
+                                    <div class="col-12">
+                                        <button class="btn btn-sm btn-warning text-warning-emphasis simpan-rentang-penilaian-proyek"><i class="fas fa-save"></i> Simpan</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <script>
                     $('input[name="harian-walikelas"]').change(function() {
@@ -888,6 +953,36 @@
                             type: "post",
                             url: '{{route("setting.penilaian.rumus.rapor")}}',
                             data: {rumus: rumus},
+                            headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                            success: function(data) {
+                                removeLoading();
+                            },
+                            error: function(data) {
+                                console.log(data.responseJSON.message);
+                            }
+                        });
+                    });
+                    $('.simpan-rentang-penilaian-proyek').click(function() {
+                        var rentang1 = $('#rentang-1').val();
+                        var rentang2 = $('#rentang-2').val();
+                        var rentang3 = $('#rentang-3').val();
+                        var rentang4 = $('#rentang-4').val();
+
+                        var singkat1 = $('#singkat-1').val();
+                        var singkat2 = $('#singkat-2').val();
+                        var singkat3 = $('#singkat-3').val();
+                        var singkat4 = $('#singkat-4').val();
+
+                        var deskripsi1 = $('#deskripsi-1').val();
+                        var deskripsi2 = $('#deskripsi-2').val();
+                        var deskripsi3 = $('#deskripsi-3').val();
+                        var deskripsi4 = $('#deskripsi-4').val();
+
+                        loading();
+                        $.ajax({
+                            type: "post",
+                            url: '{{route("setting.penilaian.rentang.proyek")}}',
+                            data: {rentang1 : rentang1, rentang2 : rentang2, rentang3 : rentang3, rentang4 : rentang4, singkat1: singkat1, singkat2 : singkat2, singkat3 : singkat3, singkat4 : singkat4, deskripsi1 : deskripsi1, deskripsi2 : deskripsi2, deskripsi3 : deskripsi3, deskripsi4 : deskripsi4},
                             headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
                             success: function(data) {
                                 removeLoading();
