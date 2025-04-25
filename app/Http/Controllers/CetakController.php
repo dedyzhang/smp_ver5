@@ -8,10 +8,12 @@ use App\Exports\HarianExport;
 use App\Exports\OlahanExport;
 use App\Exports\PasExport;
 use App\Exports\PenjabaranExport;
+use App\Exports\ProyekExport;
 use App\Exports\PtsExport;
 use App\Exports\RaporExport;
 use App\Exports\SiswaExport;
 use App\Models\Kelas;
+use Google\Service\CertificateAuthorityService\PublicKey;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -156,5 +158,22 @@ class CetakController extends Controller
         $kelas = Kelas::findOrFail($params);
         $namaFile = 'Nilai Penjabaran Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
         return Excel::download(new PenjabaranExport($params), $namaFile);
+    }
+    /**
+     * Cetak Nilai Proyek
+     */
+    public function proyek(): View
+    {
+        $kelas = Kelas::get()->sortBy('kelas')->sortBy('tingkat');
+        return view('cetak.proyek.index', compact('kelas'));
+    }
+    /**
+     * Cetak Excel Proyek
+     */
+    public function cetakProyek(String $params)
+    {
+        $kelas = Kelas::findOrFail($params);
+        $namaFile = 'Nilai Proyek Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
+        return Excel::download(new ProyekExport($params), $namaFile);
     }
 }

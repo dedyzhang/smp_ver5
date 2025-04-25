@@ -129,6 +129,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/walikelas/harian', 'setAksesHarianWalikelas')->name('setting.walikelas.harian');
     Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
     Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
+    Route::post('/settings/penilaian/rentangproyek', 'setRentangPenilaianProyek')->name('setting.penilaian.rentang.proyek');
 });
 
 //Admin - Halaman Cetak Excel
@@ -150,6 +151,8 @@ Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(fun
     Route::get('/cetak/olahan/{params}', 'cetakOlahan')->name('cetak.olahan.excel');
     Route::get('/cetak/penjabaran', 'penjabaran')->name('cetak.penjabaran.index');
     Route::get('/cetak/penjabaran/{params}', 'cetakPenjabaran')->name('cetak.penjabaran.excel');
+    Route::get('/cetak/proyek', 'proyek')->name('cetak.proyek.index');
+    Route::get('/cetak/proyek/{params}', 'cetakProyek')->name('cetak.proyek.excel');
 });
 
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
@@ -213,6 +216,9 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::delete('/penilaian/p5/{uuid}/fasilitator/delete', 'projekFasilitatorDelete')->name('penilaian.p5.fasilitator.delete');
     Route::get('/penilaian/p5/{uuid}/fasilitator/get', 'projekFasilitatorGet')->name('penilaian.p5.fasilitator.get');
     Route::get('/penilaian/p5/{uuid}/nilai', 'projekNilai')->name('penilaian.p5.nilai');
+    Route::get('/penilaian/p5/rapor', 'projekRapor')->name('penilaian.p5.rapor');
+    Route::get('/penilaian/p5/rapor/{uuid}/show', 'projekRaporShow')->name('penilaian.p5.rapor.show');
+    Route::get('/penilaian/p5/rapor/{uuid}/print', 'projekRaporPrint')->name('penilaian.p5.rapor.print');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -451,6 +457,8 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/pas', 'nilaiPAS')->name('walikelas.nilai.pas');
     Route::get('/walikelas/nilai/olahan', 'nilaiOlahan')->name('walikelas.nilai.olahan');
     Route::get('/walikelas/nilai/harian', 'nilaiHarian')->name('walikelas.nilai.harian');
+    Route::get('/walikelas/nilai/p5', 'nilaiProyek')->name('walikelas.nilai.proyek');
+    Route::get('/walikelas/nilai/p5/{uuid}/show', 'nilaiProyekShow')->name('walikelas.nilai.proyek.show');
     Route::get('/walikelas/nilai/harian/{uuid}/get', 'nilaiHarianGet')->name('walikelas.nilai.harian.get');
     Route::get('/walikelas/nilai/harian/{uuid}/materi', 'nilaiMateriShow')->name('walikelas.nilai.materi');
     Route::get('/walikelas/nilai/harian/{uuid}/formatif', 'nilaiFormatifShow')->name('walikelas.nilai.formatif');

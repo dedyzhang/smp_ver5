@@ -751,7 +751,7 @@
                     </table>
                 </div>
             </div>
-            @if ($jabarKomputer !== null)
+            @if (!empty($jabarKomputer))
                 <div class="row mt-0 mb-0">
                     @php
                         $pKomputer = $ngajar->first(function($elem) {
@@ -770,10 +770,10 @@
                                 <td colspan="4"><b>C. Komputer</b></td>
                             </tr>
                             {{-- Pengetahuan --}}
-                            @if ($jabarKomputer !== null && $jabarKomputer->pengetahuan !== 0)
+                            @if (isset($jabarKomputer) && $jabarKomputer->pengetahuan !== 0)
                                 <tr class="transback">
                                     <td width="5%">{{$no_urut}}</td>
-                                    <td width="30%">听力 (tīng lì) Mendengarkan</td>
+                                    <td width="30%">Pengetahuan</td>
                                     <td width="10%" class="text-center">{{$jabarKomputer->pengetahuan}}</td>
                                     <td width="45%">
                                         @if ($jabarKomputer->pengetahuan < $pKomputer->kkm)
@@ -792,10 +792,10 @@
                                 @endphp
                             @endif
                             {{-- Keterampilan --}}
-                            @if ($jabarKomputer !== null && $jabarKomputer->keterampilan !== 0)
+                            @if (isset($jabarKomputer) && $jabarKomputer->keterampilan !== 0)
                                 <tr class="transback">
                                     <td width="5%">{{$no_urut}}</td>
-                                    <td width="30%">听力 (tīng lì) Mendengarkan</td>
+                                    <td width="30%">Keterampilan</td>
                                     <td width="10%" class="text-center">{{$jabarKomputer->keterampilan}}</td>
                                     <td width="45%">
                                         @if ($jabarKomputer->keterampilan < $pKomputer->kkm)
