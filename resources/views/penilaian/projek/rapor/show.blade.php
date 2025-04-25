@@ -1,5 +1,9 @@
 @extends('layouts.main') @section('container')
-    {{Breadcrumbs::render('proyek-rapor-kelas',$kelas)}}
+    @if (\Request::route()->getName() === 'penilaian.p5.rapor.show')
+        {{Breadcrumbs::render('proyek-rapor-kelas',$kelas)}}
+    @else
+        {{Breadcrumbs::render('walikelas-nilai-proyek')}}
+    @endif
     <div class="body-contain-customize col-12">
         <h5>
             <b>Rapor P5 Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>
@@ -24,9 +28,9 @@
                             @foreach ($proyek as $item)
                                 @if (isset($array_proyek_detail[$item->proyek->uuid]))
                                     @foreach ($array_proyek_detail[$item->proyek->uuid] as $detail)
-                                        <td width="5%"><i class="fas fa-eye text-primary" data-bs-toggle="tooltip" data-bs-title="<b> {{ $detail['dimensi'] }}</b><br /> <p class='fs-10'>{{ $detail['capaian'] }}</p>" data-bs-html="true"></i></td>
+                                        <td width="5%" class="text-center"><i class="fas fa-eye text-primary" data-bs-toggle="tooltip" data-bs-title="<b> {{ $detail['dimensi'] }}</b><br /> <p class='fs-10'>{{ $detail['capaian'] }}</p>" data-bs-html="true"></i></td>
                                         @if($loop->last)
-                                            <td width="5%">D</td>
+                                            <td width="5%" class="text-center">D</td>
                                         @endif
                                     @endforeach
                                 @endif
@@ -46,11 +50,11 @@
                                 @foreach ($proyek as $item)
                                     @if (isset($array_proyek_detail[$item->proyek->uuid]))
                                         @foreach ($array_proyek_detail[$item->proyek->uuid] as $detail)
-                                            <td width="5%" class="{{ $array_nilai && isset($array_nilai[$detail['id_detail'].".".$siswa->uuid]) && $array_nilai[$detail['id_detail'].".".$siswa->uuid] < 2 ? "text-danger" : "" }}">
+                                            <td width="5%" class="{{ $array_nilai && isset($array_nilai[$detail['id_detail'].".".$siswa->uuid]) && $array_nilai[$detail['id_detail'].".".$siswa->uuid] < 2 ? "text-danger" : "" }} text-center">
                                             {{ $array_nilai && isset($array_nilai[$detail['id_detail'].".".$siswa->uuid]) ? $array_nilai[$detail['id_detail'].".".$siswa->uuid] : "-" }}
                                             </td>
                                             @if($loop->last)
-                                                <td>
+                                                <td class="text-center">
                                                     <i data-bs-toggle="tooltip" data-bs-title="{{ $array_deskripsi && isset($array_deskripsi[$item->proyek->uuid.".".$siswa->uuid]) ? $array_deskripsi[$item->proyek->uuid.".".$siswa->uuid] : "Belum ada Deskripsi"}}" class="{{ $array_deskripsi && isset($array_deskripsi[$item->proyek->uuid.".".$siswa->uuid]) ? "text-success" : "text-danger"}} fas fa-book-bookmark"></i>
                                                 </td>
                                             @endif
@@ -58,7 +62,11 @@
                                     @endif
                                 @endforeach
                             @endif
-                            <td><a href="{{route('penilaian.p5.rapor.print',$siswa->uuid)}}"><i class="fas fa-print"></i></a></td>
+                            @if (\Request::route()->getName() === 'penilaian.p5.rapor.show')
+                                <td><a href="{{route('penilaian.p5.rapor.print',$siswa->uuid)}}"><i class="fas fa-print"></i></a></td>
+                            @else
+                                <td><a href="{{route('walikelas.nilai.proyek.show',$siswa->uuid)}}"><i class="fas fa-print"></i></a></td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

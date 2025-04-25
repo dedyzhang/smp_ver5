@@ -207,7 +207,7 @@ class PenilaianController extends Controller
         if ($pKomputer) {
             $jabarKomputer = JabarKomputer::where([['id_ngajar', '=', $pKomputer->uuid], ['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->first();
         } else {
-            $jabarKomputer = "";
+            $jabarKomputer = array();
         }
 
         $kepalaSekolah = $setting->first(function ($elem) {
@@ -228,7 +228,6 @@ class PenilaianController extends Controller
         } else {
             $tanggal = "";
         }
-
         return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
     }
 
@@ -1732,7 +1731,7 @@ class PenilaianController extends Controller
             $rentang = array();
         }
         // $siswa = Siswa::where('id_kelas', $uuid)->get();
-        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail','array_nilai','array_deskripsi'));
+        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail', 'array_nilai', 'array_deskripsi'));
     }
     /**
      * P5 - Projek Rapor Print Per Siswa

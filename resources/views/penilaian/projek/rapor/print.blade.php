@@ -1,7 +1,11 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('proyek-rapor-show',$siswa)}}
+    @if (\Request::route()->getName() === 'penilaian.p5.rapor.print')
+        {{Breadcrumbs::render('proyek-rapor-show',$siswa)}}
+    @else
+        {{Breadcrumbs::render('walikelas-nilai-proyek-print',$siswa)}}
+    @endif
     @php
         $nama_sekolah = $setting->first(function($item) {
             return $item->jenis == 'nama_sekolah';

@@ -501,6 +501,14 @@ Breadcrumbs::for('walikelas-nilai-harian-penjabaran', function (BreadcrumbsTrail
     $trail->parent('walikelas-nilai-harian');
     $trail->push('Penjabaran', route('walikelas.nilai.penjabaran', $ngajar->uuid));
 });
+Breadcrumbs::for('walikelas-nilai-proyek', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-nilai');
+    $trail->push('P5', route('walikelas.nilai.proyek'));
+});
+Breadcrumbs::for('walikelas-nilai-proyek-print', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('walikelas-nilai-proyek');
+    $trail->push($siswa->nama, route('walikelas.nilai.proyek.show', $siswa->uuid));
+});
 Breadcrumbs::for('walikelas-ruang', function (BreadcrumbsTrail $trail) {
     $trail->push('Ruangan', route('walikelas.ruang'));
 });
