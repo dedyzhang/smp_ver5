@@ -285,4 +285,58 @@ class SettingController extends Controller
             ]);
         }
     }
+    public function setRentangPenilaianProyek(Request $request)
+    {
+        $rentang1 = $request->rentang1;
+        $rentang2 = $request->rentang2;
+        $rentang3 = $request->rentang3;
+        $rentang4 = $request->rentang4;
+
+        $singkat1 = $request->singkat1;
+        $singkat2 = $request->singkat2;
+        $singkat3 = $request->singkat3;
+        $singkat4 = $request->singkat4;
+
+        $deskripsi1 = $request->deskripsi1;
+        $deskripsi2 = $request->deskripsi2;
+        $deskripsi3 = $request->deskripsi3;
+        $deskripsi4 = $request->deskripsi4;
+
+
+        $rentang = array(
+            '1' => array(
+                'rentang' => $rentang1,
+                'singkat' => $singkat1,
+                'deskripsi' => $deskripsi1
+            ),
+            '2' => array(
+                'rentang' => $rentang2,
+                'singkat' => $singkat2,
+                'deskripsi' => $deskripsi2
+            ),
+            '3' => array(
+                'rentang' => $rentang3,
+                'singkat' => $singkat3,
+                'deskripsi' => $deskripsi3
+            ),
+            '4' => array(
+                'rentang' => $rentang4,
+                'singkat' => $singkat4,
+                'deskripsi' => $deskripsi4
+            )
+        );
+        $rentangSerialize = serialize($rentang);
+
+        $settingRentang = Setting::where('jenis', 'rentang_penilaian_proyek')->first();
+        if ($settingRentang !== null) {
+            $settingRentang->update([
+                'nilai' => $rentangSerialize
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'rentang_penilaian_proyek',
+                'nilai' => $rentangSerialize
+            ]);
+        }
+    }
 }

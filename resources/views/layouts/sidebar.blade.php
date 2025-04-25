@@ -274,6 +274,7 @@
                     <li class="submenu-list"><a href="{{ route('cetak.pts.index') }}"> Nilai PTS</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.pas.index') }}"> Nilai SAS</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.rapor.index') }}"> Nilai Rapor</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.proyek.index') }}"> Nilai P5</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.penjabaran.index') }}"> Nilai Penjabaran</a></li>
                 </ul>
             </li>
