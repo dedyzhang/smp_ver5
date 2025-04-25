@@ -501,6 +501,14 @@ Breadcrumbs::for('walikelas-nilai-harian-penjabaran', function (BreadcrumbsTrail
     $trail->parent('walikelas-nilai-harian');
     $trail->push('Penjabaran', route('walikelas.nilai.penjabaran', $ngajar->uuid));
 });
+Breadcrumbs::for('walikelas-nilai-proyek', function (BreadcrumbsTrail $trail) {
+    $trail->parent('walikelas-nilai');
+    $trail->push('P5', route('walikelas.nilai.proyek'));
+});
+Breadcrumbs::for('walikelas-nilai-proyek-print', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('walikelas-nilai-proyek');
+    $trail->push($siswa->nama, route('walikelas.nilai.proyek.show', $siswa->uuid));
+});
 Breadcrumbs::for('walikelas-ruang', function (BreadcrumbsTrail $trail) {
     $trail->push('Ruangan', route('walikelas.ruang'));
 });
@@ -661,4 +669,16 @@ Breadcrumbs::for('proyek-index-guru', function (BreadcrumbsTrail $trail) {
 Breadcrumbs::for('proyek-nilai-guru', function (BreadcrumbsTrail $trail, P5Proyek $p5Proyek, P5Fasilitator $p5Fasilitator) {
     $trail->parent('proyek-index-guru');
     $trail->push("Proyek " . $p5Proyek->judul . " " . $p5Fasilitator->kelas->tingkat . $p5Fasilitator->kelas->kelas, route('penilaian.guru.proyek.nilai', $p5Fasilitator->uuid));
+});
+Breadcrumbs::for('proyek-rapor', function (BreadcrumbsTrail $trail) {
+    $trail->parent('proyek-index');
+    $trail->push('Rapor', route('penilaian.p5.rapor'));
+});
+Breadcrumbs::for('proyek-rapor-kelas', function (BreadcrumbsTrail $trail, Kelas $kelas) {
+    $trail->parent('proyek-rapor');
+    $trail->push($kelas->tingkat . $kelas->kelas, route('penilaian.p5.rapor.show', $kelas->uuid));
+});
+Breadcrumbs::for('proyek-rapor-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
+    $trail->parent('proyek-rapor-kelas', $siswa->kelas);
+    $trail->push($siswa->nama, route('penilaian.p5.rapor.print', $siswa->uuid));
 });

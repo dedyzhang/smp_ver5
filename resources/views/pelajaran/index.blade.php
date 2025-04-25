@@ -211,9 +211,21 @@
             url: "{{route('pelajaran.penjabaran')}}",
             success: function(data) {
                 if(data.success) {
-                    $('#inggris').val(data.english[0].uuid);
-                    $('#mandarin').val(data.mandarin[0].uuid);
-                    $('#komputer').val(data.komputer[0].uuid);
+                    if(data.english.length > 0) {
+                        $('#inggris').val(data.english[0].uuid);
+                    } else {
+                        $('#inggris').val("");
+                    }
+                    if(data.mandarin.length > 0) {
+                        $('#mandarin').val(data.mandarin[0].uuid);
+                    } else {
+                        $('#mandarin').val("");
+                    }
+                    if(data.komputer.length > 0) {
+                        $('#komputer').val(data.komputer[0].uuid);
+                    } else {
+                        $('#komputer').val("");
+                    }
                     removeLoading();
                     $('#modal-penjabaran').modal("show");
                 } else {

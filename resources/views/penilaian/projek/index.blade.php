@@ -19,6 +19,9 @@
             <a href="{{route('penilaian.p5.create')}}" class="btn btn-sm btn-primary">
                 <i class="fas fa-plus"></i> Tambah Projek
             </a>
+            <a href="{{route('penilaian.p5.rapor')}}" class="btn btn-sm btn-info text-light">
+                <i class="fas fa-print"></i> Cetak Rapor
+            </a>
         </div>
     @endif
     @if (session('success'))
