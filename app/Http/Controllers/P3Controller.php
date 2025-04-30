@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\P3Kategori;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -12,7 +13,8 @@ class P3Controller extends Controller
      */
     public function index(): View
     {
-        return view('p3.index');
+        $p3 = P3Kategori::orderBy('jenis','ASC')->get();
+        return view('p3.index',compact('p3'));
     }
 
     /**
@@ -28,15 +30,17 @@ class P3Controller extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'jenis' => 'required',
+            'deskripsi' => 'required'
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+        P3Kategori::create([
+            'jenis' => $request->jenis,
+            'deskripsi' => $request->deskripsi
+        ]);
+
+        return redirect()->route('p3.create')->with(['success' => 'Data Berhasil Disimpan']);
     }
 
     /**
@@ -44,7 +48,9 @@ class P3Controller extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $p3 = P3Kategori::findOrFail($id);
+
+        return view('p3.edit',compact('p3'));
     }
 
     /**
@@ -52,7 +58,19 @@ class P3Controller extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $p3 = P3Kategori::findOrFail($id);
+
+        $request->validate([
+            'jenis' => 'required',
+            'deskripsi' => 'required'
+        ]);
+
+        $p3->update([
+            'jenis' => $request->jenis,
+            'deskripsi' => $request->deskripsi
+        ]);
+
+        return redirect()->route('p3.edit',$id)->with(['success' => "Data Berhasil Diedit"]);
     }
 
     /**
@@ -60,6 +78,8 @@ class P3Controller extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $p3 = P3Kategori::findOrFail($id);
+
+        $p3->delete();
     }
 }
