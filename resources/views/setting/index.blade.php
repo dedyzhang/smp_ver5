@@ -303,7 +303,55 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-12 p-0 mt-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    Sistem Aturan
+                                </div>
+                                <div class="card-body">
+                                    @php
+                                        $peraturan = $setting->first(function($item) {
+                                            if($item->jenis == "jenis_aturan") {
+                                                return $item;
+                                            }
+                                        });
+                                    @endphp
+                                    <p class="fs-12">Sistem Peraturan yang sekolah terapkan</p>
+                                    <select name="peraturan" id="peraturan" class="form-control fs-12">
+                                        <option value="">Pilih Salah Satu</option>
+                                        <option value="poin" {{$peraturan && $peraturan->nilai !== null && $peraturan->nilai == "poin" ? "selected" : ""}}>Poin</option>
+                                        <option value="p3" {{$peraturan && $peraturan->nilai !== null && $peraturan->nilai == "p3" ? "selected" : ""}}>Prestasi, Partisipasi dan Pelanggaran</option>
+                                    </select>
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-aturan mt-2">
+                                        <i class="fas fa-save"></i> Simpan
+                                    </button>
+                                    <script>
+                                        $('.simpan-aturan').click(function() {
+                                            var sistemAturan = $('#peraturan').val();
+                                            if(sistemAturan == "") {
+                                                oAlert("orange","Perhatian","Pemilihan Aturan Tidak Boleh Kosong");
+                                            } else {
+                                                loading();
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "{{route('setting.aturan.pemilihan')}}",
+                                                    data: {peraturan : sistemAturan},
+                                                    headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                                    success: function(data) {
+                                                        removeLoading();
+                                                    },
+                                                    error: function(data) {
+                                                        console.log(data.responseJSON.message);
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
             <div

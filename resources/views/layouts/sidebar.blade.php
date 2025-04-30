@@ -156,9 +156,13 @@
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
                 <ul class="submenu collapse" id="menu-aturan">
-                    <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
-                    <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
-                    <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('p3.index') }}"> List P3</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
+                        <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
+                        <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan

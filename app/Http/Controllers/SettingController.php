@@ -339,4 +339,21 @@ class SettingController extends Controller
             ]);
         }
     }
+
+    public function setPemilihanAturan(Request $request)
+    {
+        $aturan = $request->peraturan;
+        $settingAturan = Setting::where('jenis', 'jenis_aturan')->first();
+
+        if ($settingAturan !== null) {
+            $settingAturan->update([
+                'nilai' => $aturan
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'jenis_aturan',
+                'nilai' => $aturan
+            ]);
+        }
+    }
 }

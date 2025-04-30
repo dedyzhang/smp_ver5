@@ -130,6 +130,7 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
     Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
     Route::post('/settings/penilaian/rentangproyek', 'setRentangPenilaianProyek')->name('setting.penilaian.rentang.proyek');
+    Route::post('/settings/aturan/pemilihan', 'setPemilihanAturan')->name('setting.aturan.pemilihan');
 });
 
 //Admin - Halaman Cetak Excel
@@ -503,6 +504,10 @@ Route::middleware(isPenilaianController::class)->controller(PoinController::clas
     Route::get('/bukuguru/poin', 'guruPoinIndex')->name('poin.guru.index');
     Route::get('/bukuguru/poin/create', 'guruPoinCreate')->name('poin.guru.create');
 });
+
+//*{--------------------------------------------Halaman Pelanggaran, Prestasi dan Partisipasi--------------------------------}
+Route::resource('/p3', \App\Http\Controllers\P3Controller::class)->except('show')->middleware(IsAdminKesiswaan::class);
+
 
 // {----------------------------------------------------END------------------------------------------------------------------}
 
