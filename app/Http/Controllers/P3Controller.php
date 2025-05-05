@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\P3Kategori;
+use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -81,5 +82,13 @@ class P3Controller extends Controller
         $p3 = P3Kategori::findOrFail($id);
 
         $p3->delete();
+    }
+
+    /**
+     * Show Data Siswa dan jumlah p3 nya
+     */
+    public function showSiswa() : View {
+        $siswa = Siswa::with('kelas')->get();
+        return view('p3.siswa.index',compact('siswa'));
     }
 }
