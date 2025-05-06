@@ -127,6 +127,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.p5.index') }}"> Projek P5</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.kelulusan.index') }}"> Kelulusan</a></li>
                 </ul>
             </li>
             @endcan

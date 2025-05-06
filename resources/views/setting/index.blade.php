@@ -53,6 +53,20 @@
             <li class="nav-item" role="presentation">
                 <button
                     class="nav-link"
+                    id="kelulusan-tab"
+                    data-bs-toggle="tab"
+                    data-bs-target="#kelulusan"
+                    type="button"
+                    role="tab"
+                    aria-controls="kelulusan"
+                    aria-selected="false"
+                >
+                    Kelulusan
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
                     id="profile-tab"
                     data-bs-toggle="tab"
                     data-bs-target="#profile"
@@ -68,6 +82,7 @@
 
         <!-- Tab panes -->
         <div class="tab-content">
+            {{-- Utama --}}
             <div
                 class="tab-pane active p-2"
                 id="main"
@@ -354,6 +369,7 @@
 
                 </div>
             </div>
+            {{-- Sekolah --}}
             <div
                 class="tab-pane p-2"
                 id="sekolah"
@@ -722,6 +738,7 @@
                     </div>
                 </div>
             </div>
+            {{-- Penilaian --}}
             <div
                 class="tab-pane p-2"
                 id="penilaian"
@@ -1042,6 +1059,132 @@
                     });
                 </script>
             </div>
+            {{-- Kelulusan --}}
+            <div
+                class="tab-pane p-2"
+                id="kelulusan"
+                role="tabpanel"
+                aria-labelledby="kelulusan-tab"
+            >
+                <div class="row m-0 p-0 pt-2">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
+                        <div class="card">
+                            <div class="card-header">
+                                A. Tanggal Kelulusan
+                            </div>
+                            <div class="card-body">
+                                @php
+                                    $tanggalKelulusan = $setting->first(function($elem) {
+                                        return $elem->jenis == "tanggal_kelulusan";
+                                    });
+                                    if($tanggalKelulusan) {
+                                        $array_tanggal_kelulusan = unserialize($tanggalKelulusan->nilai);
+                                    } else {
+                                        $array_tanggal_kelulusan = array();
+                                    }
+                                @endphp
+                                <div class="form-group col-10">
+                                    <label for="tanggal-kelulusan">Tanggal Kelulusan</label>
+                                    <input type="date" class="form-control" name="tanggal-kelulusan" id="tanggal-kelulusan" placeholder="Masukkan Tanggal Kelulusan Anda" value="{{$array_tanggal_kelulusan && isset($array_tanggal_kelulusan['kelulusan']) ? $array_tanggal_kelulusan['kelulusan'] : "" }}">
+                                </div>
+                                <div class="form-group col-10">
+                                    <label for="tanggal-rapat">Tanggal Rapat</label>
+                                    <input type="date" class="form-control" name="tanggal-rapat" id="tanggal-rapat" placeholder="Masukkan Tanggal Rapat Anda" value="{{$array_tanggal_kelulusan && isset($array_tanggal_kelulusan['rapat']) ? $array_tanggal_kelulusan['rapat'] : "" }}">
+                                </div>
+                                <div class="button-place mt-3">
+                                    <button class="btn btn-sm btn-warning text-warning-emphasis simpan-tanggal-kelulusan">
+                                        <i class="fas fa-save"></i> Simpan Tanggal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <script>
+                            $('.simpan-tanggal-kelulusan').click(function(){
+                                var tanggalKelulusan = $('#tanggal-kelulusan').val();
+                                var tanggalRapat = $('#tanggal-rapat').val();
+
+                                if(tanggalKelulusan == "" && tanggalRapat == "") {
+                                    oAlert("yellow","Perhatian","Tanggal tidak boleh kosong");    
+                                } else {
+                                    loading();
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{{route('setting.tanggal.kelulusan')}}",
+                                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                        data: {kelulusan : tanggalKelulusan, rapat : tanggalRapat},
+                                        success: function(data) {
+                                            removeLoading();
+                                        },
+                                        error: function(data) {
+                                            console.log(data.responseJSON.message);
+                                        }
+                                    })
+                                }
+                            });
+                        </script>
+                    </div>
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 mt-3">
+                        <div class="card">
+                            <div class="card-header">
+                                B. Pelajaran Yang Ditampilkan
+                            </div>
+                            <div class="card-body">
+                                @php
+                                    $pelajaran_kelulusan_array = $setting->first(function($item) {
+                                        if($item->jenis == "pelajaran_kelulusan") {
+                                            return $item;
+                                        }
+                                    });
+                                    if($pelajaran_kelulusan_array !== null) {
+                                        $kelulusan_array = explode(',',$pelajaran_kelulusan_array['nilai']);
+                                    } else {
+                                        $kelulusan_array = array();
+                                    }
+                                @endphp
+                                <label for="mapelKelulusan">Mapel Kelulusan Yang Ditampilkan</label>
+                                <select name="mapelKelulusan" id="mapelKelulusan" data-toggle="select" multiple="multiple">
+                                    <option value="">Tidak Ada Mapel</option>
+                                    @foreach ($pelajaran as $item)
+                                        @php
+                                            if(in_array($item->uuid,$kelulusan_array)) {
+                                                $selected = "selected";
+                                            } else {
+                                                $selected = "";
+                                            }
+                                        @endphp
+                                        <option {{$selected}} value="{{$item->uuid}}">{{$item->pelajaran_singkat}}</option>
+                                    @endforeach
+                                </select>
+                                <div class="button-place mt-3">
+                                    <button class="simpan-pelajaran-kelulusan btn btn-sm btn-warning text-warning-emphasis">
+                                        <i class="fas fa-save"></i> Simpan Pelajaran
+                                    </button>
+                                </div>
+                            </div>
+                            <script>
+                                $('.simpan-pelajaran-kelulusan').click(function() {
+                                    var pelajaran = $('#mapelKelulusan').val();
+                                    loading();
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "{{route('setting.mapel.kelulusan')}}",
+                                        data: {pelajaran: pelajaran},
+                                        headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
+                                        success: function(data) {
+                                            removeLoading();
+                                            console.log(data);
+                                        },
+                                        error: function(data) {
+                                            console.log(data.responseJSON.message);
+                                        }
+                                    })
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{-- Backup --}}
             <div
                 class="tab-pane p-2"
                 id="profile"

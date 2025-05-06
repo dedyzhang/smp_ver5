@@ -11,6 +11,7 @@ use App\Models\JabarInggris;
 use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
+use App\Models\Kelulusan;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\P5Deskripsi;
@@ -1845,4 +1846,48 @@ class PenilaianController extends Controller
         }
         return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi'));
     }
+    /**
+     * Kelulusan - Halaman Tampilan Kelulusan
+     */
+    public function kelulusanIndex() : View {
+        $kelas = Kelas::whereIn('tingkat',['6','9','12'])->get();
+        $kelasAkhir = $kelas->pluck('uuid');
+        $siswa = Siswa::with('kelas')->whereIn('id_kelas',$kelasAkhir)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $pelajaran_kelulusan = Setting::where('jenis','pelajaran_kelulusan')->first();
+        $pelajaran = Pelajaran::all();
+        $kelulusan = Kelulusan::all();
+        return view('kelulusan.index',compact('siswa','pelajaran_kelulusan','pelajaran','kelulusan'));
+    }
+    /**
+     * Kelulusan - Simpan Nilai Kelulusan
+     */
+    public function kelulusanStore(Request $request,String $uuid) {
+        $id_siswa = $uuid;
+        $kelulusan = $request->kelulusan;
+        $array_nilai = array();
+        
+        foreach($request->nilai as $nilai) {
+            $array_nilai[$nilai['uuid']] = $nilai['nilai'];
+        }
+
+        $nilaiArray = serialize($array_nilai);
+
+        $find = Kelulusan::where('id_siswa',$uuid)->first();
+
+        if(isset($find)) {
+            $update = $find->update([
+                'nilai' => $nilaiArray,
+                'kelulusan' => $kelulusan
+            ]);
+        } else {
+            Kelulusan::create([
+                'id_siswa' => $id_siswa,
+                'nilai' => $nilaiArray,
+                'kelulusan' => $kelulusan
+            ]);
+        }
+
+        return response()->json(['success' => true]);
+    }
+    
 }
