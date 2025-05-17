@@ -69,17 +69,39 @@
                         @endif
                         <td>
                             <div class="form-check form-switch">
-                                <input {{isset($nilai) && $nilai->kelulusan !== null && $nilai->kelulusan == true ? "checked" : ""}} class="form-check-input switch-kelulusan" type="checkbox" role="switch" id="#switch-{{$item->uuid}}">
+                                <input {{isset($nilai) && $nilai->kelulusan !== null && $nilai->kelulusan == "true" ? "checked" : ""}} class="form-check-input switch-kelulusan" type="checkbox" role="switch" id="#switch-{{$item->uuid}}">
                             </div>
                         </td>
                         <td>
                             <button class="btn btn-sm btn-success simpan-nilai" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Simpan Nilai"><i class="fas fa-save"></i></button>
-                            <button class="btn btn-sm btn-warning upload-file" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload File"><i class="fas fa-upload"></i></button>
+                            <button class="btn btn-sm btn-warning upload-file" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Upload File" data-siswa="{{$item->uuid}}" data-file="{{isset($nilai) && $nilai->file !== null ? $nilai->file : "" }}"><i class="fas fa-upload"></i></button>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
             </table>
+        </div>
+    </div>
+    <div class="modal modal-lg fade in" id="modalUploadFile">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Upload File</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="fs-10">Upload Surat Keterangan untuk siswa. File Berbentuk PDF dengan Maks File 2MB</p>
+                    <div class="form-group mb-3">
+                        <input type="hidden" name="idSiswa" id="idSiswa">
+                        <label for="formFileSm" class="form-label">Upload Surat Keterangan</label>
+                        <input class="form-control form-control-sm" id="formFileSm" type="file">
+                    </div>
+                    <div id="pdf-reader"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary upload-button">Upload</button>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -149,7 +171,7 @@
 
             var url = "{{route('penilaian.kelulusan.store',':id')}}";
             url = url.replace(':id',idSiswa);
-            
+
             $.ajax({
                 type: "post",
                 url: url,
@@ -159,12 +181,68 @@
                     if(data.success) {
                         removeLoading();
                     }
-                    
+
                 },
                 error: function(data) {
                     console.log(data.responseJSON.message);
                 }
             })
+        });
+        $('.upload-file').click(function(){
+            loading();
+            var idSiswa = $(this).closest('tr').data('siswa');
+            var file = $(this).data('file');
+            //Tampilkan File kedalam pdf
+            if(file != null && file != "") {
+                var newPath = "{{asset('/storage/surat_keterangan_kelulusan/'.':id')}}";
+                newPath = newPath.replace(':id',file);
+                var url = "{{asset('/js/pdfjs/web/viewer.html?file=:id')}}";
+                url = url.replace(':id',newPath);
+                $('#pdf-reader').html('<iframe src="'+url+'" style="width:100%; height:400px;" frameborder="0"></iframe>');    
+            } else {
+                $('#pdf-reader').html("");   
+            }
+
+            $('#idSiswa').val(idSiswa);
+            $('#modalUploadFile').modal('show');
+            removeLoading();
+        });
+        $('#modalUploadFile').on('hidden.bs.modal', function () {
+            $('#idSiswa').val('');
+            $('#formFileSm').val('');
+        });
+        $('.upload-button').click(function(){
+            var idSiswa = $('#idSiswa').val();
+            var file = $('#formFileSm')[0].files[0];
+            if(file.name.split('.').pop() != 'pdf') {
+                oAlert("orange","Perhatian","File yang diupload harus berbentuk PDF")
+            } else if(file.size > 2000000) {
+                oAlert("orange","Perhatian","Maksimal File yang diupload adalah 2MB")
+            } else {
+                var formData = new FormData();
+                formData.append('file',file);
+                var url = "{{route('penilaian.kelulusan.upload',':id')}}";
+                url = url.replace(':id',idSiswa);
+                loading();
+                $.ajax({
+                    type: "post",
+                    url: url,
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {'X-CSRF-TOKEN' : "{{csrf_token()}}"},
+                    success: function(data) {
+                        if(data.success) {
+                            removeLoading();
+                            $('#modalUploadFile').modal('hide');
+                            $('.upload-file[data-siswa="'+idSiswa+'"]').data('file',data.file);
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            }
         });
     </script>
 @endsection

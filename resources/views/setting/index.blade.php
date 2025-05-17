@@ -1070,7 +1070,7 @@
                     <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10">
                         <div class="card">
                             <div class="card-header">
-                                A. Tanggal Kelulusan
+                                A. Kelulusan
                             </div>
                             <div class="card-body">
                                 @php
@@ -1084,8 +1084,14 @@
                                     }
                                 @endphp
                                 <div class="form-group col-10">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="kelulusanswitch" {{$array_tanggal_kelulusan && isset($array_tanggal_kelulusan['tampil']) ? ($array_tanggal_kelulusan['tampil'] == "true" ? "checked" : "") : "" }}>
+                                        <label class="form-check-label" for="kelulusanswitch">Tampilkan Kelulusan</label>
+                                    </div>
+                                </div>
+                                <div class="form-group col-10">
                                     <label for="tanggal-kelulusan">Tanggal Kelulusan</label>
-                                    <input type="date" class="form-control" name="tanggal-kelulusan" id="tanggal-kelulusan" placeholder="Masukkan Tanggal Kelulusan Anda" value="{{$array_tanggal_kelulusan && isset($array_tanggal_kelulusan['kelulusan']) ? $array_tanggal_kelulusan['kelulusan'] : "" }}">
+                                    <input type="datetime-local" class="form-control" name="tanggal-kelulusan" id="tanggal-kelulusan" placeholder="Masukkan Tanggal Kelulusan Anda" value="{{$array_tanggal_kelulusan && isset($array_tanggal_kelulusan['kelulusan']) ? $array_tanggal_kelulusan['kelulusan'] : "" }}">
                                 </div>
                                 <div class="form-group col-10">
                                     <label for="tanggal-rapat">Tanggal Rapat</label>
@@ -1102,16 +1108,17 @@
                             $('.simpan-tanggal-kelulusan').click(function(){
                                 var tanggalKelulusan = $('#tanggal-kelulusan').val();
                                 var tanggalRapat = $('#tanggal-rapat').val();
+                                var kelulusanSwitch = $('#kelulusanswitch').is(':checked');
 
                                 if(tanggalKelulusan == "" && tanggalRapat == "") {
-                                    oAlert("yellow","Perhatian","Tanggal tidak boleh kosong");    
+                                    oAlert("yellow","Perhatian","Tanggal tidak boleh kosong");
                                 } else {
                                     loading();
                                     $.ajax({
                                         type: "POST",
                                         url: "{{route('setting.tanggal.kelulusan')}}",
                                         headers: {'X-CSRF-TOKEN': '{{csrf_token()}}'},
-                                        data: {kelulusan : tanggalKelulusan, rapat : tanggalRapat},
+                                        data: {kelulusan : tanggalKelulusan, rapat : tanggalRapat,kelulusanSwitch : kelulusanSwitch},
                                         success: function(data) {
                                             removeLoading();
                                         },

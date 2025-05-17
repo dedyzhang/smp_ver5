@@ -361,17 +361,20 @@ class SettingController extends Controller
     /**
      * Kelulusan - Set Tanggal Kelulusan
      */
-    public function setTanggalKelulusan(Request $request) {
+    public function setTanggalKelulusan(Request $request)
+    {
         $kelulusan = $request->kelulusan;
         $rapat = $request->rapat;
+        $toggleKelulusan = $request->kelulusanSwitch;
 
         $tanggalArray = array(
             'kelulusan' => $kelulusan,
-            'rapat' => $rapat
+            'rapat' => $rapat,
+            'tampil' => $toggleKelulusan
         );
 
         $value = serialize($tanggalArray);
-        $settingTanggalKelulusan = Setting::where('jenis','tanggal_kelulusan')->first();
+        $settingTanggalKelulusan = Setting::where('jenis', 'tanggal_kelulusan')->first();
 
         if ($settingTanggalKelulusan !== null) {
             $settingTanggalKelulusan->update([
@@ -390,7 +393,7 @@ class SettingController extends Controller
     public function setMapelkelulusan(Request $request)
     {
         $pelajaran = $request->pelajaran;
-        if($pelajaran == "") {
+        if ($pelajaran == "") {
             $settingPelajaran = Setting::where('jenis', 'pelajaran_kelulusan')->first();
 
             $settingPelajaran->delete();
