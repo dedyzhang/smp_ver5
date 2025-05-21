@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.4</i>
+            <i class="app-version">5.1.5</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -285,6 +285,11 @@
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>
             </li>
+            @endcan
+            {{-- Kelulusan --}}
+            @canany(['siswa','orangtua'])
+            <li class="menu-list"><a href="{{route('kelulusan.siswa.index')}}"> <ion-icon src="{{asset('img/icons/graduation.svg')}}"></ion-icon>
+                    Kelulusan</a></li>
             @endcan
         </ul>
     </div>

@@ -100,6 +100,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary upload-button">Upload</button>
+                    <a class="btn btn-danger hapus-upload d-none">Hapus File</a>
                 </div>
             </div>
         </div>
@@ -198,14 +199,34 @@
                 newPath = newPath.replace(':id',file);
                 var url = "{{asset('/js/pdfjs/web/viewer.html?file=:id')}}";
                 url = url.replace(':id',newPath);
-                $('#pdf-reader').html('<iframe src="'+url+'" style="width:100%; height:400px;" frameborder="0"></iframe>');    
+                $('#pdf-reader').html('<iframe src="'+url+'" style="width:100%; height:400px;" frameborder="0"></iframe>');
+                $('.hapus-upload').addClass('d-inline').removeClass('d-none');
             } else {
-                $('#pdf-reader').html("");   
+                $('#pdf-reader').html("");
+                $('.hapus-upload').removeClass('d-inline').addClass('d-none');
             }
 
             $('#idSiswa').val(idSiswa);
             $('#modalUploadFile').modal('show');
             removeLoading();
+        });
+        $('.hapus-upload').click(function(){
+            var idSiswa = $('#idSiswa').val();
+            var url = "{{route('penilaian.kelulusan.file.hapus',':id')}}";
+            url = url.replace(':id',idSiswa);
+            loading();
+            $.ajax({
+                type: "post",
+                url: url,
+                headers: {'X-CSRF-TOKEN' : "{{csrf_token()}}"},
+                success: function(data) {
+                    if(data.success) {
+                        removeLoading();
+                        $('#modalUploadFile').modal('hide');
+                        $('.upload-file[data-siswa="'+idSiswa+'"]').data('file','');
+                    }
+                }
+            })
         });
         $('#modalUploadFile').on('hidden.bs.modal', function () {
             $('#idSiswa').val('');
