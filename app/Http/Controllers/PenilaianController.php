@@ -1946,6 +1946,20 @@ class PenilaianController extends Controller
         return response()->json(['success' => true, 'file' => $filename]);
     }
     /**
+     * Kelulusan - Hapus Surat Kelulusan
+     */
+    public function kelulusanFileDelete(String $uuid)
+    {
+        $kelulusan = Kelulusan::where('id_siswa', $uuid)->first();
+        if ($kelulusan->file != null) {
+            Storage::delete('public/surat_keterangan_kelulusan/' . $kelulusan->file);
+        }
+        $kelulusan->update([
+            'file' => null
+        ]);
+        return response()->json(['success' => true]);
+    }
+    /**
      * Kelulusan - Tampilan Siswa
      */
     public function kelulusanSiswaIndex(): View

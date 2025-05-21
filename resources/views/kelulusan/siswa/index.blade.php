@@ -44,44 +44,57 @@
                 </ul>
 
                 <p class="mt-3">Peserta didik tersebut telah dinyatakan <b class="fs-20">{{$kelulusan && $kelulusan->kelulusan != null ? ( $kelulusan->kelulusan == "true" ? strtoupper("Lulus") : strtoupper("Tidak Lulus") ) : ""}}</b> dari sekolah {{$nama_sekolah}} pada tahun ajaran {{$semester->tp}} dengan nilai sebagai berikut : </p>
-                <div class="row mt-3 m-0 p-0">
-                    <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10 m-0 p-0">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="5%">No</th>
-                                    <th width="60%" class="text-center">Mata Pelajaran</th>
-                                    <th width="10%" class="text-center">Nilai</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $no = 1;
-                                    $pelajaranKelulusan = $kelulusan->nilai ? unserialize($kelulusan->nilai) : [];
-                                    $total = 0;
-                                    $count = 0;
-                                @endphp
-                                @if ($pelajaranKelulusan)
-                                    @foreach ($pelajaranKelulusan as $item => $value)
-                                        <tr>
-                                            <td class="text-center">{{$no++}}</td>
-                                            <td>{{$pelajaranArray[$item]}}</td>
-                                            <td class="text-center">{{$value}}</td>
-                                        </tr>
-                                        @php
-                                            $total += $value;
-                                            $count++;
-                                        @endphp
-                                    @endforeach
-                                @endif
-                                <tr>
-                                    <td colspan="2"><b>Rata-Rata</b></td>
-                                    <td class="text-center"><b>{{$total > 0 && $count > 0 ? round($total / $count,2) : 0}}</b></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                 @if (isset($kelulusan) && $kelulusan->nilai != null)
+                    <div class="row mt-4 m-0 p-0">
+                        <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10 m-0 p-0">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="60%" class="text-center">Mata Pelajaran</th>
+                                        <th width="10%" class="text-center">Nilai</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $no = 1;
+                                        $pelajaranKelulusan = $kelulusan->nilai ? unserialize($kelulusan->nilai) : [];
+                                        $total = 0;
+                                        $count = 0;
+                                    @endphp
+                                    @if ($pelajaranKelulusan)
+                                        @foreach ($pelajaranKelulusan as $item => $value)
+                                            @if ($value > 0)
+                                                <tr>
+                                                    <td class="text-center">{{$no++}}</td>
+                                                    <td>{{$pelajaranArray[$item]}}</td>
+                                                    <td class="text-center">{{$value}}</td>
+                                                </tr>
+                                                @php
+                                                    $total += $value;
+                                                    $count++;
+                                                @endphp
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    <tr>
+                                        <td colspan="2"><b>Rata-Rata</b></td>
+                                        <td class="text-center"><b>{{$total > 0 && $count > 0 ? round($total / $count,2) : 0}}</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
+                @endif
+                @if (isset($kelulusan) && $kelulusan->file != null)
+                    <div class="row mt-4 m-0 p-0">
+                        <div class="col-12 d-grid col-sm-12 d-sm-grid col-md-12 d-md-flex col-lg-12 d-lg-flex col-xl-12 d-xl-flex m-0 p-0 text-md-center text-lg-center text-xl-center">
+                            <a class="btn btn-sm btn-warning text-warning-emphasis" href="{{asset('storage/surat_keterangan_kelulusan/'.$kelulusan->file)}}">
+                                <i class="fas fa-file-pdf"></i> Download Surat Keterangan Kelulusan
+                            </a>
+                        </div>
+                    </div>
+                @endif
             @endif
         @else
             <div class="alert alert-danger" role="alert">

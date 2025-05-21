@@ -286,6 +286,11 @@
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>
             </li>
             @endcan
+            {{-- Kelulusan --}}
+            @canany(['siswa','orangtua'])
+            <li class="menu-list"><a href="{{route('kelulusan.siswa.index')}}"> <ion-icon src="{{asset('img/icons/graduation.svg')}}"></ion-icon>
+                    Kelulusan</a></li>
+            @endcan
         </ul>
     </div>
 </div>

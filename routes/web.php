@@ -227,6 +227,7 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/kelulusan', 'kelulusanIndex')->name('penilaian.kelulusan.index');
     Route::post('/penilaian/kelulusan/{uuid}/simpan', 'kelulusanStore')->name('penilaian.kelulusan.store');
     Route::post('/penilaian/kelulusan/{uuid}/upload', 'kelulusanUpload')->name('penilaian.kelulusan.upload');
+    Route::post('/penilaian/kelulusan/{uuid}/hapus', 'kelulusanFileDelete')->name('penilaian.kelulusan.file.hapus');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
