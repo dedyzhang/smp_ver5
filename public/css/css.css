@@ -1075,3 +1075,53 @@ table.dataTables tbody td {
     top: 515px;
     left: 440px;
 }
+/* Countdown Kelulusan Siswa */
+.object {
+    opacity: 1;
+    transition: all 0.7s ease-in-out;
+}
+.object h4 {
+    width: 100%;
+}
+.object ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.object ul li {
+    padding: 30px 10px;
+    font-size: 30px;
+    background: #fff;
+    display: inline-block;
+    text-align: center;
+    border-radius: 10px;
+    width: 20%;
+}
+.object ul li span {
+    font-size: 60px;
+    font-weight: bold;
+    display: block;
+}
+.object h3 {
+    font-family: title;
+    font-size: 40px;
+    text-align: center;
+}
+@media screen and (max-width: 500px) {
+    .object ul li {
+        width: 25%;
+        font-size: 14px;
+        padding: 20px 5px;
+    }
+    .object ul li span {
+        font-size: 30px;
+        font-weight: bold;
+        display: block;
+    }
+    .object h4 {
+        font-size: 20px;
+        text-align: center;
+    }
+}

@@ -26,6 +26,7 @@ class PasExport implements FromView
     public function view(): View
     {
         $setting = Setting::where('jenis', 'nama_sekolah')->first();
+        $semester = Semester::first();
         $kelas = Kelas::findOrFail($this->params);
         $ngajar = Ngajar::with('guru')->select(['ngajar.*', 'pelajaran', 'pelajaran_singkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -36,7 +37,7 @@ class PasExport implements FromView
             array_push($id_ngajar, $item->uuid);
         }
         $pas_array = array();
-        $pas = PAS::whereIn('id_ngajar', $id_ngajar)->get();
+        $pas = PAS::where('semester', $semester->semester)->whereIn('id_ngajar', $id_ngajar)->get();
         foreach ($pas as $item) {
             $pas_array[$item->id_ngajar . "." . $item->id_siswa] = $item->nilai;
         }
