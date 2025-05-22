@@ -49,8 +49,7 @@ class AppController extends Controller
     }
     public function getGemini(Request $request)
     {
-        $result = FacadesGemini::geminiPro()->generateContent($request->text);
-
+        $result = FacadesGemini::generativeModel(model: 'models/gemini-1.5-flash-001')->generateContent($request->text);
         return $result->text();
     }
     public function ppdb()

@@ -11,6 +11,7 @@ use App\Models\JabarInggris;
 use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
+use App\Models\Kelulusan;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\P5Deskripsi;
@@ -41,6 +42,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 use Mavinoo\Batch\BatchFacade as Batch;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
@@ -1731,7 +1734,7 @@ class PenilaianController extends Controller
             $rentang = array();
         }
         // $siswa = Siswa::where('id_kelas', $uuid)->get();
-        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail', 'array_nilai', 'array_deskripsi'));
+        return view('penilaian.projek.rapor.show', compact('kelas', 'siswa', 'proyek', 'array_proyek_detail', 'array_nilai', 'array_deskripsi', 'rentang'));
     }
     /**
      * P5 - Projek Rapor Print Per Siswa
@@ -1843,6 +1846,153 @@ class PenilaianController extends Controller
                 'deskripsi' => $item->deskripsi
             );
         }
-        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi'));
+        $settingRentang = Setting::where('jenis', 'rentang_penilaian_proyek')->first();
+        if ($settingRentang) {
+            $rentang = unserialize($settingRentang->nilai);
+        } else {
+            $rentang = array();
+        }
+        return view('penilaian.projek.nilai', compact('fasilitator', 'proyek', 'siswa', 'countDetail', 'proyekDetail', 'arrayNilai', 'arrayDeskripsi', 'rentang'));
+    }
+
+    /**
+     * Kelulusan Controller -------------------------------------------
+     */
+
+
+    /**
+     * Kelulusan - Halaman Tampilan Kelulusan
+     */
+    public function kelulusanIndex(): View
+    {
+        $kelas = Kelas::whereIn('tingkat', ['6', '9', '12'])->get();
+        $kelasAkhir = $kelas->pluck('uuid');
+        $siswa = Siswa::with('kelas')->whereIn('id_kelas', $kelasAkhir)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $pelajaran_kelulusan = Setting::where('jenis', 'pelajaran_kelulusan')->first();
+        $pelajaran = Pelajaran::all();
+        $kelulusan = Kelulusan::all();
+        return view('kelulusan.index', compact('siswa', 'pelajaran_kelulusan', 'pelajaran', 'kelulusan'));
+    }
+    /**
+     * Kelulusan - Simpan Nilai Kelulusan
+     */
+    public function kelulusanStore(Request $request, String $uuid)
+    {
+        $id_siswa = $uuid;
+        $kelulusan = $request->kelulusan;
+        $array_nilai = array();
+
+        if ($request->nilai != null) {
+            foreach ($request->nilai as $nilai) {
+                $array_nilai[$nilai['uuid']] = $nilai['nilai'];
+            }
+            $nilaiArray = serialize($array_nilai);
+        } else {
+            $nilaiArray = "";
+        }
+
+        $find = Kelulusan::where('id_siswa', $uuid)->first();
+
+        if (isset($find)) {
+            $find->update([
+                'nilai' => $nilaiArray,
+                'kelulusan' => $kelulusan
+            ]);
+        } else {
+            Kelulusan::create([
+                'id_siswa' => $id_siswa,
+                'nilai' => $nilaiArray,
+                'kelulusan' => $kelulusan
+            ]);
+        }
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Kelulusan - Upload Surat Kelulusan
+     */
+    public function kelulusanUpload(Request $request, String $uuid)
+    {
+        $id_siswa = $uuid;
+        $file = $request->file('file');
+        $kelulusan = Kelulusan::where('id_siswa', $uuid)->first();
+        $siswa = Siswa::findOrFail($uuid);
+
+        if (isset($kelulusan)) {
+            if ($file) {
+                if ($kelulusan->file != null) {
+                    Storage::delete('public/surat_keterangan_kelulusan/' . $kelulusan->file);
+                }
+
+                $file_path = storage_path('app/public/surat_keterangan_kelulusan');
+                $filename = "SKL " . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/surat_keterangan_kelulusan', $filename);
+
+                $kelulusan->update([
+                    'file' => $filename
+                ]);
+            }
+        } else {
+            if ($file) {
+                $file_path = storage_path('app/public/surat_keterangan_kelulusan');
+                $filename = "SKL " . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/surat_keterangan_kelulusan', $filename);
+
+                Kelulusan::create([
+                    'id_siswa' => $id_siswa,
+                    'file' => $filename
+                ]);
+            }
+        }
+        return response()->json(['success' => true, 'file' => $filename]);
+    }
+    /**
+     * Kelulusan - Hapus Surat Kelulusan
+     */
+    public function kelulusanFileDelete(String $uuid)
+    {
+        $kelulusan = Kelulusan::where('id_siswa', $uuid)->first();
+        if ($kelulusan->file != null) {
+            Storage::delete('public/surat_keterangan_kelulusan/' . $kelulusan->file);
+        }
+        $kelulusan->update([
+            'file' => null
+        ]);
+        return response()->json(['success' => true]);
+    }
+    /**
+     * Kelulusan - Tampilan Siswa
+     */
+    public function kelulusanSiswaIndex(): View
+    {
+        $id = Auth::user()->uuid;
+        $siswa = Siswa::where('id_login', $id)->first();
+        $kelulusan = Kelulusan::where('id_siswa', $siswa->uuid)->first();
+        $settingKelulusan = Setting::all();
+        $pelajaran = Pelajaran::get()->sortBy('urutan', SORT_NATURAL);
+        $pelajaranArray = array();
+        foreach ($pelajaran as $item) {
+            $pelajaranArray[$item->uuid] = $item->pelajaran;
+        }
+        $kepalaSekolah = $settingKelulusan->first(function ($elem) {
+            return $elem->jenis == 'kepala_sekolah';
+        });
+        $namaSekolah = $settingKelulusan->first(function ($elem) {
+            return $elem->jenis == 'nama_sekolah';
+        });
+
+        if ($kepalaSekolah) {
+            $kepala_sekolah = Guru::findOrFail($kepalaSekolah->nilai);
+        } else {
+            $kepala_sekolah = "";
+        }
+
+        if ($namaSekolah) {
+            $nama_sekolah = $namaSekolah->nilai;
+        } else {
+            $nama_sekolah = "";
+        }
+        $semester = Semester::first();
+
+        return view('kelulusan.siswa.index', compact('siswa', 'kelulusan', 'settingKelulusan', 'kepala_sekolah', 'nama_sekolah', 'semester', 'pelajaranArray'));
     }
 }

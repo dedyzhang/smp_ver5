@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.4</i>
+            <i class="app-version">5.1.5</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -127,6 +127,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.p5.index') }}"> Projek P5</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.kelulusan.index') }}"> Kelulusan</a></li>
                 </ul>
             </li>
             @endcan
@@ -156,9 +157,13 @@
                     <i class="indicator-icon fa-solid fa-chevron-right"></i>
                 </a>
                 <ul class="submenu collapse" id="menu-aturan">
-                    <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
-                    <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
-                    <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('p3.index') }}"> List P3</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
+                        <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
+                        <li class="submenu-list"><a href="{{ route('temp.index') }}"> Pengajuan</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan
@@ -280,6 +285,11 @@
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>
             </li>
+            @endcan
+            {{-- Kelulusan --}}
+            @canany(['siswa','orangtua'])
+            <li class="menu-list"><a href="{{route('kelulusan.siswa.index')}}"> <ion-icon src="{{asset('img/icons/graduation.svg')}}"></ion-icon>
+                    Kelulusan</a></li>
             @endcan
         </ul>
     </div>

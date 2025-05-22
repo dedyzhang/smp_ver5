@@ -18,6 +18,7 @@ use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
 use App\Http\Controllers\PerangkatAjarController;
 use App\Http\Controllers\PoinController;
+use App\Http\Controllers\P3Controller;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
@@ -130,6 +131,9 @@ Route::middleware(IsAdmin::class)->controller(SettingController::class)->group(f
     Route::post('/settings/penjabaran', 'setPenjabaran')->name('setting.penjabaran');
     Route::post('/settings/penilaian/rumus/rapor', 'setRumusRapor')->name('setting.penilaian.rumus.rapor');
     Route::post('/settings/penilaian/rentangproyek', 'setRentangPenilaianProyek')->name('setting.penilaian.rentang.proyek');
+    Route::post('/settings/aturan/pemilihan', 'setPemilihanAturan')->name('setting.aturan.pemilihan');
+    Route::post('/settings/kelulusan/tanggal', 'setTanggalKelulusan')->name('setting.tanggal.kelulusan');
+    Route::post('/settings/kelulusan/mapel', 'setMapelKelulusan')->name('setting.mapel.kelulusan');
 });
 
 //Admin - Halaman Cetak Excel
@@ -219,6 +223,11 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/p5/rapor', 'projekRapor')->name('penilaian.p5.rapor');
     Route::get('/penilaian/p5/rapor/{uuid}/show', 'projekRaporShow')->name('penilaian.p5.rapor.show');
     Route::get('/penilaian/p5/rapor/{uuid}/print', 'projekRaporPrint')->name('penilaian.p5.rapor.print');
+    //Kelulusan
+    Route::get('/penilaian/kelulusan', 'kelulusanIndex')->name('penilaian.kelulusan.index');
+    Route::post('/penilaian/kelulusan/{uuid}/simpan', 'kelulusanStore')->name('penilaian.kelulusan.store');
+    Route::post('/penilaian/kelulusan/{uuid}/upload', 'kelulusanUpload')->name('penilaian.kelulusan.upload');
+    Route::post('/penilaian/kelulusan/{uuid}/hapus', 'kelulusanFileDelete')->name('penilaian.kelulusan.file.hapus');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -504,6 +513,13 @@ Route::middleware(isPenilaianController::class)->controller(PoinController::clas
     Route::get('/bukuguru/poin/create', 'guruPoinCreate')->name('poin.guru.create');
 });
 
+//*{--------------------------------------------Halaman Pelanggaran, Prestasi dan Partisipasi--------------------------------}
+Route::resource('/p3', \App\Http\Controllers\P3Controller::class)->except('show')->middleware(IsAdminKesiswaan::class);
+Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->group(function () {
+    Route::get('/p3/siswa', 'showSiswa')->name('p3.siswa');
+});
+
+
 // {----------------------------------------------------END------------------------------------------------------------------}
 
 // {--------------------------------------------Halaman Sapras---------------------------------------------------------------}
@@ -544,6 +560,13 @@ Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->
     Route::get('/detail/nilai', 'nilai')->name('detail.nilai.index');
     Route::get('/detail/nilai/{uuid}/show', 'nilaiShow')->name('detail.nilai.show');
 });
+// {------------------------------------------------- END --------------------------------------------------------------------}
+
+// {----------------------------------------Halaman Kelulusan Siswa -----------------------------------------------------------}
+Route::middleware(IsSiswaOrangtua::class)->controller(PenilaianController::class)->group(function () {
+    Route::get('/kelulusan', 'kelulusanSiswaIndex')->name('kelulusan.siswa.index');
+});
+
 // {------------------------------------------------- END --------------------------------------------------------------------}
 
 // {-------------------------------------------Halaman EkstraKurikuler--------------------------------------------------------}

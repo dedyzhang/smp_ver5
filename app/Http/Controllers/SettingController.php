@@ -339,4 +339,78 @@ class SettingController extends Controller
             ]);
         }
     }
+    /**
+     * Pemilihan Aturan P3 atau pemakaian Poin
+     */
+    public function setPemilihanAturan(Request $request)
+    {
+        $aturan = $request->peraturan;
+        $settingAturan = Setting::where('jenis', 'jenis_aturan')->first();
+
+        if ($settingAturan !== null) {
+            $settingAturan->update([
+                'nilai' => $aturan
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'jenis_aturan',
+                'nilai' => $aturan
+            ]);
+        }
+    }
+    /**
+     * Kelulusan - Set Tanggal Kelulusan
+     */
+    public function setTanggalKelulusan(Request $request)
+    {
+        $kelulusan = $request->kelulusan;
+        $rapat = $request->rapat;
+        $toggleKelulusan = $request->kelulusanSwitch;
+
+        $tanggalArray = array(
+            'kelulusan' => $kelulusan,
+            'rapat' => $rapat,
+            'tampil' => $toggleKelulusan
+        );
+
+        $value = serialize($tanggalArray);
+        $settingTanggalKelulusan = Setting::where('jenis', 'tanggal_kelulusan')->first();
+
+        if ($settingTanggalKelulusan !== null) {
+            $settingTanggalKelulusan->update([
+                'nilai' => $value
+            ]);
+        } else {
+            Setting::create([
+                'jenis' => 'tanggal_kelulusan',
+                'nilai' => $value
+            ]);
+        }
+    }
+    /**
+     * Kelulusan - mata pelajaran yang ditampilkan
+     */
+    public function setMapelkelulusan(Request $request)
+    {
+        $pelajaran = $request->pelajaran;
+        if ($pelajaran == "") {
+            $settingPelajaran = Setting::where('jenis', 'pelajaran_kelulusan')->first();
+
+            $settingPelajaran->delete();
+        } else {
+            $pelajaran = implode(',', $pelajaran);
+            $settingPelajaran = Setting::where('jenis', 'pelajaran_kelulusan')->first();
+
+            if ($settingPelajaran !== null) {
+                $settingPelajaran->update([
+                    'nilai' => $pelajaran
+                ]);
+            } else {
+                Setting::create([
+                    'jenis' => 'pelajaran_kelulusan',
+                    'nilai' => $pelajaran
+                ]);
+            }
+        }
+    }
 }
