@@ -25,6 +25,7 @@ class RaporExport implements FromView
     public function view(): View
     {
         $setting = Setting::where('jenis', 'nama_sekolah')->first();
+        $semester = Semester::first();
         $kelas = Kelas::with('walikelas')->findOrFail($this->params);
         $ngajar = Ngajar::with('guru')->select(['ngajar.*', 'pelajaran', 'pelajaran_singkat'])
             ->join('pelajaran', 'id_pelajaran', '=', 'pelajaran.uuid')
@@ -35,7 +36,7 @@ class RaporExport implements FromView
             array_push($id_ngajar, $item->uuid);
         }
         $rapor_array = array();
-        $rapor = Rapor::whereIn('id_ngajar', $id_ngajar)->get();
+        $rapor = Rapor::where('semester', $semester->semester)->whereIn('id_ngajar', $id_ngajar)->get();
         foreach ($rapor as $item) {
             $rapor_array[$item->id_ngajar . "." . $item->id_siswa] = array(
                 "nilai" => $item->nilai,

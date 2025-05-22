@@ -116,7 +116,14 @@
                                 </thead>
                                 <tbody class="fs-10">
                                     @if (isset($array_proyek_detail[$item->proyek->uuid]))
+                                        @php
+                                            $no_detail = 0;
+                                        @endphp
+
                                         @foreach ($array_proyek_detail[$item->proyek->uuid] as $detail)
+                                            @php
+                                                $no_detail++;
+                                            @endphp
                                             <tr class="table-info">
                                                 <td style="vertical-align:middle" colspan="5">
                                                     {{$detail['dimensi']}}
@@ -130,6 +137,26 @@
                                                 {!! $array_nilai && isset($array_nilai[$detail['id_detail'].".".$siswa->uuid]) && $array_nilai[$detail['id_detail'].".".$siswa->uuid] == 4 ? '<td class="text-center" style="vertical-align:middle"><i class="fas fa-2x fa-check"></i></td>' : '<td></td>' !!}
                                             </tr>
                                         @endforeach
+
+                                        @if ($no_detail < 4)
+                                            @php
+                                                $kekurangan = 4 - $no_detail;
+                                            @endphp
+                                            @for ($k = 0; $k < $kekurangan; $k++)
+                                                <tr class="table-info">
+                                                    <td style="vertical-align:middle; height:40px" colspan="5">
+
+                                                    </td>
+                                                </tr>
+                                                <tr class="transback">
+                                                    <td style="height:40px;"></td>
+                                                    <td style="height:40px;"></td>
+                                                    <td style="height:40px;"></td>
+                                                    <td style="height:40px;"></td>
+                                                    <td style="height:40px;"></td>
+                                                </tr>
+                                            @endfor
+                                        @endif
                                     @endif
                                 </tbody>
                             </table>
