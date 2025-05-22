@@ -48,8 +48,9 @@ class AppServiceProvider extends ServiceProvider
         });
         view()->composer(['layouts.sidebar', 'layouts.head'], function ($view) {
             $setting = Setting::where('jenis', 'nama_sekolah')->first();
+            $pemilihanAturan = Setting::where('jenis', 'jenis_aturan')->first();
             //...with this variable
-            $view->with('setting', $setting);
+            $view->with('setting', $setting)->with('pemilihanAturan', $pemilihanAturan);
         });
 
         Gate::define('admin', function () {
