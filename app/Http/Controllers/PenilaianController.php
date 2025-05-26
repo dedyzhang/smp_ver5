@@ -186,7 +186,7 @@ class PenilaianController extends Controller
         $ekskul = Ekskul::all()->sortBy('urutan', SORT_NATURAL);
         $ekskulSiswa = EkskulSiswa::with('ekskul')->where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
 
-        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', 1]])->get();
+        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', $semester->semester]])->get();
         $tanggalArray = $jumlahHari->pluck('uuid');
         $absensi = AbsensiSiswa::selectRaw('
             COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
@@ -1269,7 +1269,8 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $manual = RaporManual::where([
             ['id_ngajar', '=', $uuid],
-            ['id_siswa', '=', $request->siswa]
+            ['id_siswa', '=', $request->siswa],
+            ['semester', '=', $semester->semester]
         ])->first();
         if ($manual === null) {
             RaporManual::create([
@@ -1920,12 +1921,12 @@ class PenilaianController extends Controller
         if (isset($kelulusan)) {
             if ($file) {
                 if ($kelulusan->file != null) {
-                    Storage::delete('public/surat_keterangan_kelulusan/' . $kelulusan->file);
+                    Storage::delete('public/skl/' . $kelulusan->file);
                 }
 
-                $file_path = storage_path('app/public/surat_keterangan_kelulusan');
-                $filename = "SKL " . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/surat_keterangan_kelulusan', $filename);
+                $file_path = storage_path('app/public/skl');
+                $filename = "SKL." . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/skl', $filename);
 
                 $kelulusan->update([
                     'file' => $filename
@@ -1933,9 +1934,9 @@ class PenilaianController extends Controller
             }
         } else {
             if ($file) {
-                $file_path = storage_path('app/public/surat_keterangan_kelulusan');
-                $filename = "SKL " . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/surat_keterangan_kelulusan', $filename);
+                $file_path = storage_path('app/public/skl');
+                $filename = "SKL." . $siswa->nis . '.' . time() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/skl', $filename);
 
                 Kelulusan::create([
                     'id_siswa' => $id_siswa,
@@ -1952,7 +1953,7 @@ class PenilaianController extends Controller
     {
         $kelulusan = Kelulusan::where('id_siswa', $uuid)->first();
         if ($kelulusan->file != null) {
-            Storage::delete('public/surat_keterangan_kelulusan/' . $kelulusan->file);
+            Storage::delete('public/skl/' . $kelulusan->file);
         }
         $kelulusan->update([
             'file' => null

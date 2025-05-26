@@ -336,9 +336,13 @@
                             $('.tidak_naik_kelas').addClass('text-decoration-line-through');
                             $('.naik_kelas').removeClass('text-decoration-line-through');
                             $kelas_sekarang = {{$siswa->kelas->tingkat}};
-                            $kelas_baru = $kelas_sekarang + 1;
+                            if($kelas_sekarang == 6 || $kelas_sekarang == 9 || $kelas_sekarang == 12) {
+                                $kelas_baru = "";
+                            } else {
+                                $kelas_baru = $kelas_sekarang + 1;
+                            }
 
-                            $('.naik_kelas_val').html($kelas_deskripsi_array[$kelas_baru]);
+                            $('.naik_kelas_val').html($kelas_deskripsi_array[$kelas_baru] != null ? $kelas_deskripsi_array[$kelas_baru] : "");
                             $('.tidak_naik_val').html("");
 
                         } else {

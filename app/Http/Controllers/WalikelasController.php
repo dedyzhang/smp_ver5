@@ -531,7 +531,7 @@ class WalikelasController extends Controller
         $ekskul = Ekskul::all()->sortBy('urutan', SORT_NATURAL);
         $ekskulSiswa = EkskulSiswa::with('ekskul')->where([['id_siswa', '=', $uuid], ['semester', '=', $semester->semester]])->get();
 
-        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', 1]])->get();
+        $jumlahHari = TanggalAbsensi::where([['ada_siswa', '=', 1], ['semester', '=', $semester->semester]])->get();
         $tanggalArray = $jumlahHari->pluck('uuid');
         $absensi = AbsensiSiswa::selectRaw('
             COUNT(CASE WHEN absensi = "sakit" THEN 1 ELSE null END) as "sakit",
