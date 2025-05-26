@@ -1269,7 +1269,8 @@ class PenilaianController extends Controller
         $semester = Semester::first();
         $manual = RaporManual::where([
             ['id_ngajar', '=', $uuid],
-            ['id_siswa', '=', $request->siswa]
+            ['id_siswa', '=', $request->siswa],
+            ['semester', '=', $semester->semester]
         ])->first();
         if ($manual === null) {
             RaporManual::create([
