@@ -18,9 +18,9 @@
                     <td rowspan="2">#</td>
                 </tr>
                 <tr>
-                    <td>P</td>
-                    <td>P</td>
-                    <td>P</td>
+                    <td data-bs-toggle="tooltip" data-bs-title="Pelanggaran" class="text-danger">P</td>
+                    <td data-bs-toggle="tooltip" data-bs-title="Prestasi" class="text-success">P</td>
+                    <td data-bs-toggle="tooltip" data-bs-title="Partisipasi" class="text-warning">P</td>
                 </tr>
 
             </thead>
@@ -34,7 +34,7 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
+                        <td><a href="{{ route('p3.siswa.show',$item->uuid) }}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Rincian" class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a></td>
                     </tr>
                 @endforeach
             </tbody>

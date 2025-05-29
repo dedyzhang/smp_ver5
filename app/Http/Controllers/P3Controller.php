@@ -91,4 +91,27 @@ class P3Controller extends Controller
         $siswa = Siswa::with('kelas')->get();
         return view('p3.siswa.index',compact('siswa'));
     }
+    /**
+     * Show Poin Siswa Per Individual
+     */
+    public function siswaShowP3(String $uuid) : View {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+
+        return view('p3.siswa.show',compact('siswa'));
+    }
+    /**
+     * P3 - Halaman Tambah Poin
+     */
+    public function p3CreatePoin(String $uuid) : View {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        return view('p3.siswa.create',compact('siswa'));
+    }
+    /**
+     * P3 - Halaman Dapatkan Kategori Sesuai yang dipilih
+     */
+    public function p3GetKategori(Request $request) {
+        $kategori = P3Kategori::where('jenis',$request->jenis)->get();
+        
+        return response()->json(['kategori' => $kategori,'message' => 'success']);
+    }
 }

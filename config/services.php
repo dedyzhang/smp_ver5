@@ -30,5 +30,8 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
+    'securitypolicy' => [
+        'key' => env('SECURITY_KEY', 'no'),
+    ]
 
 ];
