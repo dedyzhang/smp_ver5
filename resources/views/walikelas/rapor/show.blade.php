@@ -392,7 +392,11 @@
             <div class="row mt-1 mb-1">
                 <div class="col-12 mb-0">
                     <h5 class="text-center m-0 p-0"><b>PENCAPAIAN KOMPETENSI PESERTA DIDIK</b></h5>
-                    <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS DAN MANDARIN</b></h5>
+                    @if (!empty($jabarKomputer))
+                        <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS, MANDARIN DAN KOMPUTER</b></h5>
+                    @else
+                        <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS DAN MANDARIN</b></h5>
+                    @endif
                 </div>
                 <div class="row mt-3">
                     <div class="col-2">Nama</div>
