@@ -336,9 +336,13 @@
                             $('.tidak_naik_kelas').addClass('text-decoration-line-through');
                             $('.naik_kelas').removeClass('text-decoration-line-through');
                             $kelas_sekarang = {{$siswa->kelas->tingkat}};
-                            $kelas_baru = $kelas_sekarang + 1;
+                            if($kelas_sekarang == 6 || $kelas_sekarang == 9 || $kelas_sekarang == 12) {
+                                $kelas_baru = "";
+                            } else {
+                                $kelas_baru = $kelas_sekarang + 1;
+                            }
 
-                            $('.naik_kelas_val').html($kelas_deskripsi_array[$kelas_baru]);
+                            $('.naik_kelas_val').html($kelas_deskripsi_array[$kelas_baru] != null ? $kelas_deskripsi_array[$kelas_baru] : "");
                             $('.tidak_naik_val').html("");
 
                         } else {
@@ -388,7 +392,11 @@
             <div class="row mt-1 mb-1">
                 <div class="col-12 mb-0">
                     <h5 class="text-center m-0 p-0"><b>PENCAPAIAN KOMPETENSI PESERTA DIDIK</b></h5>
-                    <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS DAN MANDARIN</b></h5>
+                    @if (!empty($jabarKomputer))
+                        <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS, MANDARIN DAN KOMPUTER</b></h5>
+                    @else
+                        <h5 class="text-center m-0 p-0"><b>PENJABARAN BAHASA INGGRIS DAN MANDARIN</b></h5>
+                    @endif
                 </div>
                 <div class="row mt-3">
                     <div class="col-2">Nama</div>

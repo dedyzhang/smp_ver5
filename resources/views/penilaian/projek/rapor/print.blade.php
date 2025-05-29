@@ -347,7 +347,7 @@
                         <p class="m-0">NIK.{{$walikelas->Guru->nik}}</p>
                     </div>
                 </div>
-                <div class="row mt-1 mb-1">
+                <div class="row mt-1 mb-1" style="height:300px">
                     <div class="col-12 text-center">
                         <p class="m-0">Mengetahui</p>
                         <p class="m-0 mb-5">Kepala {{$nama_sekolah ? $nama_sekolah->nilai : ""}}</p>
