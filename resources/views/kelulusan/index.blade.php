@@ -152,7 +152,7 @@
             }
         });
         $('.nilai.editable').on('keypress',function(e) {
-            if((e.which < 48 || e.which > 57)) {
+            if((charCode >=45 &&  charCode <= 46) || (charCode >= 48 && charCode <= 57)) {
                 e.preventDefault();
             }
         });
@@ -195,7 +195,7 @@
             var file = $(this).data('file');
             //Tampilkan File kedalam pdf
             if(file != null && file != "") {
-                var newPath = "{{asset('/storage/surat_keterangan_kelulusan/'.':id')}}";
+                var newPath = "{{asset('/storage/skl/'.':id')}}";
                 newPath = newPath.replace(':id',file);
                 var url = "{{asset('/js/pdfjs/web/viewer.html?file=:id')}}";
                 url = url.replace(':id',newPath);
