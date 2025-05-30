@@ -15,6 +15,7 @@ class P3Poin extends Model
         'tanggal',
         'id_siswa',
         'jenis',
-        'deskripsi'
+        'deskripsi',
+        'semester'
     ];
 }

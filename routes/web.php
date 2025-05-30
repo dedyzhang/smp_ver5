@@ -517,9 +517,10 @@ Route::middleware(isPenilaianController::class)->controller(PoinController::clas
 Route::resource('/p3', \App\Http\Controllers\P3Controller::class)->except('show')->middleware(IsAdminKesiswaan::class);
 Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->group(function () {
     Route::get('/p3/siswa', 'showSiswa')->name('p3.siswa');
-    Route::get('/p3/kategori/get','p3GetKategori')->name('p3.kategori.get');
-    Route::get('/p3/siswa/{uuid}/show','siswaShowP3')->name('p3.siswa.show');
-    Route::get('/p3/siswa/{uuid}/create','p3CreatePoin')->name('p3.siswa.create');
+    Route::get('/p3/kategori/get', 'p3GetKategori')->name('p3.kategori.get');
+    Route::get('/p3/siswa/{uuid}/show', 'siswaShowP3')->name('p3.siswa.show');
+    Route::get('/p3/siswa/{uuid}/create', 'p3CreatePoin')->name('p3.siswa.create');
+    Route::post('/p3/siswa/{uuid}/store', 'p3StorePoin')->name('p3.siswa.store');
 });
 
 

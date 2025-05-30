@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\P3Kategori;
+use App\Models\P3Poin;
+use App\Models\Semester;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -14,8 +16,8 @@ class P3Controller extends Controller
      */
     public function index(): View
     {
-        $p3 = P3Kategori::orderBy('jenis','ASC')->get();
-        return view('p3.index',compact('p3'));
+        $p3 = P3Kategori::orderBy('jenis', 'ASC')->get();
+        return view('p3.index', compact('p3'));
     }
 
     /**
@@ -51,7 +53,7 @@ class P3Controller extends Controller
     {
         $p3 = P3Kategori::findOrFail($id);
 
-        return view('p3.edit',compact('p3'));
+        return view('p3.edit', compact('p3'));
     }
 
     /**
@@ -71,7 +73,7 @@ class P3Controller extends Controller
             'deskripsi' => $request->deskripsi
         ]);
 
-        return redirect()->route('p3.edit',$id)->with(['success' => "Data Berhasil Diedit"]);
+        return redirect()->route('p3.edit', $id)->with(['success' => "Data Berhasil Diedit"]);
     }
 
     /**
@@ -87,31 +89,59 @@ class P3Controller extends Controller
     /**
      * Show Data Siswa dan jumlah p3 nya
      */
-    public function showSiswa() : View {
+    public function showSiswa(): View
+    {
         $siswa = Siswa::with('kelas')->get();
-        return view('p3.siswa.index',compact('siswa'));
+        return view('p3.siswa.index', compact('siswa'));
     }
     /**
      * Show Poin Siswa Per Individual
      */
-    public function siswaShowP3(String $uuid) : View {
+    public function siswaShowP3(String $uuid): View
+    {
         $siswa = Siswa::with('kelas')->findOrFail($uuid);
 
-        return view('p3.siswa.show',compact('siswa'));
+        return view('p3.siswa.show', compact('siswa'));
     }
     /**
      * P3 - Halaman Tambah Poin
      */
-    public function p3CreatePoin(String $uuid) : View {
+    public function p3CreatePoin(String $uuid): View
+    {
         $siswa = Siswa::with('kelas')->findOrFail($uuid);
-        return view('p3.siswa.create',compact('siswa'));
+        return view('p3.siswa.create', compact('siswa'));
     }
     /**
      * P3 - Halaman Dapatkan Kategori Sesuai yang dipilih
      */
-    public function p3GetKategori(Request $request) {
-        $kategori = P3Kategori::where('jenis',$request->jenis)->get();
-        
-        return response()->json(['kategori' => $kategori,'message' => 'success']);
+    public function p3GetKategori(Request $request)
+    {
+        $kategori = P3Kategori::where('jenis', $request->jenis)->get();
+
+        return response()->json(['kategori' => $kategori, 'message' => 'success']);
+    }
+    /**
+     * P3 - Simpan Poin Siswa
+     */
+    public function p3StorePoin(Request $request, String $uuid)
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $semester = Semester::first();
+
+        $request->validate([
+            'tanggal' => 'required',
+            'jenis' => 'required',
+            'deskripsi' => 'required',
+        ]);
+
+        P3Poin::create([
+            'id_siswa' => $siswa->uuid,
+            'tanggal' => $request->tanggal,
+            'jenis' => $request->jenis,
+            'deskripsi' => $request->deskripsi,
+            'semester' => $semester->semester,
+        ]);
+
+        return redirect()->route('p3.siswa.show', $uuid)->with(['success' => 'Poin Berhasil Ditambahkan']);
     }
 }
