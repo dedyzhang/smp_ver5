@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use App\Models\P3Kategori;
 use App\Models\P3Poin;
+use App\Models\P3Temp;
 use App\Models\Semester;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
@@ -95,8 +97,8 @@ class P3Controller extends Controller
         $p3 = P3Poin::with('siswa')->get();
         $array_p3 = array();
 
-        foreach($p3 as $item) {
-            if(empty($array_p3[$item->id_siswa])) {
+        foreach ($p3 as $item) {
+            if (empty($array_p3[$item->id_siswa])) {
                 $array_p3[$item->id_siswa] = array(
                     'pelanggaran' => 0,
                     'prestasi' => 0,
@@ -105,10 +107,10 @@ class P3Controller extends Controller
                 $array_p3[$item->id_siswa][$item->jenis] += 1;
             } else {
                 $array_p3[$item->id_siswa][$item->jenis] += 1;
-            } 
+            }
         }
         // dd($array_p3);
-        return view('p3.siswa.index', compact('siswa','array_p3'));
+        return view('p3.siswa.index', compact('siswa', 'array_p3'));
     }
     /**
      * Show Poin Siswa Per Individual
@@ -116,9 +118,9 @@ class P3Controller extends Controller
     public function siswaShowP3(String $uuid): View
     {
         $siswa = Siswa::with('kelas')->findOrFail($uuid);
-        $p3 = P3Poin::where('id_siswa',$siswa->uuid)->orderBy('tanggal')->get();
+        $p3 = P3Poin::where('id_siswa', $siswa->uuid)->orderBy('tanggal')->get();
 
-        return view('p3.siswa.show', compact('siswa','p3'));
+        return view('p3.siswa.show', compact('siswa', 'p3'));
     }
     /**
      * P3 - Halaman Tambah Poin
@@ -164,16 +166,18 @@ class P3Controller extends Controller
     /**
      * P3 Edit Poin yang sudah dibuat
      */
-    public function p3EditPoin(String $uuid): View {
-        $p3 = P3Poin::with('siswa','kategori')->findOrFail($uuid);
+    public function p3EditPoin(String $uuid): View
+    {
+        $p3 = P3Poin::with('siswa', 'kategori')->findOrFail($uuid);
         $siswa = $p3->siswa;
 
-        return view('p3.siswa.edit', compact('siswa','p3'));
+        return view('p3.siswa.edit', compact('siswa', 'p3'));
     }
     /**
      * P3 Update Poin
      */
-    public function p3UpdatePoin(Request $request, String $uuid) {
+    public function p3UpdatePoin(Request $request, String $uuid)
+    {
         $p3 = P3Poin::findOrFail($uuid);
 
         $request->validate([
@@ -192,10 +196,24 @@ class P3Controller extends Controller
     /**
      * P3 Poin Delete
      */
-    public function p3DeletePoin(String $uuid) {
+    public function p3DeletePoin(String $uuid)
+    {
         $p3 = P3Poin::findOrFail($uuid);
         $p3->delete();
 
         return response()->json(['success' => true]);
+    }
+    /**
+     * P3 Temp - Halaman Index P3 Sementara
+     */
+    public function p3TempIndex(): View
+    {
+        $p3_temp = P3Temp::with('siswa')->where('status', 'belum')->orderBy('created_at', 'DESC')->get();
+
+        $all_siswa = Siswa::all();
+        $all_guru = Guru::all();
+
+
+        return view('p3.temp.index', compact('p3_temp', 'all_siswa', 'all_guru'));
     }
 }

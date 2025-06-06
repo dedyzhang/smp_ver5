@@ -160,6 +160,7 @@
                     @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
                         <li class="submenu-list"><a href="{{ route('p3.index') }}"> List P3</a></li>
                         <li class="submenu-list"><a href="{{ route('p3.siswa') }}"> P3 Siswa</a></li>
+                        <li class="submenu-list"><a href="{{ route('p3.temp') }}"> Pengajuan</a></li>
                     @else
                         <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
                         <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
@@ -247,7 +248,11 @@
                 </a>
                 <ul class="submenu collapse" id="menu-aturan">
                     <li class="submenu-list"><a href="{{ route('sekretaris.absensi') }}"> Absensi</a></li>
-                    <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('sekretaris.p3') }}"> P3 Siswa</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan

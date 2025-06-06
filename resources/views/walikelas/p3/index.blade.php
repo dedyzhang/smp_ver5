@@ -52,9 +52,9 @@
                 {width: '10%'},
                 {width: '50%'},
                 {width: '10%'},
-                {width: '10%'},
-                {width: '10%'},
-                {width: '10%'},
+                {width: '8%'},
+                {width: '8%'},
+                {width: '8%'},
                 {width: '15%'},
             ],
             columnDefs: [
