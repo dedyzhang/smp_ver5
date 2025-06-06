@@ -91,8 +91,24 @@ class P3Controller extends Controller
      */
     public function showSiswa(): View
     {
-        $siswa = Siswa::with('kelas')->get();
-        return view('p3.siswa.index', compact('siswa'));
+        $siswa = Siswa::with('kelas')->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $p3 = P3Poin::with('siswa')->get();
+        $array_p3 = array();
+
+        foreach($p3 as $item) {
+            if(empty($array_p3[$item->id_siswa])) {
+                $array_p3[$item->id_siswa] = array(
+                    'pelanggaran' => 0,
+                    'prestasi' => 0,
+                    'partisipasi' => 0
+                );
+                $array_p3[$item->id_siswa][$item->jenis] += 1;
+            } else {
+                $array_p3[$item->id_siswa][$item->jenis] += 1;
+            } 
+        }
+        // dd($array_p3);
+        return view('p3.siswa.index', compact('siswa','array_p3'));
     }
     /**
      * Show Poin Siswa Per Individual
@@ -100,8 +116,9 @@ class P3Controller extends Controller
     public function siswaShowP3(String $uuid): View
     {
         $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $p3 = P3Poin::where('id_siswa',$siswa->uuid)->orderBy('tanggal')->get();
 
-        return view('p3.siswa.show', compact('siswa'));
+        return view('p3.siswa.show', compact('siswa','p3'));
     }
     /**
      * P3 - Halaman Tambah Poin
@@ -143,5 +160,42 @@ class P3Controller extends Controller
         ]);
 
         return redirect()->route('p3.siswa.show', $uuid)->with(['success' => 'Poin Berhasil Ditambahkan']);
+    }
+    /**
+     * P3 Edit Poin yang sudah dibuat
+     */
+    public function p3EditPoin(String $uuid): View {
+        $p3 = P3Poin::with('siswa','kategori')->findOrFail($uuid);
+        $siswa = $p3->siswa;
+
+        return view('p3.siswa.edit', compact('siswa','p3'));
+    }
+    /**
+     * P3 Update Poin
+     */
+    public function p3UpdatePoin(Request $request, String $uuid) {
+        $p3 = P3Poin::findOrFail($uuid);
+
+        $request->validate([
+            'tanggal' => 'required',
+            'jenis' => 'required',
+            'deskripsi' => 'required',
+        ]);
+
+        $p3->update([
+            'tanggal' => $request->tanggal,
+            'jenis' => $request->jenis,
+            'deskripsi' => $request->deskripsi
+        ]);
+        return redirect()->route('p3.siswa.show', $p3->id_siswa)->with(['success' => 'Poin Berhasil Diedit']);
+    }
+    /**
+     * P3 Poin Delete
+     */
+    public function p3DeletePoin(String $uuid) {
+        $p3 = P3Poin::findOrFail($uuid);
+        $p3->delete();
+
+        return response()->json(['success' => true]);
     }
 }

@@ -18,4 +18,11 @@ class P3Poin extends Model
         'deskripsi',
         'semester'
     ];
+
+    public function siswa() {
+        return $this->belongsTo(Siswa::class,'id_siswa');
+    }
+    public function kategori() {
+        return $this->hasMany(P3Kategori::class,'jenis','jenis');
+    }
 }

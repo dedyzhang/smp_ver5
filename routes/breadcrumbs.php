@@ -15,6 +15,7 @@ use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\P5Fasilitator;
 use App\Models\P5Proyek;
+use App\Models\P3Kategori;
 use App\Models\Pelajaran;
 use App\Models\PerangkatAjar;
 use App\Models\Ruang;
@@ -681,4 +682,16 @@ Breadcrumbs::for('proyek-rapor-kelas', function (BreadcrumbsTrail $trail, Kelas 
 Breadcrumbs::for('proyek-rapor-show', function (BreadcrumbsTrail $trail, Siswa $siswa) {
     $trail->parent('proyek-rapor-kelas', $siswa->kelas);
     $trail->push($siswa->nama, route('penilaian.p5.rapor.print', $siswa->uuid));
+});
+//P3 Breadcrumbs
+Breadcrumbs::for('p3',function(BreadcrumbsTrail $trail) {
+    $trail->push('P3',route('p3.index'));
+});
+Breadcrumbs::for('p3-create',function(BreadcrumbsTrail $trail) {
+    $trail->parent('p3');
+    $trail->push('create',route('p3.create'));
+});
+Breadcrumbs::for('p3-edit',function(BreadcrumbsTrail $trail, P3Kategori $p3Kategori) {
+    $trail->parent('p3');
+    $trail->push('edit',route('p3.edit',$p3Kategori->uuid));
 });

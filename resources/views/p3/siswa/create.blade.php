@@ -103,7 +103,7 @@
         });
         $('#kategori').change(function() {
             var kategori = $(this).find('option:selected').text();
-            if(kategori != "") {
+            if(kategori != "" && kategori != "Pilih Salah Satu") {
                 $('#deskripsi').val(kategori);
             }
         })

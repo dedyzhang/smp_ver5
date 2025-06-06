@@ -7,7 +7,7 @@
         <p>Halaman ini diperuntukkan admin dan Wakil Kesiswaan Mengatur Pelanggaran, Prestasi dan Partisipasi Siswa</p>
     </div>
     <div class="body-contain-customize col-12 mt-3">
-        <table class="table table-bordered table-striped fs-12" id="datatables-siswa">
+        <table class="table table-bordered table-striped fs-11" id="datatables-siswa">
             <thead>
                 <tr>
                     <td rowspan="2">No</td>
@@ -31,9 +31,9 @@
                         <td>{{$item->nis}}</td>
                         <td>{{$item->nama}}</td>
                         <td>{{$item->kelas ? $item->kelas->tingkat.$item->kelas->kelas : ""}}</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>{{ isset($array_p3[$item->uuid]) && $array_p3[$item->uuid]['pelanggaran'] != null ? $array_p3[$item->uuid]['pelanggaran'] : 0}}</td>
+                        <td>{{ isset($array_p3[$item->uuid]) && $array_p3[$item->uuid]['prestasi'] != null ? $array_p3[$item->uuid]['prestasi'] : 0}}</td>
+                        <td>{{ isset($array_p3[$item->uuid]) && $array_p3[$item->uuid]['partisipasi'] != null ? $array_p3[$item->uuid]['partisipasi'] : 0}}</td>
                         <td><a href="{{ route('p3.siswa.show',$item->uuid) }}" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Lihat Rincian" class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a></td>
                     </tr>
                 @endforeach
@@ -53,7 +53,7 @@
                 {width: '15%'},
             ],
             columnDefs: [
-                { className: 'text-center', targets: [0,1,3,4,5] },
+                { className: 'text-center', targets: [0,1,3,4,5,6,7] },
              ],
             "initComplete" : function(settings,json) {
                 $('#datatables-siswa').wrap('<div style="overflow:auto; width:100%; position:relative"></div>');

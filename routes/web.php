@@ -473,6 +473,12 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/harian/{uuid}/formatif', 'nilaiFormatifShow')->name('walikelas.nilai.formatif');
     Route::get('/walikelas/nilai/harian/{uuid}/sumatif', 'nilaiSumatifShow')->name('walikelas.nilai.sumatif');
     Route::get('/walikelas/nilai/harian/{uuid}/penjabaran', 'nilaiPenjabaranShow')->name('walikelas.nilai.penjabaran');
+    Route::get('/walikelas/p3','p3Index')->name('walikelas.p3');
+    Route::get('/walikelas/p3/{uuid}/show','p3Show')->name('walikelas.p3.show');
+    Route::get('/walikelas/p3/temp','p3TempIndex')->name('walikelas.p3.temp');
+    Route::get('/walikelas/p3/kategori/get','p3GetKategori')->name('walikelas.p3.kategori.get');
+    Route::get('/walikelas/p3/temp/create','p3TempCreate')->name('walikelas.p3.temp.create');
+    Route::post('/walikelas/p3/temp/store','p3TempStore')->name('walikelas.p3.temp.store');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
@@ -521,6 +527,9 @@ Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->gro
     Route::get('/p3/siswa/{uuid}/show', 'siswaShowP3')->name('p3.siswa.show');
     Route::get('/p3/siswa/{uuid}/create', 'p3CreatePoin')->name('p3.siswa.create');
     Route::post('/p3/siswa/{uuid}/store', 'p3StorePoin')->name('p3.siswa.store');
+    Route::get('/p3/siswa/{uuid}/edit','p3EditPoin')->name('p3.siswa.edit');
+    Route::put('/p3/siswa/{uuid}/update','p3UpdatePoin')->name('p3.siswa.update');
+    Route::delete('/p3/siswa/{uuid}/delete','p3DeletePoin')->name('p3.siswa.delete');
 });
 
 
