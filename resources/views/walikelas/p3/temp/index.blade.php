@@ -78,9 +78,9 @@
                         <td>
                             @if($item->status == "belum")
                                 <i data-bs-toggle="tooltip" data-bs-title="Proses Validasi" data-bs-placement="top" class="fs-18 fas fa-face-meh"></i>
-                            @elseif($item->status=="tidak")
+                            @elseif($item->status=="disapprove")
                                 <i data-bs-toggle="tooltip" data-bs-title="Ditolak" data-bs-placement="top" class="fs-18 text-danger fas fa-face-frown"></i>
-                            @elseif($item->status=="iya")
+                            @elseif($item->status=="approve")
                                 <i data-bs-toggle="tooltip" data-bs-title="Disetujui" data-bs-placement="top" class="fs-18 text-success fas fa-face-smile"></i>
                             @endif
                         </td>

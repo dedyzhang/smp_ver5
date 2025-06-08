@@ -534,6 +534,10 @@ Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->gro
     Route::put('/p3/siswa/{uuid}/update', 'p3UpdatePoin')->name('p3.siswa.update');
     Route::delete('/p3/siswa/{uuid}/delete', 'p3DeletePoin')->name('p3.siswa.delete');
     Route::get('/p3/temp', 'p3TempIndex')->name('p3.temp');
+    Route::put('/p3/temp/{uuid}/approve','p3TempApprove')->name('p3.temp.approve');
+    Route::put('/p3/temp/{uuid}/disapprove','p3TempDisapprove')->name('p3.temp.disapprove');
+    Route::get('/p3/temp/approve/history','p3TempApproveHistory')->name('p3.temp.approve.history');
+    Route::get('/p3/temp/disapprove/history','p3TempDisapproveHistory')->name('p3.temp.disapprove.history');
 });
 
 
@@ -576,6 +580,7 @@ Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->
     Route::get('/detail/poin', 'poin')->name('detail.poin.index');
     Route::get('/detail/nilai', 'nilai')->name('detail.nilai.index');
     Route::get('/detail/nilai/{uuid}/show', 'nilaiShow')->name('detail.nilai.show');
+    Route::get('/detail/p3', 'p3')->name('detail.p3.index');
 });
 // {------------------------------------------------- END --------------------------------------------------------------------}
 

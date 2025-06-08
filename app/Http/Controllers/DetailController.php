@@ -7,6 +7,7 @@ use App\Models\Formatif;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\Orangtua;
+use App\Models\P3Poin;
 use App\Models\Poin;
 use App\Models\Semester;
 use App\Models\Siswa;
@@ -142,5 +143,21 @@ class DetailController extends Controller
             );
         }
         return view('detail.nilai.show', compact('ngajar', 'materi', 'formatif_array', 'sumatif_array', 'materiArray', 'tupeArray'));
+    }
+    /**
+     * Tampilkan P3 di halaman informasi
+     */
+    public function p3(): View
+    {
+        $semester = Semester::first();
+        if (Auth::user()->access == "orangtua") {
+            $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
+            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+        } else {
+            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+        }
+        $p3 = P3Poin::where('id_siswa',$siswa->uuid)->orderBy(P3Poin::raw("DATE(tanggal)"), 'DESC')->get();
+
+        return view('detail.p3.index', compact('p3', 'semester'));
     }
 }

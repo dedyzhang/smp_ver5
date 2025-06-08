@@ -216,4 +216,57 @@ class P3Controller extends Controller
 
         return view('p3.temp.index', compact('p3_temp', 'all_siswa', 'all_guru'));
     }
+    /**
+     * P3 Temp - Approve Temporary P3
+     */
+    public function p3TempApprove(String $uuid) {
+        $p3_temp = P3Temp::findOrFail($uuid);
+        $p3_temp->update([
+            'status' => 'approve'
+        ]);
+        P3Poin::create([
+            'id_siswa' => $p3_temp->id_siswa,
+            'tanggal' => $p3_temp->tanggal,
+            'jenis' => $p3_temp->jenis,
+            'deskripsi' => $p3_temp->deskripsi,
+            'semester' => $p3_temp->semester,
+        ]);
+        return response()->json(['success' => true]);
+    }
+    /**
+     * P3 Temp - Disapprove Temporary P3
+     */
+    public function p3TempDisapprove(String $uuid) {
+        $p3_temp = P3Temp::findOrFail($uuid);
+        $p3_temp->update([
+            'status' => 'disapprove'
+        ]);
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * P3 Temp - Lihat Approve History
+     */
+    public function p3TempApproveHistory(): View
+    {
+        $p3_temp = P3Temp::with('siswa')->where('status', 'approve')->orderBy('created_at', 'DESC')->get();
+
+        $all_siswa = Siswa::all();
+        $all_guru = Guru::all();
+
+
+        return view('p3.temp.approve', compact('p3_temp', 'all_siswa', 'all_guru'));
+    }
+
+    /**
+     * P3 Temp - Disapprove Histroy
+     */
+    public function p3TempDisapproveHistory() : View {
+        $p3_temp = P3Temp::with('siswa')->where('status', 'disapprove')->orderBy('created_at', 'DESC')->get();
+
+        $all_siswa = Siswa::all();
+        $all_guru = Guru::all();
+
+        return view('p3.temp.disapprove', compact('p3_temp', 'all_siswa', 'all_guru'));
+    }
 }
