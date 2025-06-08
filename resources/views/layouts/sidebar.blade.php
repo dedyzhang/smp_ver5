@@ -199,9 +199,9 @@
                 <ul class="submenu collapse" id="menu-sapras">
                     <li class="submenu-list"><a href="{{ route('detail.absensi.index') }}"> Absensi Siswa</a></li>
                     @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
-                        <li class="submenu-list"><a href="{{ route('detail.p3.index') }}"> p3 Siswa</a></li>
-                    @else 
-                    <li class="submenu-list"><a href="{{ route('detail.poin.index') }}"> p3 Siswa</a></li>
+                        <li class="submenu-list"><a href="{{ route('detail.p3.index') }}"> P3 Siswa</a></li>
+                    @else
+                    <li class="submenu-list"><a href="{{ route('detail.poin.index') }}"> Poin Siswa</a></li>
                     @endif
                     <li class="submenu-list"><a href="{{ route('detail.nilai.index') }}"> Penilaian</a></li>
                 </ul>

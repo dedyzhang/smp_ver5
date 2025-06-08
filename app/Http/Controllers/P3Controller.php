@@ -7,7 +7,10 @@ use App\Models\P3Kategori;
 use App\Models\P3Poin;
 use App\Models\P3Temp;
 use App\Models\Semester;
+use App\Models\Setting;
 use App\Models\Siswa;
+use App\Models\Walikelas;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -123,6 +126,28 @@ class P3Controller extends Controller
         return view('p3.siswa.show', compact('siswa', 'p3'));
     }
     /**
+     * Show Poin Siswa Per Individual
+     */
+    public function p3PrintPoin(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $semester = Semester::first();
+        $setting = Setting::all();
+        $walikelas = Walikelas::with('Guru')->where('id_kelas', $siswa->kelas->uuid)->first();
+        $p3 = P3Poin::where([['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->orderBy('tanggal')->get();
+
+        $tanggal_rapor = $setting->first(function ($item) {
+            return $item->jenis == 'tanggal_rapor';
+        });
+        if ($tanggal_rapor != null) {
+            $tanggal = Carbon::parse($tanggal_rapor->nilai)->isoFormat('D MMMM Y');
+        } else {
+            $tanggal = "";
+        }
+
+        return view('p3.siswa.print', compact('siswa', 'p3', 'semester', 'setting', 'tanggal', 'walikelas'));
+    }
+    /**
      * P3 - Halaman Tambah Poin
      */
     public function p3CreatePoin(String $uuid): View
@@ -219,7 +244,8 @@ class P3Controller extends Controller
     /**
      * P3 Temp - Approve Temporary P3
      */
-    public function p3TempApprove(String $uuid) {
+    public function p3TempApprove(String $uuid)
+    {
         $p3_temp = P3Temp::findOrFail($uuid);
         $p3_temp->update([
             'status' => 'approve'
@@ -236,7 +262,8 @@ class P3Controller extends Controller
     /**
      * P3 Temp - Disapprove Temporary P3
      */
-    public function p3TempDisapprove(String $uuid) {
+    public function p3TempDisapprove(String $uuid)
+    {
         $p3_temp = P3Temp::findOrFail($uuid);
         $p3_temp->update([
             'status' => 'disapprove'
@@ -261,7 +288,8 @@ class P3Controller extends Controller
     /**
      * P3 Temp - Disapprove Histroy
      */
-    public function p3TempDisapproveHistory() : View {
+    public function p3TempDisapproveHistory(): View
+    {
         $p3_temp = P3Temp::with('siswa')->where('status', 'disapprove')->orderBy('created_at', 'DESC')->get();
 
         $all_siswa = Siswa::all();

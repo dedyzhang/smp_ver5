@@ -25,10 +25,11 @@
         </table>
     </div>
     <div class="clearfix"></div>
-    <div class="body-contain-customize mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto col-lg-flex col-xl-auto col-xl-flex">
+    <div class="body-contain-customize gap-2 mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto col-lg-flex col-xl-auto col-xl-flex">
         <a href="{{ route('p3.siswa.create',$siswa->uuid) }}" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Tambah P3</a>
+        <a href="{{ route('p3.siswa.print',$siswa->uuid) }}" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Print P3</a>
     </div>
-    @if(session('success')) 
+    @if(session('success'))
         <div class="body-contain-customize mt-3 col-12">
             <div
                 class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3"
@@ -73,7 +74,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>   
+        </table>
     </div>
     <script>
         var table = new DataTable('#datatables-p3',{

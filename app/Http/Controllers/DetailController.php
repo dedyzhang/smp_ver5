@@ -156,7 +156,7 @@ class DetailController extends Controller
         } else {
             $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
         }
-        $p3 = P3Poin::where('id_siswa',$siswa->uuid)->orderBy(P3Poin::raw("DATE(tanggal)"), 'DESC')->get();
+        $p3 = P3Poin::where('id_siswa', $siswa->uuid)->orderBy(P3Poin::raw("DATE(tanggal)"), 'ASC')->get();
 
         return view('detail.p3.index', compact('p3', 'semester'));
     }

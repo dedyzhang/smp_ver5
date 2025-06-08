@@ -16,6 +16,10 @@
     size: A4;
     margin: 0;
 }
+@page p3 {
+    size: A4;
+    margin: 0;
+}
 @media print {
     body {
         visibility: hidden;
@@ -123,6 +127,42 @@
     .printable-absensi-qrcode img {
         width: 100%;
         height: 100%;
+    }
+
+    /* Print Prestasi Pelanggaran dan Partisipasi */
+    .printable-p3 {
+        page: p3;
+        visibility: visible;
+        position: absolute !important;
+        width: 100% !important;
+        height: 100% !important;
+        left: 0;
+        top: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        -moz-print-color-adjust: exact;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-p3 .row {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-p3 .breakafter {
+        break-after: page;
+    }
+    .printable-p3 table .transback td,
+    .printable-p3 table .transback th {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-p3 table tr .transback {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .printable-p3 table .table-primary td,
+    .printable-p3 table .table-primary {
+        background-color: #95b1ff !important;
+    }
+    .printable-p3 .breakavoid {
+        break-inside: avoid;
+        padding-top: 20px !important;
     }
 }
 
