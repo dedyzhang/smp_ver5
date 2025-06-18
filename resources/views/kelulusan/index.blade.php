@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('kelulusan') }}
     <div class="col-12 body-contain-customize">
         <h5>Kelulusan</h5>
         <p>Halaman ini diperuntukkan Admin, Kurikulum dan Kepala Sekolah untuk mengelola kelulusan siswa tahun pelajaran berlangsung</p>

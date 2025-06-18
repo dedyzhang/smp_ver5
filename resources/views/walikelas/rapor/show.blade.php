@@ -431,7 +431,7 @@
                             <td colspan="4"><b>A. English</b></td>
                         </tr>
                         {{-- Listening --}}
-                        @if ($jabarInggris !== null && $jabarInggris->listening !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->listening != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">Listening / Mendengarkan</td>
@@ -453,7 +453,7 @@
                             @endphp
                         @endif
                         {{-- Speaking --}}
-                        @if ($jabarInggris !== null && $jabarInggris->speaking !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->speaking != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Speaking / Berbicara</td>
@@ -475,7 +475,7 @@
                             @endphp
                         @endif
                         {{-- Writting --}}
-                        @if ($jabarInggris !== null && $jabarInggris->writing !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->writing != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Writing / Menulis</td>
@@ -497,7 +497,7 @@
                             @endphp
                         @endif
                         {{-- Reading --}}
-                        @if ($jabarInggris !== null && $jabarInggris->reading !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->reading != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Reading / Membaca</td>
@@ -519,7 +519,7 @@
                             @endphp
                         @endif
                         {{-- Grammar --}}
-                        @if ($jabarInggris !== null && $jabarInggris->grammar !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->grammar != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Grammar / Tata Bahasa</td>
@@ -541,7 +541,7 @@
                             @endphp
                         @endif
                         {{-- Vocabulary--}}
-                        @if ($jabarInggris !== null && $jabarInggris->vocabulary !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->vocabulary != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Vocabulary / Kosakata</td>
@@ -563,7 +563,7 @@
                             @endphp
                         @endif
                         {{-- Singing --}}
-                        @if ($jabarInggris !== null && $jabarInggris->singing !== 0)
+                        @if ($jabarInggris !== null && $jabarInggris->singing != 0)
                             <tr class="transback">
                                 <td>{{$no_urut}}</td>
                                 <td>Singing / Bernyanyi</td>
@@ -615,7 +615,7 @@
                             <td colspan="4"><b>B. Mandarin</b></td>
                         </tr>
                         {{-- Listening --}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->listening !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->listening != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">听力 (tīng lì) Mendengarkan</td>
@@ -637,7 +637,7 @@
                             @endphp
                         @endif
                         {{-- Speaking --}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->speaking !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->speaking != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">会话 (huì huà) Berbicara</td>
@@ -659,7 +659,7 @@
                             @endphp
                         @endif
                         {{-- Writting --}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->writing !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->writing != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">书写 (xiě zì) Menulis</td>
@@ -681,7 +681,7 @@
                             @endphp
                         @endif
                         {{-- Reading --}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->reading !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->reading != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">阅读 (yuè dú) Membaca</td>
@@ -703,7 +703,7 @@
                             @endphp
                         @endif
                         {{-- Vocabulary--}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->vocabulary !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->vocabulary != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">词汇 (cí huì) Kosakata</td>
@@ -725,7 +725,7 @@
                             @endphp
                         @endif
                         {{-- Singing --}}
-                        @if ($jabarMandarin !== null && $jabarMandarin->singing !== 0)
+                        @if ($jabarMandarin !== null && $jabarMandarin->singing != 0)
                             <tr class="transback">
                                 <td width="5%">{{$no_urut}}</td>
                                 <td width="30%">唱歌 (chàng gē) Bernyanyi</td>
@@ -778,7 +778,7 @@
                                 <td colspan="4"><b>C. Komputer</b></td>
                             </tr>
                             {{-- Pengetahuan --}}
-                            @if (isset($jabarKomputer) && $jabarKomputer->pengetahuan !== 0)
+                            @if (isset($jabarKomputer) && $jabarKomputer->pengetahuan != 0)
                                 <tr class="transback">
                                     <td width="5%">{{$no_urut}}</td>
                                     <td width="30%">Pengetahuan</td>
@@ -800,7 +800,7 @@
                                 @endphp
                             @endif
                             {{-- Keterampilan --}}
-                            @if (isset($jabarKomputer) && $jabarKomputer->keterampilan !== 0)
+                            @if (isset($jabarKomputer) && $jabarKomputer->keterampilan != 0)
                                 <tr class="transback">
                                     <td width="5%">{{$no_urut}}</td>
                                     <td width="30%">Keterampilan</td>
