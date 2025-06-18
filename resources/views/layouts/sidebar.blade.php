@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.6</i>
+            <i class="app-version">5.1.7</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -83,7 +83,11 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.rapor.index') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.penjabaran.index') }}"> Penjabaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.guru.proyek.index') }}"> P5</a></li>
-                    <li class="submenu-list"><a href="{{ route('poin.guru.index') }}"> Pengajuan Poin</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('p3.guru.index') }}"> Pengajuan P3</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('poin.guru.index') }}"> Pengajuan Poin</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan
@@ -159,6 +163,8 @@
                 <ul class="submenu collapse" id="menu-aturan">
                     @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
                         <li class="submenu-list"><a href="{{ route('p3.index') }}"> List P3</a></li>
+                        <li class="submenu-list"><a href="{{ route('p3.siswa') }}"> P3 Siswa</a></li>
+                        <li class="submenu-list"><a href="{{ route('p3.temp') }}"> Pengajuan</a></li>
                     @else
                         <li class="submenu-list"><a href="{{ route('aturan.index') }}"> Aturan</a></li>
                         <li class="submenu-list"><a href="{{ route('poin.index') }}"> Poin Siswa</a></li>
@@ -196,7 +202,11 @@
                 </a>
                 <ul class="submenu collapse" id="menu-sapras">
                     <li class="submenu-list"><a href="{{ route('detail.absensi.index') }}"> Absensi Siswa</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('detail.p3.index') }}"> P3 Siswa</a></li>
+                    @else
                     <li class="submenu-list"><a href="{{ route('detail.poin.index') }}"> Poin Siswa</a></li>
+                    @endif
                     <li class="submenu-list"><a href="{{ route('detail.nilai.index') }}"> Penilaian</a></li>
                 </ul>
             </li>
@@ -223,7 +233,11 @@
                 <ul class="submenu collapse" id="menu-walikelas">
                     <li class="submenu-list"><a href="{{ route('walikelas.siswa') }}">Data Siswa</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.absensi') }}">Absensi Siswa</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                    <li class="submenu-list"><a href="{{ route('walikelas.p3') }}">P3 Siswa</a></li>
+                    @else
                     <li class="submenu-list"><a href="{{ route('walikelas.poin') }}">Poin Siswa</a></li>
+                    @endif
                     <li class="submenu-list"><a href="{{ route('walikelas.classroom') }}">Classroom</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.nilai') }}">Nilai</a></li>
@@ -242,7 +256,11 @@
                 </a>
                 <ul class="submenu collapse" id="menu-aturan">
                     <li class="submenu-list"><a href="{{ route('sekretaris.absensi') }}"> Absensi</a></li>
-                    <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('sekretaris.p3') }}"> P3 Siswa</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('sekretaris.poin') }}"> Poin Siswa</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan

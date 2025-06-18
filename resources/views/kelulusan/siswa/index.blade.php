@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('kelulusan-siswa') }}
     @php
         $kelulusan_setting = $settingKelulusan->first(function($elemen) {
             if($elemen->jenis == "tanggal_kelulusan") {
