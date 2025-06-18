@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('p3-temp-approve') }}
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan Walikelas Melihat Pelanggaran, Prestasi dan Partisipasi Siswa yang sudah diapprove oleh Kesiswaan</p>
@@ -12,6 +13,7 @@
                     <td width="5%">No</td>
                     <td width="10%">Tanggal</td>
                     <td width="20%">Nama Siswa</td>
+                    <td width="5%">Kelas</td>
                     <td width="30%">Jenis P3</td>
                     <td width="5%">User</td>
                     <td width="20%">#</td>
@@ -40,6 +42,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ date('d M Y',strtotime($item->tanggal)) }}</td>
                         <td>{{ $item->siswa->nama }}</td>
+                        <td>{{ $item->siswa->kelas ? $item->siswa->kelas->tingkat.$item->siswa->kelas->kelas : "-"}}</td>
                         <td><p class="m-0 p-0 @if($item->jenis == 'pelanggaran') text-danger @elseif($item->jenis == 'partisipasi') text-warning @else text-success @endif">{{ $item->jenis }}</p><span class="fs-10 font-italic">{{ $item->deskripsi }}</span></td>
                         <td><i data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='m-0 p-0 fs-11'><b>{{ ucfirst($item->yang_mengajukan) }}</b></p><i class='fs-10'>{{ $nama }}</i>" data-bs-placement="top" class="fs-18 fas @if($item->yang_mengajukan == "guru") fa-user-tie text-primary @else fa-user text-success @endif"></i></td>
                         <td>
@@ -56,12 +59,13 @@
                 {width: '5%'},
                 {width: '10%'},
                 {width: '20%'},
+                {width: '5%'},
                 {width: '30%'},
                 {width: '5%'},
                 {width: '20%'},
             ],
             columnDefs: [
-                { className: 'text-center', targets: [0,1,4,5] },
+                { className: 'text-center', targets: [0,1,3,5,6] },
              ],
             "initComplete" : function(settings,json) {
                 $('#table-pengajuan').wrap('<div style="overflow:auto; width:100%; position:relative"></div>');

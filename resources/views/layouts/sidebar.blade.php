@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.6</i>
+            <i class="app-version">5.1.7</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -83,7 +83,11 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.rapor.index') }}"> Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.penjabaran.index') }}"> Penjabaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.guru.proyek.index') }}"> P5</a></li>
-                    <li class="submenu-list"><a href="{{ route('poin.guru.index') }}"> Pengajuan Poin</a></li>
+                    @if($pemilihanAturan && $pemilihanAturan->jenis == "jenis_aturan" && $pemilihanAturan->nilai == "p3")
+                        <li class="submenu-list"><a href="{{ route('p3.guru.index') }}"> Pengajuan P3</a></li>
+                    @else
+                        <li class="submenu-list"><a href="{{ route('poin.guru.index') }}"> Pengajuan Poin</a></li>
+                    @endif
                 </ul>
             </li>
             @endcan

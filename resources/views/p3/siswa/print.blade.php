@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{-- {{Breadcrumbs::render('p3-siswa-print', $siswa)}} --}}
+    {{Breadcrumbs::render('p3-siswa-print', $siswa)}}
     @php
         $nama_sekolah = $setting->first(function($item) {
             return $item->jenis == 'nama_sekolah';

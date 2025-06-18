@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('p3-siswa-create',$siswa) }}
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan admin dan Wakil Kesiswaan Mengatur Pelanggaran, Prestasi dan Partisipasi Siswa</p>

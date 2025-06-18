@@ -12,6 +12,7 @@ use App\Models\Siswa;
 use App\Models\Walikelas;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class P3Controller extends Controller
@@ -296,5 +297,33 @@ class P3Controller extends Controller
         $all_guru = Guru::all();
 
         return view('p3.temp.disapprove', compact('p3_temp', 'all_siswa', 'all_guru'));
+    }
+    /**
+     * P3 For Guru - Halaman Index P3 Sementara
+     */
+    public function guruP3Index(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+
+        $p3_temp = P3Temp::where('id_pengajuan', $guru->uuid)->with('siswa')->orderBy('created_at', 'DESC')->get();
+
+        $all_siswa = Siswa::all();
+        $all_guru = Guru::all();
+
+
+        return view('walikelas.p3.temp.index', compact('p3_temp', 'all_siswa', 'all_guru'));
+    }
+    /**
+     * P3 For guru - Tambahkan Poin P3
+     */
+    public function guruP3Create(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+
+        $siswa = Siswa::with('kelas')->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+
+        return view('walikelas.p3.temp.create', compact('siswa'));
     }
 }

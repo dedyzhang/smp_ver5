@@ -540,7 +540,10 @@ Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->gro
     Route::get('/p3/temp/disapprove/history', 'p3TempDisapproveHistory')->name('p3.temp.disapprove.history');
     Route::get('/p3/siswa/{uuid}/print', 'p3PrintPoin')->name('p3.siswa.print');
 });
-
+Route::middleware(isPenilaianController::class)->controller(P3Controller::class)->group(function () {
+    Route::get('/bukuguru/p3', 'guruP3Index')->name('p3.guru.index');
+    Route::get('/bukuguru/p3/create', 'guruP3Create')->name('p3.guru.create');
+});
 
 // {----------------------------------------------------END------------------------------------------------------------------}
 

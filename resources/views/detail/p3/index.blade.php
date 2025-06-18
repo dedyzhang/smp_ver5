@@ -1,7 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
-    {{Breadcrumbs::render('detail-poin')}}
+    {{Breadcrumbs::render('detail-p3')}}
     <div class="body-contain-customize col-12">
         <h5>Informasi Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukan siswa untuk memantau Pelanggaran, Prestasi dan Partisipasi selama tahun pelajaran berlangsung</p>

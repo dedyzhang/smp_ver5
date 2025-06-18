@@ -1,6 +1,13 @@
 @extends('layouts.main')
 
 @section('container')
+    @if (\Request::route()->getName() === 'walikelas.p3.temp')
+        {{ Breadcrumbs::render('walikelas-p3-temp') }}
+    @elseif(\Request::route()->getName() === 'p3.guru.index')
+        {{ Breadcrumbs::render('p3-guru') }}
+    @else
+        {{ Breadcrumbs::render('sekretaris-p3') }}
+    @endif
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan Walikelas Mengajukan Pelanggaran, Prestasi dan Partisipasi Siswa dikelasnya untuk di tindaklanjuti oleh Kesiswaan</p>
@@ -8,6 +15,10 @@
     <div class="mt-3 body-contain-customize col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex col-xl-auto d-xl-flex gap-2">
         @if (\Request::route()->getName() === 'walikelas.p3.temp')
             <a href="{{ route('walikelas.p3.temp.create') }}" class="btn btn-sm btn-warning text-warning-emphasis">
+                <i class="fas fa-plus"></i> Tambah Pengajuan
+            </a>
+        @elseif(\Request::route()->getName() === 'p3.guru.index')
+            <a href="{{ route('p3.guru.create') }}" class="btn btn-sm btn-warning text-warning-emphasis">
                 <i class="fas fa-plus"></i> Tambah Pengajuan
             </a>
         @else
@@ -44,6 +55,7 @@
                     <td width="5%">No</td>
                     <td width="10%">Tanggal</td>
                     <td width="20%">Nama Siswa</td>
+                    <td width="5%">Kelas</td>
                     <td width="40%">Jenis P3</td>
                     <td width="5%">User</td>
                     <td width="5%">Status</td>
@@ -73,6 +85,7 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ date('d M Y',strtotime($item->tanggal)) }}</td>
                         <td>{{ $item->siswa->nama }}</td>
+                        <td>{{ $item->siswa->kelas ? $item->siswa->kelas->tingkat.$item->siswa->kelas->kelas : "-"}}</td>
                         <td><p class="m-0 p-0 @if($item->jenis == 'pelanggaran') text-danger @elseif($item->jenis == 'partisipasi') text-warning @else text-success @endif">{{ $item->jenis }}</p><span class="fs-10 font-italic">{{ $item->deskripsi }}</span></td>
                         <td><i data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='m-0 p-0 fs-11'><b>{{ ucfirst($item->yang_mengajukan) }}</b></p><i class='fs-10'>{{ $nama }}</i>" data-bs-placement="top" class="fs-18 fas @if($item->yang_mengajukan == "guru") fa-user-tie text-primary @else fa-user text-success @endif"></i></td>
                         <td>
@@ -102,13 +115,14 @@
                 {width: '5%'},
                 {width: '10%'},
                 {width: '20%'},
+                {width: '5%'},
                 {width: '40%'},
                 {width: '5%'},
                 {width: '5%'},
                 {width: '10%'},
             ],
             columnDefs: [
-                { className: 'text-center', targets: [0,1,4,5,6] },
+                { className: 'text-center', targets: [0,1,3,5,6] },
              ],
             "initComplete" : function(settings,json) {
                 $('#table-pengajuan').wrap('<div style="overflow:auto; width:100%; position:relative"></div>');

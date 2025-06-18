@@ -1150,7 +1150,7 @@ class WalikelasController extends Controller
             'semester' => $semester->semester,
         ]);
         if ($auth->access != "siswa") {
-            return redirect()->route('walikelas.p3.temp')->with(['success' => 'P3 Berhasil Ditambahkan, Silahkan menunggu update dari kesiswaan']);
+            return redirect()->back()->with(['success' => 'P3 Berhasil Ditambahkan, Silahkan menunggu update dari kesiswaan']);
         } else {
             return redirect()->route('sekretaris.p3')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
         }

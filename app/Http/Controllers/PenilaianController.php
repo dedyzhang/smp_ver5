@@ -1597,7 +1597,7 @@ class PenilaianController extends Controller
     {
         $fasilitator = P5Fasilitator::findOrFail($uuid);
         $proyek = P5Proyek::findOrFail($fasilitator->id_proyek);
-        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->get();
+        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->orderBy('nama','ASC')->get();
         $id_siswa = $siswa->pluck('uuid');
         $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $fasilitator->id_proyek)->get();
         $id_detail = $proyekDetail->pluck('uuid');
@@ -1825,7 +1825,7 @@ class PenilaianController extends Controller
     {
         $fasilitator = P5Fasilitator::findOrFail($uuid);
         $proyek = P5Proyek::findOrFail($fasilitator->id_proyek);
-        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->get();
+        $siswa = Siswa::where('id_kelas', $fasilitator->id_kelas)->orderBy('nama','ASC')->get();
         $id_siswa = $siswa->pluck('uuid');
         $proyekDetail = P5ProyekDetail::with('subelemen')->where('id_proyek', $fasilitator->id_proyek)->get();
         $id_detail = $proyekDetail->pluck('uuid');

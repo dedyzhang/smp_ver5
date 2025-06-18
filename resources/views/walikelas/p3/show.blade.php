@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('walikelas-p3-show',$siswa) }}
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan Walikelas untuk Melihat secara Terperinci Pelanggaran, Prestasi dan Partisipasi Siswa didalam Kelasnya</p>
@@ -44,7 +45,7 @@
                     </tr>
                 @endforeach
             </tbody>
-        </table>   
+        </table>
     </div>
     <script>
         var table = new DataTable('#datatables-p3',{

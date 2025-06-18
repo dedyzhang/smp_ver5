@@ -1,10 +1,38 @@
 @extends('layouts.main')
 
 @section('container')
+    @if (\Request::route()->getName() === 'walikelas.p3.temp.create')
+        {{ Breadcrumbs::render('walikelas-p3-temp-create') }}
+
+    @elseif(\Request::route()->getName() === 'p3.guru.create')
+        {{ Breadcrumbs::render('p3-guru-create') }}
+    @else
+        {{ Breadcrumbs::render('sekretaris-p3-create') }}
+    @endif
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan Walikelas untuk mengajukan Sementara Pelanggaran, Prestasi dan Partisipasi Siswa</p>
     </div>
+    @if(session('success'))
+        <div class="body-contain-customize mt-3 col-12">
+            <div
+                class="alert alert-success alert-dismissible fade show d-flex align-content-between align-items-center mt-3"
+                role="alert"
+            >
+                <i
+                    class="bi flex-shrink-0 me-2 fa-solid fa-check"
+                    aria-label="Success:"
+                ></i>
+                <div><strong>Sukses !</strong> {{ session("success") }}</div>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert"
+                    aria-label="Close"
+                ></button>
+            </div>
+        </div>
+    @endif
     <div class="body-contain-customize col-12 mt-3">
         <p><b>Form Pengajuan sementara Poin Pelanggaran, Prestasi dan Partisipasi</b></p>
         <form method="post" action="{{ route('walikelas.p3.temp.store') }}">
@@ -12,10 +40,10 @@
             <div class="row m-0 p-0">
                 <div class="m-0 p-0 mt-2 col-12 col-sm-12 col-md-10 col-lg-6 col-xl-6 form-group">
                     <label for="nama">Nama Siswa</label>
-                    <select class="form-select @error('nama') is-invalid @enderror" name="nama" id="nama">
+                    <select class="form-select @error('nama') is-invalid @enderror" name="nama" id="nama" data-toggle="select">
                         <option value="">Pilih Salah Satu</option>
                         @foreach ($siswa as $item)
-                            <option value="{{ $item->uuid }}" @if(old('nama') == $item->uuid) selected @endif>{{ $item->nama }}</option>
+                            <option value="{{ $item->uuid }}" @if(old('nama') == $item->uuid) selected @endif>{{ $item->nama }} ({{ $item->kelas ? $item->kelas->tingkat.$item->kelas->kelas : "-" }})</option>
                         @endforeach
                     </select>
                     <div class="invalid-feedback">Wajib Diisi</div>

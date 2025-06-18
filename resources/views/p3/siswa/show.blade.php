@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('p3-siswa-show', $siswa) }}
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan admin dan Wakil Kesiswaan Mengatur Pelanggaran, Prestasi dan Partisipasi Siswa</p>
@@ -27,7 +28,7 @@
     <div class="clearfix"></div>
     <div class="body-contain-customize gap-2 mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto col-lg-flex col-xl-auto col-xl-flex">
         <a href="{{ route('p3.siswa.create',$siswa->uuid) }}" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Tambah P3</a>
-        <a href="{{ route('p3.siswa.print',$siswa->uuid) }}" class="btn btn-success btn-sm"><i class="fas fa-plus"></i> Print P3</a>
+        <a href="{{ route('p3.siswa.print',$siswa->uuid) }}" class="btn btn-warning text-warning-emphasis btn-sm"><i class="fas fa-print"></i> Print P3</a>
     </div>
     @if(session('success'))
         <div class="body-contain-customize mt-3 col-12">

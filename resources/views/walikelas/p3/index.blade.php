@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('walikelas-p3') }}
     <div class="body-contain-customize col-12">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan Walikelas Melihat Pelanggaran, Prestasi dan Partisipasi Siswa dikelasnya</p>
