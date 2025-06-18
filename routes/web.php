@@ -473,6 +473,10 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/harian/{uuid}/formatif', 'nilaiFormatifShow')->name('walikelas.nilai.formatif');
     Route::get('/walikelas/nilai/harian/{uuid}/sumatif', 'nilaiSumatifShow')->name('walikelas.nilai.sumatif');
     Route::get('/walikelas/nilai/harian/{uuid}/penjabaran', 'nilaiPenjabaranShow')->name('walikelas.nilai.penjabaran');
+    Route::get('/walikelas/p3', 'p3Index')->name('walikelas.p3');
+    Route::get('/walikelas/p3/{uuid}/show', 'p3Show')->name('walikelas.p3.show');
+    Route::get('/walikelas/p3/temp', 'p3TempIndex')->name('walikelas.p3.temp');
+    Route::get('/walikelas/p3/temp/create', 'p3TempCreate')->name('walikelas.p3.temp.create');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}
@@ -480,6 +484,8 @@ Route::middleware(IsSekretaris::class)->controller(SekretarisController::class)-
     Route::get('/sekretaris/absensi', 'absensi')->name('sekretaris.absensi');
     Route::get('/sekretaris/poin', 'poin')->name('sekretaris.poin');
     Route::get('/sekretaris/poin/create', 'poinCreate')->name('sekretaris.poin.create');
+    Route::get('/sekretaris/p3', 'p3Index')->name('sekretaris.p3');
+    Route::get('/sekretaris/p3/create', 'p3Create')->name('sekretaris.p3.create');
 });
 
 // {--------------------------------Halaman Proses Walikelas dan Sekretaris-----------------------------------------------------}
@@ -489,6 +495,9 @@ Route::middleware(IsWaliSekredanGuru::class)->controller(WalikelasController::cl
     Route::get('/walikelas/poin/temp/getaturan', 'poinGetAturan')->name('walikelas.poin.temp.getAturan');
     Route::post('/walikelas/poin/temp/create', 'poinTempStore')->name('walikelas.poin.temp.create');
     Route::delete('/walikelas/poin/temp/delete', 'poinTempDelete')->name('walikelas.poin.temp.delete');
+    Route::get('/walikelas/p3/kategori/get', 'p3GetKategori')->name('walikelas.p3.kategori.get');
+    Route::post('/walikelas/p3/temp/store', 'p3TempStore')->name('walikelas.p3.temp.store');
+    Route::delete('/walikelas/p3/temp/{uuid}/delete', 'p3TempDelete')->name('walikelas.p3.temp.destroy');
 });
 
 
@@ -517,11 +526,24 @@ Route::middleware(isPenilaianController::class)->controller(PoinController::clas
 Route::resource('/p3', \App\Http\Controllers\P3Controller::class)->except('show')->middleware(IsAdminKesiswaan::class);
 Route::middleware(IsAdminKesiswaan::class)->controller(P3Controller::class)->group(function () {
     Route::get('/p3/siswa', 'showSiswa')->name('p3.siswa');
-    Route::get('/p3/kategori/get','p3GetKategori')->name('p3.kategori.get');
-    Route::get('/p3/siswa/{uuid}/show','siswaShowP3')->name('p3.siswa.show');
-    Route::get('/p3/siswa/{uuid}/create','p3CreatePoin')->name('p3.siswa.create');
+    Route::get('/p3/kategori/get', 'p3GetKategori')->name('p3.kategori.get');
+    Route::get('/p3/siswa/{uuid}/show', 'siswaShowP3')->name('p3.siswa.show');
+    Route::get('/p3/siswa/{uuid}/create', 'p3CreatePoin')->name('p3.siswa.create');
+    Route::post('/p3/siswa/{uuid}/store', 'p3StorePoin')->name('p3.siswa.store');
+    Route::get('/p3/siswa/{uuid}/edit', 'p3EditPoin')->name('p3.siswa.edit');
+    Route::put('/p3/siswa/{uuid}/update', 'p3UpdatePoin')->name('p3.siswa.update');
+    Route::delete('/p3/siswa/{uuid}/delete', 'p3DeletePoin')->name('p3.siswa.delete');
+    Route::get('/p3/temp', 'p3TempIndex')->name('p3.temp');
+    Route::put('/p3/temp/{uuid}/approve', 'p3TempApprove')->name('p3.temp.approve');
+    Route::put('/p3/temp/{uuid}/disapprove', 'p3TempDisapprove')->name('p3.temp.disapprove');
+    Route::get('/p3/temp/approve/history', 'p3TempApproveHistory')->name('p3.temp.approve.history');
+    Route::get('/p3/temp/disapprove/history', 'p3TempDisapproveHistory')->name('p3.temp.disapprove.history');
+    Route::get('/p3/siswa/{uuid}/print', 'p3PrintPoin')->name('p3.siswa.print');
 });
-
+Route::middleware(isPenilaianController::class)->controller(P3Controller::class)->group(function () {
+    Route::get('/bukuguru/p3', 'guruP3Index')->name('p3.guru.index');
+    Route::get('/bukuguru/p3/create', 'guruP3Create')->name('p3.guru.create');
+});
 
 // {----------------------------------------------------END------------------------------------------------------------------}
 
@@ -562,6 +584,7 @@ Route::middleware(IsSiswaOrangtua::class)->controller(DetailController::class)->
     Route::get('/detail/poin', 'poin')->name('detail.poin.index');
     Route::get('/detail/nilai', 'nilai')->name('detail.nilai.index');
     Route::get('/detail/nilai/{uuid}/show', 'nilaiShow')->name('detail.nilai.show');
+    Route::get('/detail/p3', 'p3')->name('detail.p3.index');
 });
 // {------------------------------------------------- END --------------------------------------------------------------------}
 

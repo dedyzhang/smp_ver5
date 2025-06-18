@@ -34,6 +34,9 @@ use App\Models\Siswa;
 use App\Models\Sumatif;
 use App\Models\TanggalAbsensi;
 use App\Models\Walikelas;
+use App\Models\P3Poin;
+use App\Models\P3Temp;
+use App\Models\P3Kategori;
 use App\Models\P5Fasilitator;
 use App\Models\P5ProyekDetail;
 use App\Models\P5Nilai;
@@ -1026,5 +1029,139 @@ class WalikelasController extends Controller
             $rentang = array();
         }
         return view('penilaian.projek.rapor.print', compact('setting', 'siswa', 'semester', 'tanggal', 'walikelas', 'kepala_sekolah', 'proyek', 'rentang', 'array_proyek_detail', 'array_nilai', 'array_deskripsi'));
+    }
+    /**
+     * P3 - PELANGGARAN,PRESTASI DAN PARTISIPASI
+     */
+
+    /**
+     * P3 - Show Poin siswa per kelas
+     */
+    public function p3Index(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+
+        $siswa = Siswa::with('kelas')->where('id_kelas', $idKelas)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $p3 = P3Poin::with('siswa')->get();
+        $array_p3 = array();
+
+        foreach ($p3 as $item) {
+            if (empty($array_p3[$item->id_siswa])) {
+                $array_p3[$item->id_siswa] = array(
+                    'pelanggaran' => 0,
+                    'prestasi' => 0,
+                    'partisipasi' => 0
+                );
+                $array_p3[$item->id_siswa][$item->jenis] += 1;
+            } else {
+                $array_p3[$item->id_siswa][$item->jenis] += 1;
+            }
+        }
+        // dd($array_p3);
+        return view('walikelas.p3.index', compact('siswa', 'array_p3'));
+    }
+    /**
+     * P3 - Tampilkan Poin P3 Per siswa
+     */
+    public function p3Show(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $p3 = P3Poin::where('id_siswa', $siswa->uuid)->orderBy('tanggal')->get();
+
+        return view('walikelas.p3.show', compact('siswa', 'p3'));
+    }
+    /**
+     * P3 Temp - P3 Temporary Index
+     */
+    public function p3TempIndex(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+
+        $siswa = Siswa::with('kelas')->where('id_kelas', $idKelas)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $id_siswa = $siswa->pluck('uuid');
+        $p3_temp = P3Temp::whereIn('id_siswa', $id_siswa)->orderBy('created_at', 'DESC')->get();
+
+        $all_siswa = Siswa::all();
+        $all_guru = Guru::all();
+
+
+        return view('walikelas.p3.temp.index', compact('siswa', 'p3_temp', 'all_siswa', 'all_guru'));
+    }
+    /**
+     * P3 Temp - Get Bahasa Dari Temp
+     */
+    public function p3GetKategori(Request $request)
+    {
+        $kategori = P3Kategori::where('jenis', $request->jenis)->get();
+
+        return response()->json(['kategori' => $kategori, 'message' => 'success']);
+    }
+    /**
+     * P3 Temp - Create P3 Temporary Page
+     */
+    public function p3TempCreate(): View
+    {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+
+        $siswa = Siswa::with('kelas')->where('id_kelas', $idKelas)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+
+        return view('walikelas.p3.temp.create', compact('siswa'));
+    }
+    /**
+     * P3 Temp - Store P3 Temporary
+     */
+    public function p3TempStore(Request $request)
+    {
+
+        $semester = Semester::first();
+
+        $auth = Auth::user();
+        if ($auth->access == "siswa") {
+            $siswa = Siswa::where('id_login', $auth->uuid)->first();
+            $penginput = "sekretaris";
+            $id_penginput = $siswa->uuid;
+        } else {
+            $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+            $penginput = "guru";
+            $id_penginput = $guru->uuid;
+        }
+
+        $request->validate([
+            'nama' => 'required',
+            'tanggal' => 'required',
+            'jenis' => 'required',
+            'deskripsi' => 'required',
+        ]);
+
+        P3Temp::create([
+            'id_siswa' => $request->nama,
+            'yang_mengajukan' => $penginput,
+            'id_pengajuan' => $id_penginput,
+            'tanggal' => $request->tanggal,
+            'jenis' => $request->jenis,
+            'deskripsi' => $request->deskripsi,
+            'status' => 'belum',
+            'semester' => $semester->semester,
+        ]);
+        if ($auth->access != "siswa") {
+            return redirect()->back()->with(['success' => 'P3 Berhasil Ditambahkan, Silahkan menunggu update dari kesiswaan']);
+        } else {
+            return redirect()->route('sekretaris.p3')->with(['success' => 'Poin Berhasil Diajukan, Silahkan menunggu update dari kesiswaan']);
+        }
+    }
+    /**
+     * P3 Temp - Delete P3 Temporary
+     */
+    public function p3TempDelete(String $uuid)
+    {
+        $p3Temp = P3Temp::findOrFail($uuid);
+        $p3Temp->delete();
+        return response()->json(['success' => true]);
     }
 }

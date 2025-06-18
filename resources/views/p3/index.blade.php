@@ -1,6 +1,7 @@
 @extends('layouts.main')
 
 @section('container')
+    {{ Breadcrumbs::render('p3'); }}
     <div class="col-12 body-contain-customize">
         <h5>Pelanggaran, Prestasi dan Partisipasi</h5>
         <p>Halaman ini diperuntukkan admin dan Wakil Kesiswaan untuk menginput Pelanggaran, Prestasi dan Partisipasi yang akan dipilih oleh guru bersangkutan</p>
