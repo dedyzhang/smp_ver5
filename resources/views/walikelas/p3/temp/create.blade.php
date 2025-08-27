@@ -83,6 +83,15 @@
                         <div class="invalid-feedback">Wajib Diisi</div>
                     @enderror
                 </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 form-group m-0 p-0">
+                    <label for="poin">Poin</label>
+                    <input type="number" name="poin" id="poin" placeholder="Masukkan Poin" class="form-control @error('poin') is-invalid @enderror" value="{{old('poin')}}" />
+                    @error('poin')
+                        <div class="invalid-feedback">
+                            Poin Wajib Diisi
+                        </div>
+                    @enderror
+                </div>
                 <div class="button-place m-0 p-0 mt-3">
                     <button type="submit" class="btn btn-warning text-warning-emphasis btn-sm">
                         <i class="fas fa-plus"></i> Tambah Poin P3
@@ -108,7 +117,7 @@
                             var options = "";
                             options += "<option>Pilih Salah Satu</option>"
                             data.kategori.forEach(function(elem) {
-                                options += "<option value='"+elem.id+"'>"+elem.deskripsi+"</option>"
+                                options += "<option value='"+elem.id+"' data-poin='"+elem.poin+"'>"+elem.deskripsi+"</option>"
                             });
 
                             $('#kategori').html(options);
@@ -123,8 +132,10 @@
         });
         $('#kategori').change(function() {
             var kategori = $(this).find('option:selected').text();
+            var poin = $(this).find('option:selected').data('poin');
             if(kategori != "" && kategori != "Pilih Salah Satu") {
                 $('#deskripsi').val(kategori);
+                $('#poin').val(poin);
             }
         })
     </script>

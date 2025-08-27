@@ -7,6 +7,7 @@ use App\Models\Guru;
 use App\Models\Kelas;
 use App\Models\Nis;
 use App\Models\Pelajaran;
+use App\Models\PerangkatAjar;
 use App\Models\Semester;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -23,7 +24,8 @@ class SettingController extends Controller
         $guru = Guru::with('users')->orderBy('nama')->get();
         $pelajaran = Pelajaran::all()->sortBy('urutan');
         $kelas = Kelas::groupBy('tingkat')->get();
-        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru', 'pelajaran', 'kelas'));
+        $perangkat = PerangkatAjar::orderBy('perangkat')->get();
+        return view('setting.index', compact('semester', 'nis', 'aturan', 'setting', 'guru', 'pelajaran', 'kelas', 'perangkat'));
     }
     public function updateSemester(Request $request)
     {
