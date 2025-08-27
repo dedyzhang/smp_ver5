@@ -43,7 +43,7 @@
                         <td>{{ date('d M Y',strtotime($item->tanggal)) }}</td>
                         <td>{{ $item->siswa->nama }}</td>
                         <td>{{ $item->siswa->kelas ? $item->siswa->kelas->tingkat.$item->siswa->kelas->kelas : "-"}}</td>
-                        <td><p class="m-0 p-0 @if($item->jenis == 'pelanggaran') text-danger @elseif($item->jenis == 'partisipasi') text-warning @else text-success @endif">{{ $item->jenis }}</p><span class="fs-10 font-italic">{{ $item->deskripsi }}</span></td>
+                        <td><p class="m-0 p-0 @if($item->jenis == 'pelanggaran') text-danger @elseif($item->jenis == 'partisipasi') text-warning @else text-success @endif">{{ $item->jenis }}</p><span class="fs-10 font-italic">{{ $item->deskripsi }} - ({{ $item->poin }})</span></td>
                         <td><i data-bs-toggle="tooltip" data-bs-html="true" data-bs-title="<p class='m-0 p-0 fs-11'><b>{{ ucfirst($item->yang_mengajukan) }}</b></p><i class='fs-10'>{{ $nama }}</i>" data-bs-placement="top" class="fs-18 fas @if($item->yang_mengajukan == "guru") fa-user-tie text-primary @else fa-user text-success @endif"></i></td>
                         <td>
                             @if ($item->status == "approve") <i class="fas fa-check text-success"></i> @endif

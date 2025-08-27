@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\AksesUjianController;
 use App\Http\Controllers\AppController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\CetakController;
@@ -613,3 +614,13 @@ Route::middleware(isPenilaianController::class)->controller(EkskulController::cl
     Route::delete('/ekskul/{uuid}/destroy', 'destroy')->name('ekskul.destroy');
     Route::post('/ekskul/sorting', 'sorting')->name('ekskul.sorting');
 });;
+// {------------------------------------------------- END --------------------------------------------------------------------}
+
+// {-------------------------------------------Halaman Akses Ujian--------------------------------------------------------}
+Route::middleware(IsAdminKurikulumKepala::class)->controller(AksesUjianController::class)->group(function () {
+    Route::get('/akses/ujian', 'index')->name('akses.ujian.index');
+    Route::post('/akses/ujian/{uuid}/buka', 'buka')->name('akses.ujian.buka');
+    Route::post('/akses/ujian/{uuid}/tutup', 'tutup')->name('akses.ujian.tutup');
+    Route::post('/akses/ujian/buka', 'bukaSemua')->name('akses.ujian.buka.semua');
+    Route::post('/akses/ujian/tutup', 'tutupSemua')->name('akses.ujian.tutup.semua');
+});

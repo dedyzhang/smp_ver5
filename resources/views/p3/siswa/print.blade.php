@@ -18,6 +18,21 @@
         $p3_partisipasi = $p3->filter(function($elem) {
             return $elem->jenis == "partisipasi";
         });
+        if($p3_prestasi != null) {
+            $total_prestasi = $p3_prestasi->sum('poin');
+        } else {
+            $total_prestasi = 0;
+        }
+        if($p3_pelanggaran != null) {
+            $total_pelanggaran = $p3_pelanggaran->sum('poin');
+        } else {
+            $total_pelanggaran = 0;
+        }
+        if($p3_partisipasi != null) {
+            $total_partisipasi = $p3_partisipasi->sum('poin');
+        } else {
+            $total_partisipasi = 0;
+        }
     @endphp
     <div class="body-contain-customize col-12">
         <h5>Print Pelanggaran, Prestasi dan Partisipasi Siswa</h5>
@@ -49,7 +64,7 @@
     </div>
     {{-- page1 --}}
     <div class="body-contain-customize col-12 mt-3 printable-p3">
-        <div style="background:linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.8)), url('{{asset('img/logo.png')}}'); background-size: contain;background-repeat: no-repeat;background-position:50% 70%; height:100%">
+        <div style="background:rgba(255,255,255,0.8) url('{{asset('img/logo.png')}}');background-blend-mode:lighten; background-size: contain;background-repeat: no-repeat;background-position:50% 70%; height:100%">
             <div class="row d-flex align-items-center pt-0 mt-0 pb-2" style="border-bottom:5px double #000">
                 <div class="col-2"><img src="{{asset('img/tutwuri.png')}}" alt="" width="80%"></div>
                 <div class="col-8 text-center kop-surat">
@@ -83,6 +98,7 @@
                                 <td width="10%" style="text-align:center; vertical-align:middle">No</td>
                                 <td width="20%" style="text-align:center; vertical-align:middle">Tanggal</td>
                                 <td width="60%" style="text-align:center; vertical-align:middle">Nama Perlombaan Yang Diikuti</td>
+                                <td witdh="10%" style="text-align:center; vertical-align:middle">Poin</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -92,19 +108,25 @@
                                 @endphp
                                 @foreach ($p3_prestasi as $item)
                                     <tr class="fs-10 transback">
-                                        <td>{{$no}}</td>
-                                        <td>{{date('d F Y',strtotime($item->tanggal))}}</td>
-                                        <td>{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1">{{$no}}</td>
+                                        <td class="pt-1 pb-1">{{date('d F Y',strtotime($item->tanggal))}}</td>
+                                        <td class="pt-1 pb-1">{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1" style="text-align:center">{{$item->poin}}</td>
                                     </tr>
                                     @php
                                         $no++;
                                     @endphp
                                 @endforeach
+                                <tr class="fs-10 transback">
+                                    <td class="pt-1 pb-1" colspan="3">Total Poin</td>
+                                    <td class="pt-1 pb-1" style="text-align:center">{{$total_prestasi}}</td>
+                                </tr>
                             @else
                                 <tr class="fs-10 transback" style="height:30px">
-                                    <td>1</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="pt-1 pb-1">1</td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
                                 </tr>
                             @endif
                         </tbody>
@@ -116,6 +138,7 @@
                                 <td width="10%" style="text-align:center; vertical-align:middle">No</td>
                                 <td width="20%" style="text-align:center; vertical-align:middle">Tanggal</td>
                                 <td width="60%" style="text-align:center; vertical-align:middle">Nama Kegiatan Yang Diikuti</td>
+                                <td witdh="10%" style="text-align:center; vertical-align:middle">Poin</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -125,19 +148,25 @@
                                 @endphp
                                 @foreach ($p3_partisipasi as $item)
                                     <tr class="fs-10 transback">
-                                        <td>{{$no}}</td>
-                                        <td>{{date('d F Y',strtotime($item->tanggal))}}</td>
-                                        <td>{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1" >{{$no}}</td>
+                                        <td class="pt-1 pb-1" >{{date('d F Y',strtotime($item->tanggal))}}</td>
+                                        <td class="pt-1 pb-1" >{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1" style="text-align:center">{{$item->poin}}</td>
                                     </tr>
                                     @php
                                         $no++;
                                     @endphp
                                 @endforeach
+                                <tr class="fs-10 transback">
+                                    <td class="pt-1 pb-1" colspan="3">Total Poin</td>
+                                    <td class="pt-1 pb-1" style="text-align:center">{{$total_partisipasi}}</td>
+                                </tr>
                             @else
                                 <tr class="fs-10 transback" style="height:30px">
-                                    <td>1</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="pt-1 pb-1">1</td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
                                 </tr>
                             @endif
                         </tbody>
@@ -149,6 +178,7 @@
                                 <td width="10%" style="text-align:center; vertical-align:middle">No</td>
                                 <td width="20%" style="text-align:center; vertical-align:middle">Tanggal</td>
                                 <td width="60%" style="text-align:center; vertical-align:middle">Jenis Pelanggaran</td>
+                                <td witdh="10%" style="text-align:center; vertical-align:middle">Poin</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -158,19 +188,25 @@
                                 @endphp
                                 @foreach ($p3_pelanggaran as $item)
                                     <tr class="fs-10 transback">
-                                        <td>{{$no}}</td>
-                                        <td>{{date('d F Y',strtotime($item->tanggal))}}</td>
-                                        <td>{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1">{{$no}}</td>
+                                        <td class="pt-1 pb-1">{{date('d F Y',strtotime($item->tanggal))}}</td>
+                                        <td class="pt-1 pb-1">{{$item->deskripsi}}</td>
+                                        <td class="pt-1 pb-1" style="text-align:center">{{$item->poin}}</td>
                                     </tr>
                                     @php
                                         $no++;
                                     @endphp
                                 @endforeach
+                                <tr class="fs-10 transback">
+                                    <td class="pt-1 pb-1" colspan="3">Total Poin</td>
+                                    <td class="pt-1 pb-1" style="text-align:center">{{$total_pelanggaran}}</td>
+                                </tr>
                             @else
                                 <tr class="fs-10 transback" style="height:30px">
-                                    <td>1</td>
-                                    <td></td>
-                                    <td></td>
+                                    <td class="pt-1 pb-1">1</td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
+                                    <td class="pt-1 pb-1"></td>
                                 </tr>
                             @endif
                         </tbody>

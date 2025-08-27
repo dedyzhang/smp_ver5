@@ -21,6 +21,7 @@
                     <th width="5%">No</th>
                     <th width="15%">Jenis</th>
                     <th width="35%">Deskripsi</th>
+                    <th width="10%">Poin</th>
                     <th width="10%">#</th>
                 </tr>
             </thead>
@@ -30,6 +31,7 @@
                         <td>{{$loop->iteration}}</td>
                         <td class="{{$item->jenis == "prestasi" ? "text-success" : ($item->jenis == "pelanggaran" ? "text-warning" : "text-danger")}}">{{$item->jenis}}</td>
                         <td>{{$item->deskripsi}}</td>
+                        <td>{{$item->poin}}</td>
                         <td>
                             <a class="btn btn-sm btn-warning text-warning-emphasis" href="{{route('p3.edit',$item->uuid)}}"><i class="fas fa-pencil"></i></a>
                             <button class="btn btn-sm btn-danger hapus-p3" data-uuid="{{$item->uuid}}"><i class="fas fa-trash-can"></i></button>

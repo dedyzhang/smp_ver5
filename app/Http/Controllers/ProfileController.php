@@ -20,7 +20,7 @@ class ProfileController extends Controller
         } else {
             if (Auth::user()->access == "orangtua") {
                 $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
-                $account = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+                $account = Siswa::with('kelas')->where('uuid', $orangtua->id_siswa)->first();
             } else {
                 $account = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
             }

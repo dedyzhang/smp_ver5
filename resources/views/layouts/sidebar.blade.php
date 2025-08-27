@@ -111,7 +111,20 @@
             </li>
             @endcan
             {{--Ujian--}}
-            @canany(['admin','kurikulum','guru','kesiswaan','sapras','kepalasekolah','siswa'])
+            @canany(['admin','kurikulum','kepalasekolah'])
+                <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
+                    <a href="#menu-pelajaran" class="menu-title" data-bs-toggle="collapse">
+                        <ion-icon src="{{asset('img/icons/test.svg')}}"></ion-icon>
+                        Ujian
+                        <i class="indicator-icon fa-solid fa-chevron-right"></i>
+                    </a>
+                    <ul class="submenu collapse" id="menu-pelajaran">
+                        <li class="submenu-list"><a href="{{ route('akses.ujian.index') }}"> Akses Ujian</a></li>
+                        <li class="submenu-list"><a href="{{ route('ujian.index') }}"> Go To Ujian</a></li>
+                    </ul>
+                </li>
+            @endcan
+            @canany(['guru','kesiswaan','sapras','siswa'])
                 <li class="menu-list"><a href="{{route('ujian.index')}}"> <ion-icon src="{{asset('img/icons/test.svg')}}"></ion-icon> Go To Ujian</a></li>
             @endcan
             {{-- Penilaian --}}
