@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Models;
+
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class P3Temp extends Model
 {
-    use hasUuids,HasFactory;
+    use hasUuids, HasFactory;
     protected $primaryKey = 'uuid';
     protected $table = 'p3_temp';
     protected $fillable = [
@@ -17,10 +18,12 @@ class P3Temp extends Model
         'tanggal',
         'jenis',
         'deskripsi',
+        'poin',
         'status',
         'semester'
     ];
-    public function siswa() {
-        return $this->belongsTo(Siswa::class,'id_siswa');
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa');
     }
 }

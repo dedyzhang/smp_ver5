@@ -1137,6 +1137,7 @@ class WalikelasController extends Controller
             'tanggal' => 'required',
             'jenis' => 'required',
             'deskripsi' => 'required',
+            'poin' => 'required',
         ]);
 
         P3Temp::create([
@@ -1146,6 +1147,7 @@ class WalikelasController extends Controller
             'tanggal' => $request->tanggal,
             'jenis' => $request->jenis,
             'deskripsi' => $request->deskripsi,
+            'poin' => $request->poin,
             'status' => 'belum',
             'semester' => $semester->semester,
         ]);
