@@ -45,6 +45,15 @@
                         </div>
                     @enderror
                 </div>
+                <div class="col-12 col-sm-12 col-md-12 col-lg-10 col-xl-10 form-group m-0 p-0">
+                    <label for="poin">Poin</label>
+                    <input type="number" name="poin" id="poin" placeholder="Masukkan Poin" class="form-control @error('poin') is-invalid @enderror" value="{{old('poin',$p3->poin)}}" />
+                    @error('poin')
+                        <div class="invalid-feedback">
+                            Poin Wajib Diisi
+                        </div>
+                    @enderror
+                </div>
                 <div class="col-12 col-sm-12 col-md-auto col-lg-auto col-xl-auto d-grid d-sm-grid d-md-flex d-lg-flex d-xl-flex mt-3">
                     <button type="submit" class="btn btn-sm btn-warning text-warning-emphasis">
                         <i class="fas fa-save"></i> Simpan

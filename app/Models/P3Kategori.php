@@ -15,5 +15,6 @@ class P3Kategori extends Model
     protected $fillable = [
         'jenis',
         'deskripsi',
+        'poin'
     ];
 }

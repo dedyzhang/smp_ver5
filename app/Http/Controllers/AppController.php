@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AksesUjian;
 use App\Models\Guru;
+use App\Models\Semester;
 use App\Models\Siswa;
 use Gemini\Laravel\Facades\Gemini as FacadesGemini;
 use Illuminate\Http\Request;
@@ -31,15 +33,24 @@ class AppController extends Controller
         $user = Auth::user();
         $website = "." . env('APP_WEB');
         if ($user->access != "siswa" && $user->access != "orangtua") {
-            $guru = Guru::where('id_login', $user->uuid)->first();
-            if ($user->access == "admin" || $user->access == "kepala") {
-                setCookie('guru', '', -1, '/', $website);
-                setCookie('admin', $guru->nik, time() + 86400, '/', $website);
+            $semester = Semester::first();
+            $akses = AksesUjian::where([
+                ['id_guru', '=', $user->guru->uuid],
+                ['semester', '=', $semester->semester]
+            ])->first();
+            if ($akses != null) {
+                $guru = Guru::where('id_login', $user->uuid)->first();
+                if ($user->access == "admin" || $user->access == "kepala") {
+                    setCookie('guru', '', -1, '/', $website);
+                    setCookie('admin', $guru->nik, time() + 86400, '/', $website);
+                } else {
+                    setCookie('admin', '', -1, '/', $website);
+                    setCookie('guru', $guru->nik, time() + 86400, '/', $website);
+                }
+                $url = env('APP_URL') . "ujian/admin/index.php";
             } else {
-                setCookie('admin', '', -1, '/', $website);
-                setCookie('guru', $guru->nik, time() + 86400, '/', $website);
+                return Redirect::to(env('APP_URL') . "home")->with('error', 'Anda tidak memiliki akses ujian');
             }
-            $url = env('APP_URL') . "ujian/admin/index.php";
         } else {
             $siswa = Siswa::where('id_login', $user->uuid)->first();
             setCookie('siswa', $siswa->nis, time() + 86400, '/', $website);
