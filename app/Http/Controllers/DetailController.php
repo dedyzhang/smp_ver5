@@ -26,7 +26,7 @@ class DetailController extends Controller
     {
         if (Auth::user()->access == "orangtua") {
             $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
-            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+            $siswa = Siswa::with('kelas')->where('uuid', $orangtua->id_siswa)->first();
         } else {
             $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
         }
@@ -53,7 +53,7 @@ class DetailController extends Controller
         $semester = Semester::first();
         if (Auth::user()->access == "orangtua") {
             $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
-            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+            $siswa = Siswa::with('kelas')->where('uuid', $orangtua->id_siswa)->first();
         } else {
             $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
         }
@@ -71,7 +71,7 @@ class DetailController extends Controller
     {
         if (Auth::user()->access == "orangtua") {
             $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
-            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+            $siswa = Siswa::with('kelas')->where('uuid', $orangtua->id_siswa)->first();
         } else {
             $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
         }
@@ -152,7 +152,7 @@ class DetailController extends Controller
         $semester = Semester::first();
         if (Auth::user()->access == "orangtua") {
             $orangtua = Orangtua::where('id_login', Auth::user()->uuid)->first();
-            $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
+            $siswa = Siswa::with('kelas')->where('uuid', $orangtua->id_siswa)->first();
         } else {
             $siswa = Siswa::with('kelas')->where('id_login', Auth::user()->uuid)->first();
         }

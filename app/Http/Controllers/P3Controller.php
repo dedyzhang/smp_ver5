@@ -41,12 +41,14 @@ class P3Controller extends Controller
     {
         $request->validate([
             'jenis' => 'required',
-            'deskripsi' => 'required'
+            'deskripsi' => 'required',
+            'poin' => 'required'
         ]);
 
         P3Kategori::create([
             'jenis' => $request->jenis,
-            'deskripsi' => $request->deskripsi
+            'deskripsi' => $request->deskripsi,
+            'poin' => $request->poin
         ]);
 
         return redirect()->route('p3.create')->with(['success' => 'Data Berhasil Disimpan']);
@@ -71,12 +73,14 @@ class P3Controller extends Controller
 
         $request->validate([
             'jenis' => 'required',
-            'deskripsi' => 'required'
+            'deskripsi' => 'required',
+            'poin' => 'required'
         ]);
 
         $p3->update([
             'jenis' => $request->jenis,
-            'deskripsi' => $request->deskripsi
+            'deskripsi' => $request->deskripsi,
+            'poin' => $request->poin
         ]);
 
         return redirect()->route('p3.edit', $id)->with(['success' => "Data Berhasil Diedit"]);
@@ -177,6 +181,7 @@ class P3Controller extends Controller
             'tanggal' => 'required',
             'jenis' => 'required',
             'deskripsi' => 'required',
+            'poin' => 'required',
         ]);
 
         P3Poin::create([
@@ -184,6 +189,7 @@ class P3Controller extends Controller
             'tanggal' => $request->tanggal,
             'jenis' => $request->jenis,
             'deskripsi' => $request->deskripsi,
+            'poin' => $request->poin,
             'semester' => $semester->semester,
         ]);
 
@@ -210,12 +216,14 @@ class P3Controller extends Controller
             'tanggal' => 'required',
             'jenis' => 'required',
             'deskripsi' => 'required',
+            'poin' => 'required',
         ]);
 
         $p3->update([
             'tanggal' => $request->tanggal,
             'jenis' => $request->jenis,
-            'deskripsi' => $request->deskripsi
+            'deskripsi' => $request->deskripsi,
+            'poin' => $request->poin,
         ]);
         return redirect()->route('p3.siswa.show', $p3->id_siswa)->with(['success' => 'Poin Berhasil Diedit']);
     }
@@ -256,6 +264,7 @@ class P3Controller extends Controller
             'tanggal' => $p3_temp->tanggal,
             'jenis' => $p3_temp->jenis,
             'deskripsi' => $p3_temp->deskripsi,
+            'poin' => $p3_temp->poin,
             'semester' => $p3_temp->semester,
         ]);
         return response()->json(['success' => true]);
