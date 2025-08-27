@@ -147,6 +147,15 @@
         </div>
     </div>
 </div>
+@if (session('error'))
+    <div class="row m-0 p-0 mt-3">
+        <div class="col-12">
+            <div class="alert alert-danger" role="alert">
+                {{session('error')}}
+            </div>
+        </div>
+    </div>
+@endif
 <div class="row m-0 p-0 mt-3">
     @if ($user->access != "siswa" && $user->access != "orangtua")
         @if ($event->count() > 0)

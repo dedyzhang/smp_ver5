@@ -16,13 +16,16 @@ class P3Poin extends Model
         'id_siswa',
         'jenis',
         'deskripsi',
+        'poin',
         'semester'
     ];
 
-    public function siswa() {
-        return $this->belongsTo(Siswa::class,'id_siswa');
+    public function siswa()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa');
     }
-    public function kategori() {
-        return $this->hasMany(P3Kategori::class,'jenis','jenis');
+    public function kategori()
+    {
+        return $this->hasMany(P3Kategori::class, 'jenis', 'jenis');
     }
 }
