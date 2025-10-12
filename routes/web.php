@@ -14,6 +14,7 @@ use App\Http\Controllers\GuruController;
 use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\NotulenRapatController;
 use App\Http\Controllers\PelajaranController;
 use App\Http\Controllers\PengRuangController;
 use App\Http\Controllers\PenilaianController;
@@ -623,4 +624,17 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(AksesUjianControlle
     Route::post('/akses/ujian/{uuid}/tutup', 'tutup')->name('akses.ujian.tutup');
     Route::post('/akses/ujian/buka', 'bukaSemua')->name('akses.ujian.buka.semua');
     Route::post('/akses/ujian/tutup', 'tutupSemua')->name('akses.ujian.tutup.semua');
+});
+// {------------------------------------------------- END --------------------------------------------------------------------}
+
+
+Route::middleware(isPenilaianController::class)->controller(NotulenRapatController::class)->group(function () {
+    Route::get('/notulen', 'index')->name('notulen.index');
+    Route::get('/notulen/create', 'create')->name('notulen.create');
+    Route::post('/notulen/store', 'store')->name('notulen.store');
+    Route::get('/notulen/{uuid}/edit', 'edit')->name('notulen.edit');
+    Route::post('/notulen/{uuid}/update', 'update')->name('notulen.update');
+    Route::get('/notulen/{uuid}/show', 'show')->name('notulen.show');
+    Route::get('/notulen/{uuid}/absensi', 'absensi')->name('notulen.absensi');
+    Route::post('/notulen/absensi/store', 'storeAbsensi')->name('notulen.absensi.store');
 });

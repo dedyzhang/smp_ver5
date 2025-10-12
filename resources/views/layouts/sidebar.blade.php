@@ -106,6 +106,7 @@
                     @canany(['admin','kurikulum','kepalasekolah'])
                         <li class="submenu-list"><a href="{{ route('agenda.rekap') }}">Rekap Agenda</a></li>
                         <li class="submenu-list"><a href="{{ route('agenda.batas') }}">Buku Batas</a></li>
+                        <li class="submenu-list"><a href="{{ route('notulen.index') }}">Agenda Rapat</a></li>
                     @endcan
                 </ul>
             </li>
@@ -113,12 +114,12 @@
             {{--Ujian--}}
             @canany(['admin','kurikulum','kepalasekolah'])
                 <li class="menu-list has-submenu" aria-expanded="false" aria-controls="collapse">
-                    <a href="#menu-pelajaran" class="menu-title" data-bs-toggle="collapse">
+                    <a href="#menu-ujian" class="menu-title" data-bs-toggle="collapse">
                         <ion-icon src="{{asset('img/icons/test.svg')}}"></ion-icon>
                         Ujian
                         <i class="indicator-icon fa-solid fa-chevron-right"></i>
                     </a>
-                    <ul class="submenu collapse" id="menu-pelajaran">
+                    <ul class="submenu collapse" id="menu-ujian">
                         <li class="submenu-list"><a href="{{ route('akses.ujian.index') }}"> Akses Ujian</a></li>
                         <li class="submenu-list"><a href="{{ route('ujian.index') }}"> Go To Ujian</a></li>
                     </ul>

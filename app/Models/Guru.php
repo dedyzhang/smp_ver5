@@ -27,15 +27,16 @@ class Guru extends Model
         'tahun_tamat',
         'tmt_ngajar',
         'tmt_smp',
-        'no_telp'
+        'no_telp',
+        'sekretaris'
     ];
 
     public function users()
     {
-        return $this->belongsTo(User::class,'id_login');
+        return $this->belongsTo(User::class, 'id_login');
     }
     public function walikelas()
     {
-        return $this->belongsTo(Walikelas::class,'uuid','id_guru');
+        return $this->belongsTo(Walikelas::class, 'uuid', 'id_guru');
     }
 }
