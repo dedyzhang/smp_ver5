@@ -122,8 +122,13 @@ $(document).ready(function () {
     //File Input Plugins installation
     $(".file-input").fileinput({
         showUpload: false,
-        maxFileSize: 20000,
+        maxFileSize: 40000,
         allowedFileExtensions: ["pdf"],
+    });
+     $(".file-input-gambar").fileinput({
+        showUpload: false,
+        maxFileSize: 20000,
+        allowedFileExtensions: ["img", "jpg", "jpeg", "png", "gif"],
     });
     //Tinymce Installation
     tinymce.init({
