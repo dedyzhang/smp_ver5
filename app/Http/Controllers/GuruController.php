@@ -186,4 +186,33 @@ class GuruController extends Controller
 
         return response()->json(["success" => "Berhasil Menghapus Data"]);
     }
+    /**
+     * Tambahkan Data Sektretaris
+     */
+    public function tambahSekretaris(Request $request) {
+        $sekretaris = $request->idGuru;
+
+        $sekretarisGuru = Guru::findOrFail($sekretaris);
+        if($sekretarisGuru->sekretaris == 1) {
+            return response()->json(['status' => 'error','message' => 'Guru ini sudah menjadi sekretaris']);
+        } else {
+            $sekretarisGuru->update([
+                'sekretaris' => 1
+            ]);
+            return response()->json(['status' => 'success','message' => 'Berhasil menambahkan sekretaris']);
+        }
+    }
+    public function hapusSekretaris(Request $request) {
+        $sekretaris = $request->idGuru;
+
+        $sekretarisGuru = Guru::findOrFail($sekretaris);
+        if($sekretarisGuru->sekretaris == 0) {
+            return response()->json(['status' => 'error','message' => 'Guru ini bukan sekretaris']);
+        } else {
+            $sekretarisGuru->update([
+                'sekretaris' => 0
+            ]);
+            return response()->json(['status' => 'success','message' => 'Berhasil menghapus sekretaris']);
+        }
+    }
 }

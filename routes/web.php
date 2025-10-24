@@ -26,6 +26,7 @@ use App\Http\Controllers\SekretarisController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\WalikelasController;
+use App\Http\Middleware\isAdKuKeSkre;
 use Illuminate\Support\Facades\Route;
 
 //Middleware
@@ -84,6 +85,8 @@ Route::middleware(IsAdmin::class)->controller(GuruController::class)->group(func
     Route::get('/guru/{uuid}/pelajaran', 'pelajaran')->name('guru.pelajaran');
     Route::post('/guru/{uuid}/pelajaran', 'ngajar')->name('guru.ngajar');
     Route::delete('/guru/pelajaran/{uuid}/hapus', 'hapusNgajar')->name('guru.hapusNgajar');
+    Route::post('/guru/sekretaris/tambah','tambahSekretaris')->name('guru.sekretaris.tambah');
+    Route::delete('/guru/sekretaris/hapus','hapusSekretaris')->name('guru.sekretaris.hapus');
 });
 //Admin - Halaman Data Kelas
 Route::resource('/kelas', KelasController::class)->except('show')->middleware(IsAdmin::class);
@@ -627,14 +630,22 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(AksesUjianControlle
 });
 // {------------------------------------------------- END --------------------------------------------------------------------}
 
+// {-------------------------------------------Notulen Rapat --------------------------------------------------------}
 
 Route::middleware(isPenilaianController::class)->controller(NotulenRapatController::class)->group(function () {
     Route::get('/notulen', 'index')->name('notulen.index');
+    Route::get('/notulen/{uuid}/show', 'show')->name('notulen.show');
+});
+
+Route::middleware(isAdKuKeSkre::class)->controller(NotulenRapatController::class)->group(function () {
     Route::get('/notulen/create', 'create')->name('notulen.create');
     Route::post('/notulen/store', 'store')->name('notulen.store');
     Route::get('/notulen/{uuid}/edit', 'edit')->name('notulen.edit');
     Route::post('/notulen/{uuid}/update', 'update')->name('notulen.update');
-    Route::get('/notulen/{uuid}/show', 'show')->name('notulen.show');
     Route::get('/notulen/{uuid}/absensi', 'absensi')->name('notulen.absensi');
     Route::post('/notulen/absensi/store', 'storeAbsensi')->name('notulen.absensi.store');
+    Route::get('/notulen/{uuid}/dokumentasi','dokumentasi')->name('notulen.dokumentasi');
+    Route::post('/notulen/{uuid}/dokumentasi/store','storeDokumentasi')->name('notulen.dokumentasi.store');
+    Route::delete('/notulen/{uuid}/delete','dokumentasiDestroy')->name('notulen.dokumentasi.delete');
+    Route::get('/notulen/{uuid}/print','printNotulen')->name('notulen.print');
 });

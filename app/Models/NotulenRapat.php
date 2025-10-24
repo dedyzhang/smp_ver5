@@ -16,6 +16,7 @@ class NotulenRapat extends Model
         'tanggal_rapat',
         'pokok_permasalahan',
         'hasil_rapat',
-        'guru_hadir'
+        'guru_hadir',
+        'dokumentasi'
     ];
 }

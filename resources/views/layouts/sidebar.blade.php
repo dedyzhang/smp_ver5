@@ -102,11 +102,12 @@
                     @canany(['kurikulum','guru','kesiswaan','sapras'])
                         <li class="submenu-list"><a href="{{ route('agenda.index') }}">Tambah Agenda</a></li>
                         <li class="submenu-list"><a href="{{ route('agenda.history') }}">Lihat Agenda</a></li>
+                        <li class="submenu-list"><a href="{{ route('notulen.index') }}">Notulen Rapat</a></li>
                     @endcan
                     @canany(['admin','kurikulum','kepalasekolah'])
                         <li class="submenu-list"><a href="{{ route('agenda.rekap') }}">Rekap Agenda</a></li>
                         <li class="submenu-list"><a href="{{ route('agenda.batas') }}">Buku Batas</a></li>
-                        <li class="submenu-list"><a href="{{ route('notulen.index') }}">Agenda Rapat</a></li>
+                        <li class="submenu-list"><a href="{{ route('notulen.index') }}">Notulen Rapat</a></li>
                     @endcan
                 </ul>
             </li>
