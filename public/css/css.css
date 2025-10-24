@@ -164,6 +164,12 @@
         break-inside: avoid;
         padding-top: 20px !important;
     }
+    .printable-p3 .newpagebefore {
+        page-break-after: always;
+    }
+    .printable-p3 .newpage {
+        page-break-before: always;
+    }
 }
 
 .fs-10 {
