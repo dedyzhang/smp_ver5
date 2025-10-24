@@ -13,6 +13,7 @@ use App\Models\JadwalWaktu;
 use App\Models\Kelas;
 use App\Models\Materi;
 use App\Models\Ngajar;
+use App\Models\NotulenRapat;
 use App\Models\P5Fasilitator;
 use App\Models\P5Proyek;
 use App\Models\P3Kategori;
@@ -764,4 +765,28 @@ Breadcrumbs::for('kelulusan', function (BreadcrumbsTrail $trail) {
 });
 Breadcrumbs::for('kelulusan-siswa', function (BreadcrumbsTrail $trail) {
     $trail->push('Kelulusan', route('kelulusan.siswa.index'));
+});
+// Notulen.Breadcrumbs
+Breadcrumbs::for('notulen',function(BreadcrumbsTrail $trail) {
+    $trail->push('Notulen', route('notulen.index'));
+});
+Breadcrumbs::for('notulen-create',function(BreadcrumbsTrail $trail) {
+    $trail->parent('notulen');
+    $trail->push('Tambah', route('notulen.create'));
+});
+Breadcrumbs::for('notulen-edit',function(BreadcrumbsTrail $trail, NotulenRapat $notulen) {
+    $trail->parent('notulen');
+    $trail->push(date('d M Y',strtotime($notulen->tanggal_rapat)), route('notulen.edit', $notulen->uuid));
+});
+Breadcrumbs::for('notulen-absensi',function(BreadcrumbsTrail $trail, NotulenRapat $notulen) {
+    $trail->parent('notulen');
+    $trail->push('Absensi '.date('d M Y',strtotime($notulen->tanggal_rapat)), route('notulen.absensi', $notulen->uuid));
+});
+Breadcrumbs::for('notulen-dokumentasi',function(BreadcrumbsTrail $trail, NotulenRapat $notulen) {
+    $trail->parent('notulen');
+    $trail->push('Dokumentasi '.date('d M Y',strtotime($notulen->tanggal_rapat)), route('notulen.dokumentasi', $notulen->uuid));
+});
+Breadcrumbs::for('notulen-cetak',function(BreadcrumbsTrail $trail, NotulenRapat $notulen) {
+    $trail->parent('notulen');
+    $trail->push('Cetak '.date('d M Y',strtotime($notulen->tanggal_rapat)), route('notulen.print', $notulen->uuid));
 });

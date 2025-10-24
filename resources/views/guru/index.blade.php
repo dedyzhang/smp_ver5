@@ -10,10 +10,14 @@
             <i class="fa-solid fa-plus"></i>
             Tambah Guru
         </a>
-         <a href="{{route('cetak.guru.excel')}}" class="btn btn-sm btn-primary fs-14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Guru">
+        <a href="{{route('cetak.guru.excel')}}" class="btn btn-sm btn-primary fs-14" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download Guru">
             <i class="fa-solid fa-file-excel"></i>
             Download Guru
         </a>
+        <button class="btn btn-sm btn-secondary fs-14 tambah-sekretaris" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Tambah Sekretaris">
+            <i class="fas fa-user"></i>
+            Sekretaris
+        </button>
     </div>
     <div class="body-contain-customize col-md-12 col-lg-12 col-sm-12 mt-3">
 
@@ -162,6 +166,47 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" id="modal-preview-sekretaris">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h6 class="modal-title">Data Sekretaris</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row m-0 p-0">
+                        <div class="col-12 form-group">
+                            <label for="sekretaris">Tambah Sekretaris</label>
+                            <select name="sekretaris" id="sekretaris" class="form-control" data-toggle="select">
+                                <option value="">Pilih Salah Satu</option>
+                                @foreach ($gurus as $guru)
+                                    <option value="{{ $guru->uuid }}">{{ $guru->nama }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-12 button-place mt-2">
+                            <button class="btn btn-sm btn-primary mt-1 tambahkan-sekretaris"><i class="fas fa-plus"></i> Tambah</button>
+                        </div>
+                        <div class="col-12 mt-3">
+                            <p class="m-0 p-0">Daftar Sekretaris</p>
+                            @php
+                                $sekretaris = $gurus->filter(function($elem) {
+                                    return $elem->sekretaris == 1;
+                                });
+                            @endphp
+                            <ul class="list-group">
+                                @foreach ($sekretaris as $item)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">{{$item->nama}}
+                                        <span class="badge bg-primary rounded-pill hapus-sekretaris" data-guru="{{ $item->uuid }}" style="cursor: pointer;">X</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         $('.preview-guru').click(function() {
             const myModalAlternative = new bootstrap.Modal('#modal-preview-guru');
@@ -270,5 +315,57 @@
             cConfirm("WARNING","Apakah Anda Yakin untuk Menghapus PTK ini",ResetToken);
         });
 
+        $('.tambah-sekretaris').on('click',function() {
+            $('#modal-preview-sekretaris').modal("show");
+        });
+        $('.tambahkan-sekretaris').on('click',function() {
+            var sekretarisUuid = $('#sekretaris').val();
+            if(sekretarisUuid == "") {
+                oAlert("red","Error","Silahkan Pilih salah satu guru terlebih dahulu sebelum menambahkan sebagai sekkretaris");
+            } else {
+                loading();
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('guru.sekretaris.tambah') }}",
+                    data : {
+                        idGuru: sekretarisUuid
+                    },
+                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                    success: function(data) {
+                        if(data.status == 'success') {
+                            cAlert("green","Sukses",data.message,true);
+                            removeLoading();
+                        } else {
+                            oAlert("red","Error",data.message);
+                            removeLoading();
+                        }
+                    }
+                })
+            }
+        });
+        $('.hapus-sekretaris').on('click',function() {
+            var sekretarisUuid = $(this).data('guru');
+
+            cConfirm("Warning","Apakah anda yakin untuk mengnonaktifkan guru ini sebagai sekretaris?",function() {
+                loading();
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ route('guru.sekretaris.hapus') }}",
+                    data: {
+                        idGuru: sekretarisUuid
+                    },
+                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                    success: function(data) {
+                        if(data.status == 'success') {
+                            cAlert("green","Sukses",data.message,true);
+                            removeLoading();
+                        }
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+            })
+        })
     </script>
 @endsection
