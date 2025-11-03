@@ -11,21 +11,36 @@
         <div class="row m-0 p-0">
             <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 form-group mt-2">
                 <label for="password-lama">Password Lama</label>
-                <input type="password" name="password-lama" id="password-lama" class="form-control" placeholder="Masukkan password lama anda">
+                <div class="input-group">
+                    <input type="password" name="password-lama" id="password-lama" class="form-control" placeholder="Masukkan password lama anda">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleVisibility_password">
+                        <i id="VisibilityIcon_password" class="fa fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback password-3">
                     Password Lama yang dimasukkan salah
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 form-group mt-2">
                 <label for="password">Password Baru</label>
-                <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password baru anda">
+                <div class="input-group">
+                    <input type="password" name="password" id="password" class="form-control" placeholder="Masukkan password baru anda">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleVisibility_baru">
+                        <i id="VisibilityIcon_baru" class="fa fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback password-1">
                     Password Harus Mengandung 8 Karakter atau lebih dengan gabungan huruf, huruf Kapital, Nomor dan Simbol.
                 </div>
             </div>
             <div class="col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8 form-group mt-2">
                 <label for="password-confirm">Konfirmasi Password</label>
-                <input type="password" name="password-confirm" id="password-confirm" class="form-control" placeholder="Masukkan sekali lagi password baru anda">
+                <div class="input-group">
+                    <input type="password" name="password-confirm" id="password-confirm" class="form-control" placeholder="Masukkan sekali lagi password baru anda">
+                    <button class="btn btn-outline-secondary" type="button" id="toggleVisibility_konfirmasi">
+                        <i id="VisibilityIcon_konfirmasi" class="fa fa-eye"></i>
+                    </button>
+                </div>
                 <div class="invalid-feedback password-2">
                     Konfirmasi Password Harus sama dengan password
                 </div>
@@ -37,6 +52,24 @@
         </div>
     </div>
     <script>
+         $('#toggleVisibility_password').on('click', function() {
+            var passwordInput = $('#password-lama');
+            var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $('#VisibilityIcon_password').toggleClass('fa-eye fa-eye-slash');
+        });
+        $('#toggleVisibility_baru').on('click', function() {
+            var passwordInput = $('#password');
+            var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $('#VisibilityIcon_baru').toggleClass('fa-eye fa-eye-slash');
+        });
+        $('#toggleVisibility_konfirmasi').on('click', function() {
+            var passwordInput = $('#password-confirm');
+            var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $('#VisibilityIcon_konfirmasi').toggleClass('fa-eye fa-eye-slash');
+        });
         $('.simpan-password').click(function(event) {
             var password1 = $('#password').val();
             var password2 = $('#password-confirm').val();
@@ -101,6 +134,6 @@
             if(error == 0) {
                 cConfirm("Sukses","Apakah kamu yakin untuk mengubah password",changePassword)
             }
-        })
+        });
     </script>
 @endsection

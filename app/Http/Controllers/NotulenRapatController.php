@@ -54,6 +54,23 @@ class NotulenRapatController extends Controller
         ]);
         return response()->json(['success' => true, 'data' => $request->pokok_pembahasan]);
     }
+    public function destroy(String $uuid) {
+        $notulen = NotulenRapat::findOrFail($uuid);
+        if($notulen->dokumentasi != null) {
+            $path = 'notulen/' . date('d M Y', strtotime($notulen->tanggal_rapat));
+            $file_path = storage_path('app/public/' . $path);
+            $gambar = explode(",", $notulen->dokumentasi);
+            foreach ($gambar as $item) {
+                $file_to_delete = $file_path.'/'.$item;
+                if (file_exists($file_to_delete)) {
+                    unlink($file_to_delete);
+                }
+            }
+            rmdir($file_path);
+        }
+        $notulen->delete();
+        return response()->json(['success' => true]);
+    }
     public function absensi(String $uuid)
     {
         $notulen = NotulenRapat::findOrFail($uuid);

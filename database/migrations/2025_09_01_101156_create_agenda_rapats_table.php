@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('tanggal_rapat');
             $table->text('pokok_permasalahan')->nullable();
             $table->text('hasil_rapat')->nullable();
-            $table->string('guru_hadir')->nullable();
+            $table->text('guru_hadir')->nullable();
             $table->timestamps();
         });
     }
