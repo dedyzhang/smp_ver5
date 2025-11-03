@@ -648,4 +648,5 @@ Route::middleware(isAdKuKeSkre::class)->controller(NotulenRapatController::class
     Route::post('/notulen/{uuid}/dokumentasi/store','storeDokumentasi')->name('notulen.dokumentasi.store');
     Route::delete('/notulen/{uuid}/delete','dokumentasiDestroy')->name('notulen.dokumentasi.delete');
     Route::get('/notulen/{uuid}/print','printNotulen')->name('notulen.print');
+    Route::delete('/notulen/{uuid}/destroy','destroy')->name('notulen.delete');
 });

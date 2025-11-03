@@ -10,7 +10,7 @@
                 }
             @endphp
             <h5 class="logo-title"><b>{{$firstName}}</b> {{$secondName}}</h5>
-            <i class="app-version">5.1.7</i>
+            <i class="app-version">5.1.8</i>
         </div>
         <ul class="menu">
             <li class="menu-list"><a href="/home"> <ion-icon src="{{asset('img/icons/home.svg')}}"></ion-icon> Dashboard</a></li>
@@ -105,6 +105,8 @@
                         <li class="submenu-list"><a href="{{ route('notulen.index') }}">Notulen Rapat</a></li>
                     @endcan
                     @canany(['admin','kurikulum','kepalasekolah'])
+                        <li class="submenu-list"><a href="{{ route('agenda.index') }}">Tambah Agenda</a></li>
+                        <li class="submenu-list"><a href="{{ route('agenda.history') }}">Lihat Agenda</a></li>
                         <li class="submenu-list"><a href="{{ route('agenda.rekap') }}">Rekap Agenda</a></li>
                         <li class="submenu-list"><a href="{{ route('agenda.batas') }}">Buku Batas</a></li>
                         <li class="submenu-list"><a href="{{ route('notulen.index') }}">Notulen Rapat</a></li>
