@@ -32,7 +32,7 @@
                                 <a href="{{ route('notulen.dokumentasi',$item->uuid) }}" class="btn btn-sm btn-primary" data-bs-toggle="tooltip" data-bs-title="Dokumentasi" data-bs-placement="top" ><i class="fas fa-camera"></i></a>
                                 <a href="{{ route('notulen.absensi',$item->uuid) }}" class="btn btn-sm btn-info" data-bs-toggle="tooltip" data-bs-title="Absen Guru" data-bs-placement="top" ><i class="fas fa-user"></i></a>
                                 <a href="{{ route('notulen.print',$item->uuid) }}" target="_blank" class="btn btn-sm btn-secondary" data-bs-toggle="tooltip" data-bs-title="Cetak Notulen Rapat" data-bs-placement="top" ><i class="fas fa-print"></i></a>
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="tooltip" data-bs-title="Hapus Notulen Rapat" data-bs-placement="top"><i class="fas fa-trash"></i></button>
+                                <button class="btn btn-sm btn-danger hapus-notulen" data-bs-toggle="tooltip" data-bs-title="Hapus Notulen Rapat" data-bs-placement="top" data-uuid="{{ $item->uuid }}"><i class="fas fa-trash"></i></button>
                             @endif
                         </td>
                     </tr>
@@ -157,6 +157,27 @@
                     $('#agenda-notulen').modal('show');
                     removeLoading();
                 }
+            })
+        })
+        $('#datatable-notulen').on('click','.hapus-notulen',function() {
+            var id = $(this).data('uuid');
+            cConfirm("Perhatian","Apakah anda yakin untuk menghapus notulen rapat ini ?",function() {
+                loading();
+                var url = "{{ route('notulen.delete',':id') }}";
+                url = url.replace(':id',id);
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                    success: function(data) {
+                        removeLoading();
+                        cAlert("green","Berhasil","Notulen Rapat berhasil dihapus !",true);
+                    },
+                    error: function(data) {
+                        console.log(data.responseJSON.message);
+                    }
+                })
+
             })
         })
     </script>
