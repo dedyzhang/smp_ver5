@@ -16,14 +16,25 @@
                         <form class="form-group" id="form-validation">
                             <div class="has-validation">
                                 <label for="password" class="mb-2 form-label">Password Baru</label>
-                                <input type="password" name="password" id="password" class="form-control">
+                                <div class="input-group">
+                                    <input type="password" name="password" id="password" class="form-control">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleVisibility_password">
+                                        <i id="VisibilityIcon_password" class="fa fa-eye"></i>
+                                    </button>
+                                </div>
+                                
                                 <div class="invalid-feedback password-1">
                                     Password Harus Mengandung 8 Karakter atau lebih dengan gabungan huruf, huruf Kapital, Nomor dan Simbol.
                                 </div>
                             </div>
                             <div class="has-validation">
                                 <label for="password-confirm" class="mb-2 form-label">Konfirmasi Password</label>
-                                <input type="password" name="password-confirm" id="password-confirm" class="form-control">
+                                <div class="input-group">
+                                    <input type="password" name="password-confirm" id="password-confirm" class="form-control">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleVisibility_konfirmasi">
+                                        <i id="VisibilityIcon_konfirmasi" class="fa fa-eye"></i>
+                                    </button>
+                                </div>
                                 <div class="invalid-feedback password-2">
                                     Konfirmasi Password Harus sama dengan password
                                 </div>
@@ -105,7 +116,20 @@
             if(error == 0) {
                 cConfirm("Sukses","Apakah kamu yakin untuk mengubah password",changePassword)
             }
-        })
+        });
+
+        $('#toggleVisibility_password').on('click', function() {
+            var passwordInput = $('#password');
+            var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $('#VisibilityIcon_password').toggleClass('fa-eye fa-eye-slash');
+        });
+        $('#toggleVisibility_konfirmasi').on('click', function() {
+            var passwordInput = $('#password-confirm');
+            var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+            passwordInput.attr('type', type);
+            $('#VisibilityIcon_konfirmasi').toggleClass('fa-eye fa-eye-slash');
+        });
     </script>
 @endif
  @php

@@ -35,6 +35,9 @@
                         <label class="mt-2 mb-1" for="password">Password</label>
                         <div class="input-group">
                             <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Masukkan Password Akun">
+                            <button class="btn btn-info text-info-emphasis" type="button" id="toggleVisibility">
+                                <i id="VisibilityIcon" class="fa fa-eye"></i>
+                            </button>
                             @error('password')
                                 <div class="invalid-feedback">
                                     Password Wajib Diisi
@@ -55,4 +58,12 @@
     </div>
 </body>
 </html>
+<script>
+    $('#toggleVisibility').on('click', function() {
+        var passwordInput = $('#password');
+        var type = passwordInput.attr('type') === 'password' ? 'text' : 'password';
+        passwordInput.attr('type', type);
+        $('#VisibilityIcon').toggleClass('fa-eye fa-eye-slash');
+    });
+</script>
 @include('layouts.foot')
