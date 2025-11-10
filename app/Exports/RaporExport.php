@@ -47,6 +47,38 @@ class RaporExport implements FromView
         $siswa = Siswa::where('id_kelas', $this->params)->orderBy('nama', 'ASC')->get();
         $semester = Semester::first();
 
-        return view('cetak.rapor.excel', ['semester' => $semester, 'siswa' => $siswa, 'ngajar' => $ngajar, 'kelas' => $kelas, 'rapor_array' => $rapor_array, 'setting' => $setting]);
+        $rataRataRapor = array();
+        
+        foreach($siswa as $sis) {
+            $raporSiswa = 0;
+            $jumlahNilai = 0;
+            foreach($ngajar as $item) {
+                if($rapor_array[$item->uuid . '.' . $sis->uuid]['nilai'] != null) {
+                    $jumlahNilai++;
+                    $raporSiswa += $rapor_array[$item->uuid . '.' . $sis->uuid]['nilai'];
+                }
+            }
+            $rataRata = round($raporSiswa / $jumlahNilai,2);
+            array_push($rataRataRapor,array(
+                'id_siswa' => $sis->uuid,
+                'nilai' => $rataRata,
+                'ranking' => 0
+            ));
+        }
+        $ordered_rataRata = $rataRataRapor;
+        array_multisort(array_column($ordered_rataRata, 'nilai'), SORT_DESC, $ordered_rataRata);
+
+        // dd($ordered_rataRata);
+        foreach($rataRataRapor as $key => $value) {
+            foreach($ordered_rataRata as $ordered_key => $ordered_value) {
+                if($value['nilai'] === $ordered_value['nilai']) {
+                    $rataRataRapor[$ordered_key]['ranking'] = ((int) $key + 1);
+                    $key = $ordered_key;
+                    break;
+                }
+            }
+
+        }
+        return view('cetak.rapor.excel', ['semester' => $semester, 'siswa' => $siswa, 'ngajar' => $ngajar, 'kelas' => $kelas, 'rapor_array' => $rapor_array, 'setting' => $setting,'rata_rata_rapor' => $rataRataRapor]);
     }
 }
