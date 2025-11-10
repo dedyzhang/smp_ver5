@@ -78,11 +78,14 @@
                     {{ round($jumlah / $ngajar->count(), 2) }}
                 </td>
                 @php
-                    $ranking = array_filter($rata_rata_rapor,function($elem) use($siswa->uuid)) {
-                        return $elem['id_siswa'] == $siswa->uuid;
-                    }
+                    $siswaID = $siswa->uuid;
+                    $ranking = array_filter($rata_rata_rapor,function($elem) use($siswaID) {
+                        if($elem['id_siswa'] == $siswaID){
+                            return $elem;
+                        }
+                    });
                 @endphp
-                <td align="center" style="border:1px solid #000000">{{ $rata_rata_rapor[$ranking]['ranking'] }}</td>
+                <td align="center" style="border:1px solid #000000">{{ $ranking[$loop->index]['ranking'] }}</td>
             </tr>
         @endforeach
     </tbody>

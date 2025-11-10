@@ -72,13 +72,14 @@ class RaporExport implements FromView
         foreach($rataRataRapor as $key => $value) {
             foreach($ordered_rataRata as $ordered_key => $ordered_value) {
                 if($value['nilai'] === $ordered_value['nilai']) {
-                    $rataRataRapor[$ordered_key]['ranking'] = ((int) $key + 1);
+                    $rataRataRapor[$key]['ranking'] = ((int) $ordered_key + 1);
                     $key = $ordered_key;
                     break;
                 }
             }
 
         }
-        return view('cetak.rapor.excel', ['semester' => $semester, 'siswa' => $siswa, 'ngajar' => $ngajar, 'kelas' => $kelas, 'rapor_array' => $rapor_array, 'setting' => $setting,'rata_rata_rapor' => $rataRataRapor]);
+        
+    return view('cetak.rapor.excel', ['semester' => $semester, 'siswa' => $siswa, 'ngajar' => $ngajar, 'kelas' => $kelas, 'rapor_array' => $rapor_array, 'setting' => $setting,'rata_rata_rapor' => $rataRataRapor]);
     }
 }
