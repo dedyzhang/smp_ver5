@@ -16,6 +16,7 @@ use App\Models\JabarInggris;
 use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
+use App\Models\Kokurikuler;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\PAS;
@@ -579,8 +580,12 @@ class WalikelasController extends Controller
         } else {
             $tanggal = "";
         }
+        $kokurikuler = Kokurikuler::where([
+            ['id_siswa','=',$siswa->uuid],
+            ['semester','=',$semester->semester]
+        ])->first();
 
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal','kokurikuler'));
     }
 
     /**
@@ -1165,5 +1170,25 @@ class WalikelasController extends Controller
         $p3Temp = P3Temp::findOrFail($uuid);
         $p3Temp->delete();
         return response()->json(['success' => true]);
+    }
+
+    /**
+     * Kokurikuler
+     */
+
+    /**
+     * koku - Index
+     */
+    public function kokuIndex() {
+        $auth = Auth::user();
+        $guru = Guru::with('walikelas')->where('id_login', $auth->uuid)->first();
+        $idKelas = $guru->walikelas->id_kelas;
+        $semester = Semester::first();
+
+        $siswa = Siswa::with('kelas')->where('id_kelas', $idKelas)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $siswaId = $siswa->pluck('uuid');
+        $koku = Kokurikuler::whereIn('id_siswa',$siswaId)->where('semester',$semester->semester)->get();
+
+        return view('walikelas.kokurikuler.index', compact('siswa','koku'));
     }
 }

@@ -545,6 +545,10 @@ Breadcrumbs::for('walikelas-ruang-edit', function (BreadcrumbsTrail $trail, Stri
     $trail->parent('walikelas-ruang');
     $trail->push($barang->barang, route('barang.edit', ['uuid' => $uuid, 'uuidBarang' => $barang]));
 });
+//Kokurikuler.Breadcrumbs
+Breadcrumbs::for('kokurikuler-wali',function(BreadcrumbsTrail $trail) {
+    $trail->push('Kokurikuler', route('walikelas.koku'));
+});
 // Sekretaris.Breadcrumbs
 Breadcrumbs::for('sekretaris-absensi', function (BreadcrumbsTrail $trail) {
     $trail->push('Absensi', route('sekretaris.absensi'));
@@ -789,4 +793,12 @@ Breadcrumbs::for('notulen-dokumentasi',function(BreadcrumbsTrail $trail, Notulen
 Breadcrumbs::for('notulen-cetak',function(BreadcrumbsTrail $trail, NotulenRapat $notulen) {
     $trail->parent('notulen');
     $trail->push('Cetak '.date('d M Y',strtotime($notulen->tanggal_rapat)), route('notulen.print', $notulen->uuid));
+});
+//Kokurikuler.admin.Breadcrumbs
+Breadcrumbs::for('kokurikuler',function(BreadcrumbsTrail $trail) {
+    $trail->push('Kokurikuler', route('penilaian.koku.index'));
+});
+Breadcrumbs::for('kokurikuler-show',function(BreadcrumbsTrail $trail, Kelas $kelas) {
+    $trail->parent('kokurikuler');
+    $trail->push($kelas->tingkat.$kelas->kelas, route('penilaian.koku.show',$kelas->uuid));
 });
