@@ -24,6 +24,7 @@
             </td>
             <td bgcolor="#FBD288" rowspan="3" width="10" align="center" valign="middle" style="border:1px solid #000000">Jumlah</td>
             <td bgcolor="#FBD288" rowspan="3" width="15" align="center" valign="middle" style="border:1px solid #000000">Rata-Rata</td>
+            <td bgcolor="#FBD288" rowspan="3" width="15" align="center" valign="middle" style="border:1px solid #000000">Ranking</td>
         </tr>
         <tr>
             @foreach ($ngajar as $item)
@@ -76,6 +77,15 @@
                 <td align="center" style="border:1px solid #000000">
                     {{ round($jumlah / $ngajar->count(), 2) }}
                 </td>
+                @php
+                    $siswaID = $siswa->uuid;
+                    $ranking = array_filter($rata_rata_rapor,function($elem) use($siswaID) {
+                        if($elem['id_siswa'] == $siswaID){
+                            return $elem;
+                        }
+                    });
+                @endphp
+                <td align="center" style="border:1px solid #000000">{{ $ranking[$loop->index]['ranking'] }}</td>
             </tr>
         @endforeach
     </tbody>
