@@ -162,6 +162,8 @@ Route::middleware(IsAdmin::class)->controller(CetakController::class)->group(fun
     Route::get('/cetak/penjabaran/{params}', 'cetakPenjabaran')->name('cetak.penjabaran.excel');
     Route::get('/cetak/proyek', 'proyek')->name('cetak.proyek.index');
     Route::get('/cetak/proyek/{params}', 'cetakProyek')->name('cetak.proyek.excel');
+    Route::get('/cetak/agenda','agendaIndex')->name('cetak.agenda.index');
+    Route::get('/cetak/batas','batasIndex')->name('cetak.batas.index');
 });
 
 // {----------------------------------Halaman Penilaian dan Pelajaran------------------------------------------------------}
@@ -233,6 +235,9 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::post('/penilaian/kelulusan/{uuid}/simpan', 'kelulusanStore')->name('penilaian.kelulusan.store');
     Route::post('/penilaian/kelulusan/{uuid}/upload', 'kelulusanUpload')->name('penilaian.kelulusan.upload');
     Route::post('/penilaian/kelulusan/{uuid}/hapus', 'kelulusanFileDelete')->name('penilaian.kelulusan.file.hapus');
+    //Kokurikuler
+    Route::get('/penilaian/kokurikuler','kokuIndex')->name('penilaian.koku.index');
+    Route::get('/penilaian/kokurikuler/{uuid}/show','kokuShow')->name('penilaian.koku.show');
 });
 //Guru - Halaman Buku Guru Penilaian
 Route::middleware(isNgajar::class)->controller(PenilaianController::class)->group(function () {
@@ -308,6 +313,8 @@ Route::middleware(isPenilaianController::class)->controller(PenilaianController:
     Route::post('/penilaian/p5/nilai/tambah', 'projekNilaiTambah')->name('penilaian.p5.nilai.tambah');
     Route::post('/penilaian/p5/nilai/store', 'projekNilaiStore')->name('penilaian.p5.nilai.store');
     Route::delete('/penilaian/p5/nilai/hapus', 'projekNilaiHapus')->name('penilaian.p5.nilai.hapus');
+    //KoKurikuler
+    Route::post('/penilaian/kokurikuler/{uuid}/tambah','kokuUpdate')->name('koku.update');
 });
 
 //{---------------------------------------------------End------------------------------------------------------------------}
@@ -482,6 +489,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/p3/{uuid}/show', 'p3Show')->name('walikelas.p3.show');
     Route::get('/walikelas/p3/temp', 'p3TempIndex')->name('walikelas.p3.temp');
     Route::get('/walikelas/p3/temp/create', 'p3TempCreate')->name('walikelas.p3.temp.create');
+    Route::get('/walikelas/kokurikuler','kokuIndex')->name('walikelas.koku');
 });
 
 // {-------------------------------------------Halaman Sekretaris---------------------------------------------------------------}

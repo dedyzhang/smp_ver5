@@ -1171,3 +1171,8 @@ table.dataTables tbody td {
         text-align: center;
     }
 }
+.table-wrapper  {
+    width: 100%;
+    overflow-x: auto;
+    font-size: 12px;
+}
