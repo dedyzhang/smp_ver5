@@ -148,6 +148,7 @@
                     <li class="submenu-list"><a href="{{ route('penilaian.p5.index') }}"> Projek P5</a></li>
                     <li class="submenu-list"><a href="{{ route('perangkat.index') }}"> Perangkat Pembelajaran</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.classroom.index') }}"> Classroom</a></li>
+                    <li class="submenu-list"><a href="{{ route('penilaian.koku.index') }}"> Kokurikuler</a></li>
                     <li class="submenu-list"><a href="{{ route('penilaian.kelulusan.index') }}"> Kelulusan</a></li>
                 </ul>
             </li>
@@ -257,8 +258,10 @@
                     @endif
                     <li class="submenu-list"><a href="{{ route('walikelas.classroom') }}">Classroom</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.ruang') }}">Ruang Kelas</a></li>
+                    <li class="submenu-list"><a href="{{ route('walikelas.koku') }}">Kokurikuler</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.nilai') }}">Nilai</a></li>
                     <li class="submenu-list"><a href="{{ route('walikelas.rapor') }}">Rapor Semester</a></li>
+
                 </ul>
             </li>
             @endcan
@@ -316,6 +319,8 @@
                     <li class="submenu-list"><a href="{{ route('cetak.rapor.index') }}"> Nilai Rapor</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.proyek.index') }}"> Nilai P5</a></li>
                     <li class="submenu-list"><a href="{{ route('cetak.penjabaran.index') }}"> Nilai Penjabaran</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.agenda.index') }}"> Agenda Guru</a></li>
+                    <li class="submenu-list"><a href="{{ route('cetak.batas.index') }}"> Buku Batas Kelas</a></li>
                 </ul>
             </li>
             <li class="menu-list"><a href="{{route('setting.index')}}"> <ion-icon src="{{asset('img/icons/settings.svg')}}"></ion-icon> Setting</a>

@@ -208,6 +208,20 @@
                     </table>
                 </div>
             </div>
+            @if ($kokurikuler != null)
+                <div class="row mt-0 mb-0">
+                    <div class="col-12 mt-1 mb-1">
+                        <p class="m-0"><b>Kokurikuler</b></p>
+                        <table class="table table-bordered fs-10" style="border:1px solid #3f3f3f">
+                            <tbody>
+                                <tr class="transback">
+                                    <td>{{ $kokurikuler->deskripsi }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
             <div class="row mt-0 mb-0">
                 <div class="col-12 mt-1 mb-1">
                     <p class="m-0"><b>Ekstrakurikuler</b></p>
@@ -223,9 +237,9 @@
                                     });
                                 @endphp
                                 @if ($item->id_pelajaran == "" && $ekskulManual)
-                                    <tr class="transback" style="height:40px">
+                                    <tr class="transback" style="height:30px">
                                         <td width="20%" style="vertical-align:middle;font-size:9px; padding:3px 5px">{{$ekskulManual->ekskul->ekskul}}</td>
-                                        <td width="80%" style="height:40px;vertical-align:middle;font-size:9px; padding:3px 5px">{{$ekskulManual->deskripsi}}</td>
+                                        <td width="80%" style="height:30px;vertical-align:middle;font-size:9px; padding:3px 5px">{{$ekskulManual->deskripsi}}</td>
                                     </tr>
                                     @php
                                         $no_ekskul++;
@@ -259,9 +273,9 @@
                                             }
                                         }
                                     @endphp
-                                    <tr style="height:40px" class="transback">
+                                    <tr style="height:30px" class="transback">
                                         <td width="20%" style="vertical-align:middle;font-size:9px; padding:3px 5px">{{$item->ekskul}}</td>
-                                        <td width="80%" style="height:40px;vertical-align:middle;font-size:9px; padding:3px 5px"><b>{{$rapor ? "( ".$predikat." )" : ""}}</b>.{{$rapor ? $rapor->deskripsi_positif : ""}}</td>
+                                        <td width="80%" style="height:30px;vertical-align:middle;font-size:9px; padding:3px 5px"><b>{{$rapor ? "( ".$predikat." )" : ""}}</b>.{{$rapor ? $rapor->deskripsi_positif : ""}}</td>
                                     </tr>
                                     @php
                                         $no_ekskul++;
@@ -283,30 +297,28 @@
                     </table>
                 </div>
             </div>
-            <div class="row mt-0 mb-0">
-                <div class="col-5">
-                    <p class="m-0"><b>Ketidakhadiran</b></p>
-                    <table class="table table-bordered fs-10" style="border:1px solid #3f3f3f">
-                        <tbody>
-                            <tr class="transback">
-                                <td width="60%">Sakit</td>
-                                <td width="40%">{{$absensi->sakit}}</td>
-                            </tr>
-                            <tr class="transback">
-                                <td width="60%">Izin</td>
-                                <td width="40%">{{$absensi->izin}}</td>
-                            </tr>
-                            <tr class="transback">
-                                <td width="60%">Alpha</td>
-                                <td width="40%">{{$absensi->alpa}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
             @if ($semester->semester == 2)
                 <div class="row mt-0 mb-0">
-                    <div class="col-6 ms-2 p-2 fs-10" style="border:1px solid #3f3f3f">
+                    <div class="col-4">
+                        <p class="m-0"><b>Ketidakhadiran</b></p>
+                        <table class="table table-bordered fs-10" style="border:1px solid #3f3f3f">
+                            <tbody>
+                                <tr class="transback">
+                                    <td width="60%">Sakit</td>
+                                    <td width="40%">{{$absensi->sakit}}</td>
+                                </tr>
+                                <tr class="transback">
+                                    <td width="60%">Izin</td>
+                                    <td width="40%">{{$absensi->izin}}</td>
+                                </tr>
+                                <tr class="transback">
+                                    <td width="60%">Alpha</td>
+                                    <td width="40%">{{$absensi->alpa}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-6 ms-2 mt-3 p-2 fs-10" style="border:1px solid #3f3f3f">
                         <p class="m-0">Keputusan :</p>
                         <p class="m-0">Berdasarkan pencapaian kompetensi pada semester ke-1 dan ke-2, peserta didik ditetapkan *):</p>
                         <div class="m-0 d-flex naik_kelas"><div style="width:120px">Naik Ke kelas </div><div class="ms-3 naik_kelas_val" style="width:100%;border-bottom:1px dotted #3f3f3f; display:inline; text-weight:bold"></div></div>
@@ -355,8 +367,30 @@
                         }
                     });
                 </script>
+            @else
+                <div class="row mt-0 mb-0">
+                    <div class="col-5">
+                        <p class="m-0"><b>Ketidakhadiran</b></p>
+                        <table class="table table-bordered fs-10" style="border:1px solid #3f3f3f">
+                            <tbody>
+                                <tr class="transback">
+                                    <td width="60%">Sakit</td>
+                                    <td width="40%">{{$absensi->sakit}}</td>
+                                </tr>
+                                <tr class="transback">
+                                    <td width="60%">Izin</td>
+                                    <td width="40%">{{$absensi->izin}}</td>
+                                </tr>
+                                <tr class="transback">
+                                    <td width="60%">Alpha</td>
+                                    <td width="40%">{{$absensi->alpa}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             @endif
-            <div class="row mt-0 mb-0">
+            <div class="row mt-2 mb-0">
                 <div class="col-5">
                     <p class="m-0">Mengetahui</p>
                     <p class="m-0 mb-5">Orang Tua / Wali Murid</p>

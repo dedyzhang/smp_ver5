@@ -12,6 +12,7 @@ use App\Exports\ProyekExport;
 use App\Exports\PtsExport;
 use App\Exports\RaporExport;
 use App\Exports\SiswaExport;
+use App\Models\Guru;
 use App\Models\Kelas;
 use Google\Service\CertificateAuthorityService\PublicKey;
 use Illuminate\Http\Request;
@@ -175,5 +176,13 @@ class CetakController extends Controller
         $kelas = Kelas::findOrFail($params);
         $namaFile = 'Nilai Proyek Kelas ' . $kelas->tingkat . $kelas->kelas . '.xlsx';
         return Excel::download(new ProyekExport($params), $namaFile);
+    }
+    /**
+     * Cetak Agenda Guru
+     */
+    public function agendaIndex(): View {
+        $kelas = Kelas::get()->sortBy('kelas')->sortBy('tingkat');
+        $guru = Guru::get()->sortBy('nama');
+        return view('cetak.agenda.index',compact('kelas','guru'));
     }
 }
