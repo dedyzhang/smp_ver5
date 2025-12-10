@@ -12,6 +12,7 @@ use App\Models\JabarKomputer;
 use App\Models\JabarMandarin;
 use App\Models\Kelas;
 use App\Models\Kelulusan;
+use App\Models\Kokurikuler;
 use App\Models\Materi;
 use App\Models\Ngajar;
 use App\Models\P5Deskripsi;
@@ -213,6 +214,11 @@ class PenilaianController extends Controller
             $jabarKomputer = array();
         }
 
+        $kokurikuler = Kokurikuler::where([
+            ['id_siswa','=',$siswa->uuid],
+            ['semester','=',$semester->semester]
+        ])->first();
+
         $kepalaSekolah = $setting->first(function ($elem) {
             return $elem->jenis == 'kepala_sekolah';
         });
@@ -231,7 +237,7 @@ class PenilaianController extends Controller
         } else {
             $tanggal = "";
         }
-        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal'));
+        return view('walikelas.rapor.show', compact('siswa', 'semester', 'setting', 'ngajar', 'raporSiswa', 'ekskulSiswa', 'ekskul', 'absensi', 'walikelas', 'kepala_sekolah', 'jabarInggris', 'jabarMandarin', 'jabarKomputer', 'tanggal','kokurikuler'));
     }
 
 
@@ -1995,5 +2001,58 @@ class PenilaianController extends Controller
         $semester = Semester::first();
 
         return view('kelulusan.siswa.index', compact('siswa', 'kelulusan', 'settingKelulusan', 'kepala_sekolah', 'nama_sekolah', 'semester', 'pelajaranArray'));
+    }
+
+    /**
+     * Koku Index
+     */
+    public function kokuIndex() : View {
+        $kelas = Kelas::orderBy('tingkat', 'ASC')->orderBy('kelas', 'ASC')->get();
+
+        return view('penilaian.kokurikuler.index', compact('kelas'));
+    }
+    /**
+     * Koku Show
+     */
+    public function kokuShow(String $uuid) : View {
+        $idKelas = $uuid;
+        $semester = Semester::first();
+        $kelas = Kelas::findOrFail($uuid);
+
+        $siswa = Siswa::with('kelas')->where('id_kelas', $idKelas)->get()->sortBy('nama')->sortBy('kelas.kelas')->sortBy('kelas.tingkat');
+        $siswaId = $siswa->pluck('uuid');
+        $koku = Kokurikuler::whereIn('id_siswa',$siswaId)->where('semester',$semester->semester)->get();
+
+        return view('walikelas.kokurikuler.index', compact('siswa','koku','kelas'));
+    }
+
+    /**
+     * Kokurikuler - Update Kokulikuler
+     */
+    public function kokuUpdate(Request $request, String $uuid) {
+        $siswa = Siswa::findOrFail($uuid);
+        $semester = Semester::first();
+        $kokurikuler = Kokurikuler::where([
+            ['semester','=',$semester->semester],
+            ['id_siswa','=',$siswa->uuid]
+        ])->first();
+        $text = str_replace("\n", "", $request->deskripsi);
+
+        if($kokurikuler != null) {
+            if($request->deskripsi == "") {
+                $kokurikuler->delete();
+            } else {
+                $kokurikuler->update([
+                    'deskripsi' => $text
+                ]);
+            }
+        } else {
+            Kokurikuler::create([
+                'id_siswa' => $siswa->uuid,
+                'semester' => $semester->semester,
+                'deskripsi' => $text
+            ]);
+        }
+        return response()->json(['success'=> 'true']);
     }
 }
