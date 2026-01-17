@@ -34,7 +34,7 @@ class HarianSheetExport implements FromView, WithTitle
         $kelas = Kelas::findOrFail($this->params);
         $semester = Semester::first();
         $sem = $semester->semester;
-        $materi = Materi::with('tupe')->where([['id_ngajar', '=', $this->ngajar->uuid], ['semester', '=', $sem]])->get();
+        $materi = Materi::with('tupe')->where([['id_ngajar', '=', $this->ngajar->uuid], ['semester', '=', $sem],['show','=',1]])->get();
         $materiArray = array();
         $tupeArray = array();
 

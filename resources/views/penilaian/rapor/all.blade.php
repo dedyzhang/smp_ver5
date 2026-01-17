@@ -9,6 +9,9 @@
             <b>Rapor Kelas {{ $kelas->tingkat . $kelas->kelas }}</b>
         </h5>
     </div>
+    <div class="body-contain-customize col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto d-lg-flex">
+        <a href="{{ route('penilaian.admin.rapor.semua',$kelas->uuid) }}" class="btn btn-sm btn-primary"><i class="fas fa-print"></i> Print Rapor Semua Siswa</a>
+    </div>
     <div class="body-contain-customize col-12 mt-3">
         <div class="table-responsive">
             <table class="table table-bordered fs-11 nilai-rapor">

@@ -183,6 +183,7 @@ Route::middleware(IsAdminKurikulumKepala::class)->controller(PenilaianController
     Route::get('/penilaian/rapor', 'raporIndexAll')->name('penilaian.admin.rapor');
     Route::get('/penilaian/rapor/{uuid}/showAll', 'raporShowAll')->name('penilaian.admin.rapor.showAll');
     Route::get('/penilaian/rapor/{uuid}', 'raporIndividu')->name('penilaian.admin.rapor.individu');
+    Route::get('/penilaian/rapor/{uuid}/rapor/all','cetakRaporAll')->name('penilaian.admin.rapor.semua');
     //Materi
     Route::get('/penilaian/materi/{uuid}/show', 'materiShow')->name('penilaian.admin.materi.show');
     //formatif

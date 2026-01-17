@@ -53,7 +53,7 @@ class RaporExport implements FromView
             $raporSiswa = 0;
             $jumlahNilai = 0;
             foreach($ngajar as $item) {
-                if($rapor_array[$item->uuid . '.' . $sis->uuid]['nilai'] != null) {
+                if(isset($rapor_array[$item->uuid . '.' . $sis->uuid]) && $rapor_array[$item->uuid . '.' . $sis->uuid]['nilai'] != null) {
                     $jumlahNilai++;
                     $raporSiswa += $rapor_array[$item->uuid . '.' . $sis->uuid]['nilai'];
                 }
