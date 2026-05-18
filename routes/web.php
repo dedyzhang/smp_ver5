@@ -488,6 +488,7 @@ Route::middleware(IsWalikelas::class)->controller(WalikelasController::class)->g
     Route::get('/walikelas/nilai/harian/{uuid}/penjabaran', 'nilaiPenjabaranShow')->name('walikelas.nilai.penjabaran');
     Route::get('/walikelas/p3', 'p3Index')->name('walikelas.p3');
     Route::get('/walikelas/p3/{uuid}/show', 'p3Show')->name('walikelas.p3.show');
+    Route::get('/walikelas/p3/{uuid}/print', 'p3Print')->name('walikelas.p3.print');
     Route::get('/walikelas/p3/temp', 'p3TempIndex')->name('walikelas.p3.temp');
     Route::get('/walikelas/p3/temp/create', 'p3TempCreate')->name('walikelas.p3.temp.create');
     Route::get('/walikelas/kokurikuler','kokuIndex')->name('walikelas.koku');
