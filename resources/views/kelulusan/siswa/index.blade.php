@@ -39,12 +39,12 @@
                 <ul class="list-unstyled">
                     <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> Nama Siswa : </span>{{$siswa->nama}}</li>
                     <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> NIS / NISN : </span>{{$siswa->nis}} / {{$siswa->nisn}}</li>
-                    <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> Tempat / Tanggal Lahir : </span>{{$siswa->tempat_lahir_ijazah}} / {{date('d F Y', strtotime($siswa->tanggal_lahir_ijazah))}}</li>
+                    <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> Tempat / Tanggal Lahir : </span>{{$siswa->tempat_lahir}} / {{date('d F Y', strtotime($siswa->tanggal_lahir))}}</li>
                     <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> Nama Orang tua : </span>{{$siswa->ortu_ijazah}}</li>
                     <li class="mt-2"><span><i class="fa-solid fa-pencil me-1"></i> Tahun Ajaran : </span>{{$semester->tp}}</li>
                 </ul>
 
-                <p class="mt-3">Peserta didik tersebut telah dinyatakan <b class="fs-20">{{$kelulusan && $kelulusan->kelulusan != null ? ( $kelulusan->kelulusan == "true" ? strtoupper("Lulus") : strtoupper("Tidak Lulus") ) : ""}}</b> dari sekolah {{$nama_sekolah}} pada tahun ajaran {{$semester->tp}} dengan nilai sebagai berikut : </p>
+                <p class="mt-3">Peserta didik tersebut telah dinyatakan <b class="fs-20">{{$kelulusan && $kelulusan->kelulusan != null ? ( $kelulusan->kelulusan == "true" ? strtoupper("Lulus") : strtoupper("Tidak Lulus") ) : ""}}</b> dari sekolah {{$nama_sekolah}} pada tahun ajaran {{$semester->tp}} @if (isset($kelulusan) && $kelulusan->nilai != null) dengan nilai sebagai berikut : @endif</p>
                  @if (isset($kelulusan) && $kelulusan->nilai != null)
                     <div class="row mt-4 m-0 p-0">
                         <div class="col-sm-12 col-md-12 col-lg-10 col-xl-10 m-0 p-0">
@@ -90,7 +90,7 @@
                 @if (isset($kelulusan) && $kelulusan->file != null)
                     <div class="row mt-4 m-0 p-0">
                         <div class="col-12 d-grid col-sm-12 d-sm-grid col-md-12 d-md-flex col-lg-12 d-lg-flex col-xl-12 d-xl-flex m-0 p-0 text-md-center text-lg-center text-xl-center">
-                            <a class="btn btn-sm btn-warning text-warning-emphasis" href="{{asset('storage/surat_keterangan_kelulusan/'.$kelulusan->file)}}">
+                            <a class="btn btn-sm btn-warning text-warning-emphasis" href="{{asset('storage/skl/'.$kelulusan->file)}}">
                                 <i class="fas fa-file-pdf"></i> Download Surat Keterangan Kelulusan
                             </a>
                         </div>
