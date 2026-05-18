@@ -1078,6 +1078,28 @@ class WalikelasController extends Controller
         return view('walikelas.p3.show', compact('siswa', 'p3'));
     }
     /**
+     * P3 - Print P3
+     */
+    public function p3Print(String $uuid): View
+    {
+        $siswa = Siswa::with('kelas')->findOrFail($uuid);
+        $semester = Semester::first();
+        $setting = Setting::all();
+        $walikelas = Walikelas::with('Guru')->where('id_kelas', $siswa->kelas->uuid)->first();
+        $p3 = P3Poin::where([['id_siswa', '=', $siswa->uuid], ['semester', '=', $semester->semester]])->orderBy('tanggal')->get();
+
+        $tanggal_rapor = $setting->first(function ($item) {
+            return $item->jenis == 'tanggal_rapor';
+        });
+        if ($tanggal_rapor != null) {
+            $tanggal = Carbon::parse($tanggal_rapor->nilai)->isoFormat('D MMMM Y');
+        } else {
+            $tanggal = "";
+        }
+
+        return view('p3.siswa.print', compact('siswa', 'p3', 'semester', 'setting', 'tanggal', 'walikelas'));
+    }
+    /**
      * P3 Temp - P3 Temporary Index
      */
     public function p3TempIndex(): View
