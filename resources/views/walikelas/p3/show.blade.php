@@ -26,6 +26,10 @@
         </table>
     </div>
     <div class="clearfix"></div>
+    <div class="body-contain-customize gap-2 mt-3 col-12 d-grid col-sm-12 d-sm-grid col-md-auto d-md-flex col-lg-auto col-lg-flex col-xl-auto col-xl-flex">
+        <a href="{{ route('walikelas.p3.print',$siswa->uuid) }}" class="btn btn-warning text-warning-emphasis btn-sm"><i class="fas fa-print"></i> Print P3</a>
+    </div>
+    <div class="clearfix"></div>
     @php
         $p3_prestasi = $p3->filter(function($elem) {
             return $elem->jenis == "prestasi";
